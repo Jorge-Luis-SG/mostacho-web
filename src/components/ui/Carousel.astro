@@ -1,0 +1,207 @@
+---
+/**
+ * Carrusel genérico con CSS scroll-snap y un script pequeño para flechas y puntos.
+ * Funciona sin JavaScript (se puede desplazar con el dedo, la rueda o el teclado).
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  label: string;
+  variant: 'cards' | 'showcase' | 'gallery' | 'testimonials';
+  dots?: 'top' | 'overlay' | 'none';
+  arrows?: 'sides' | 'edge' | 'none';
+  ui: { prev: string; next: string; page: string };
+}
+
+const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
+---
+
+<div
+  class:list={['carousel', `carousel--${variant}`, `carousel--arrows-${arrows}`]}
+  data-carousel
+  data-page-label={ui.page}
+  role="region"
+  aria-roledescription="carousel"
+  aria-label={label}
+>
+  {dots === 'top' && <div class="carousel__dots carousel__dots--top" data-dots />}
+  <div class="carousel__viewport">
+    {
+      arrows === 'sides' && (
+        <button type="button" class="carousel__arrow carousel__arrow--prev" data-prev aria-label={ui.prev}>
+          <Icon name="arrow-left" size={28} />
+        </button>
+      )
+    }
+    <div class="carousel__track" data-track tabindex="0">
+      <slot />
+    </div>
+    {
+      arrows !== 'none' && (
+        <button
+          type="button"
+          class:list={['carousel__arrow', 'carousel__arrow--next', arrows === 'edge' && 'carousel__arrow--edge']}
+          data-next
+          aria-label={ui.next}
+        >
+          <Icon name={arrows === 'edge' ? 'chevron-right' : 'arrow-right'} size={arrows === 'edge' ? 40 : 28} />
+        </button>
+      )
+    }
+    {dots === 'overlay' && <div class="carousel__dots carousel__dots--overlay" data-dots />}
+  </div>
+</div>
+
+<script>
+  function initCarousel(root: HTMLElement) {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const dots = root.querySelector<HTMLElement>('[data-dots]');
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-next]');
+    const pageLabel = root.dataset.pageLabel ?? '{n}';
+    const items = () => Array.from(track.children) as HTMLElement[];
+
+    const metrics = () => {
+      const first = items()[0];
+      if (!first) return { step: track.clientWidth, perPage: 1, pages: 1 };
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      const size = first.offsetWidth + gap;
+      const perPage = Math.max(1, Math.floor((track.clientWidth + gap + 2) / size));
+      return { step: perPage * size, perPage, pages: Math.ceil(items().length / perPage) };
+    };
+
+    // Precarga las imágenes de la página actual y la siguiente para que no aparezcan tarde al avanzar
+    let near = false;
+    const warm = (page: number) => {
+      if (!near) return;
+      const { perPage } = metrics();
+      items()
+        .slice(0, (page + 2) * perPage + 1)
+        .forEach((el) => el.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => (img.loading = 'eager')));
+    };
+    new IntersectionObserver((entries, obs) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      near = true;
+      warm(0);
+      obs.disconnect();
+    }, { rootMargin: '600px 0px' }).observe(root);
+
+    const goTo = (page: number) => {
+      const { step } = metrics();
+      track.scrollTo({ left: page * step, behavior: 'smooth' });
+    };
+
+    const update = () => {
+      const { step, pages } = metrics();
+      const max = track.scrollWidth - track.clientWidth;
+      const current = track.scrollLeft >= max - 2 ? pages - 1 : Math.round(track.scrollLeft / step);
+      if (prev) prev.disabled = track.scrollLeft <= 2;
+      if (next) next.disabled = track.scrollLeft >= max - 2;
+      dots?.querySelectorAll('button').forEach((dot, i) => dot.setAttribute('aria-current', String(i === current)));
+      warm(current);
+    };
+
+    const renderDots = () => {
+      if (!dots) return;
+      const { pages } = metrics();
+      dots.style.visibility = pages < 2 ? 'hidden' : '';
+      if (dots.childElementCount !== pages) {
+        dots.replaceChildren(
+          ...Array.from({ length: pages }, (_, i) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'carousel__dot';
+            dot.setAttribute('aria-label', pageLabel.replace('{n}', String(i + 1)));
+            dot.addEventListener('click', () => goTo(i));
+            return dot;
+          }),
+        );
+      }
+      update();
+    };
+
+    prev?.addEventListener('click', () => track.scrollBy({ left: -metrics().step, behavior: 'smooth' }));
+    next?.addEventListener('click', () => track.scrollBy({ left: metrics().step, behavior: 'smooth' }));
+
+    let frame = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    }, { passive: true });
+
+    new ResizeObserver(renderDots).observe(track);
+    renderDots();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach(initCarousel);
+</script>
+
+<style>
+  .carousel { position: relative; }
+  .carousel__viewport { position: relative; }
+
+  .carousel__track {
+    display: grid;
+    grid-auto-flow: column;
+    gap: var(--carousel-gap, 2rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .carousel__track::-webkit-scrollbar { display: none; }
+  .carousel__track > :global(*) { scroll-snap-align: start; }
+
+  /* ---- Flechas ---- */
+  .carousel__arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: clamp(4rem, calc(2.92 * var(--u)), 5.6rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-arrow);
+    color: var(--color-text);
+    transform: translateY(-50%);
+    transition: opacity 0.2s ease, background 0.2s ease;
+  }
+  .carousel__arrow:hover { background: var(--color-arrow-hover); }
+  .carousel__arrow:disabled { opacity: 0.35; cursor: default; }
+  .carousel__arrow--prev { left: calc(-1 * var(--carousel-arrow-offset, 11rem)); }
+  .carousel__arrow--next { right: calc(-1 * var(--carousel-arrow-offset, 11rem)); }
+  .carousel__arrow--edge {
+    right: 0;
+    width: 7.8rem;
+    height: 100%;
+    top: 0;
+    transform: none;
+    border-radius: 0;
+    background: transparent;
+  }
+  .carousel__arrow--edge:hover { background: rgb(255 255 255 / 0.08); }
+
+  @media (max-width: 1100px) {
+    .carousel--arrows-sides .carousel__arrow { display: none; }
+  }
+
+  /* ---- Puntos ---- */
+  .carousel__dots { display: flex; gap: 2.4rem; min-height: 1.6rem; }
+  .carousel__dots--top { justify-content: center; margin-bottom: var(--space-lg); }
+  .carousel__dots--overlay {
+    position: absolute;
+    left: var(--carousel-dots-left, 12%);
+    bottom: 7rem;
+    z-index: 2;
+  }
+  .carousel__dots :global(.carousel__dot) {
+    width: 1.6rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-dot);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .carousel__dots :global(.carousel__dot[aria-current='true']) { background: var(--color-dot-active); }
+  .carousel__dots :global(.carousel__dot:hover) { transform: scale(1.2); }
+</style>

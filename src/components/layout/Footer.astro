@@ -1,0 +1,42 @@
+---
+import Img from '../ui/Img.astro';
+import SocialLinks from '../ui/SocialLinks.astro';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  ctx: LandingContext;
+}
+const { ctx } = Astro.props;
+const { config, t, ui } = ctx;
+---
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__logo">
+      <Img site={ctx.site} src={config.logo} alt={ui.logoAlt} sizes="160px" maxWidth={480} />
+    </div>
+    <SocialLinks networks={config.footerSocial} urls={config.social} labels={ui.social} variant="footer" />
+    <hr />
+    <p class="footer__copy">{t.footer.copyright}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-footer-bg);
+    color: var(--color-footer-text);
+    padding: clamp(3rem, calc(3.4 * var(--u)), 6.5rem) var(--layout-gutter) clamp(2.4rem, calc(2.6 * var(--u)), 5rem);
+  }
+  .footer__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(100%, calc(86.15 * var(--u)));
+    margin-inline: auto;
+  }
+  .footer__logo { width: clamp(7rem, calc(5.2 * var(--u)), 10rem); }
+  .footer__logo :global(img), .footer__logo :global(.img-missing) { width: 100%; height: auto; aspect-ratio: 150 / 160; object-fit: contain; }
+  .footer__inner :global(.social) { margin-top: clamp(1.6rem, calc(1.4 * var(--u)), 2.7rem); }
+  hr { width: 100%; border: 0; border-top: 1px solid var(--color-footer-divider); margin-top: clamp(2rem, calc(2 * var(--u)), 3.8rem); }
+  .footer__copy { margin-top: clamp(1.2rem, calc(1 * var(--u)), 2rem); font-size: var(--size-small); line-height: 1.2; }
+</style>

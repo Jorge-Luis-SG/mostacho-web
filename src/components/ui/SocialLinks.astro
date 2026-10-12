@@ -1,0 +1,64 @@
+---
+import Icon from './Icon.astro';
+import type { Network } from '../../lib/types';
+
+interface Props {
+  networks: Network[];
+  urls: Partial<Record<Network, string>>;
+  /** Etiquetas accesibles desde i18n: ui.social.<red> */
+  labels: Record<string, string>;
+  variant?: 'row' | 'rail' | 'circle' | 'footer';
+  class?: string;
+}
+
+const { networks, urls, labels, variant = 'row', class: className } = Astro.props;
+const items = networks.filter((n) => urls[n]);
+---
+
+<ul role="list" class:list={['social', `social--${variant}`, className]}>
+  {
+    items.map((network) => (
+      <li>
+        <a
+          href={urls[network]}
+          target="_blank"
+          rel="noopener"
+          aria-label={labels[network] ?? network}
+          class:list={['social__link', `social__link--${network}`]}
+        >
+          <Icon name={network} size={variant === 'circle' ? 32 : variant === 'footer' ? 43 : 31} />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .social { display: flex; align-items: center; gap: 2.4rem; }
+  .social li { display: flex; line-height: 0; }
+  .social__link { display: grid; place-items: center; transition: transform 0.15s ease, opacity 0.15s ease; }
+  .social__link:hover { transform: scale(1.1); }
+  .social__link :global(svg) { width: clamp(2rem, calc(1.61 * var(--u)), 3.1rem); height: auto; }
+  .social--circle .social__link :global(svg) { width: 60%; }
+  .social--footer .social__link :global(svg) { width: clamp(2rem, calc(1.6 * var(--u)), 3.1rem); }
+
+  .social--rail {
+    flex-direction: column;
+    gap: calc(1.35 * var(--u));
+    padding: calc(4.92 * var(--u)) calc(0.86 * var(--u));
+    border-radius: var(--radius-pill);
+    background: var(--color-rail);
+  }
+
+  .social--circle { gap: clamp(1.2rem, calc(1.35 * var(--u)), 2.6rem); }
+  .social--circle .social__link {
+    width: clamp(4rem, calc(2.71 * var(--u)), 5.2rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-text);
+    color: var(--color-surface-3);
+  }
+  .social--circle .social__link--whatsapp { background: var(--color-whatsapp); color: var(--color-whatsapp-contrast); }
+
+  .social--footer { gap: 1.2rem; color: var(--color-footer-text); }
+</style>

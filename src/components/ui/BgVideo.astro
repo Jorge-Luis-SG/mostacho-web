@@ -1,0 +1,78 @@
+---
+/**
+ * Video de fondo (sin sonido, en bucle) que se pone encima de su imagen.
+ * La imagen sigue debajo como póster: si el video no carga, no está o el visitante
+ * prefiere menos movimiento / ahorro de datos, se ve la foto.
+ */
+import { resolveVideo } from '../../lib/images';
+
+interface Props {
+  site: string;
+  src?: string;
+  class?: string;
+  /** Solo en pantallas grandes (en móvil se queda la foto para ahorrar datos). */
+  desktopOnly?: boolean;
+}
+const { site, src, class: className, desktopOnly = false } = Astro.props;
+const url = resolveVideo(site, src);
+---
+
+{
+  url && (
+    <video
+      class:list={['bg-video', className]}
+      data-src={url}
+      data-desktop-only={desktopOnly ? '' : undefined}
+      muted
+      loop
+      playsinline
+      preload="none"
+      aria-hidden="true"
+      tabindex="-1"
+    />
+  )
+}
+
+<script>
+  const quiet =
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    // @ts-expect-error: API no estándar (Chrome/Android)
+    navigator.connection?.saveData === true;
+
+  const start = (video: HTMLVideoElement) => {
+    if (!video.src) video.src = video.dataset.src!;
+    video.play().then(() => video.classList.add('is-playing')).catch(() => {});
+  };
+
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      const video = e.target as HTMLVideoElement;
+      if (e.isIntersecting) start(video);
+      else video.pause();
+    }
+  }, { rootMargin: '200px' });
+
+  // Los videos empiezan a descargarse cuando la página ya cargó y el navegador está libre,
+  // para no competir con las fotos y el texto.
+  const init = () => {
+    document.querySelectorAll<HTMLVideoElement>('video.bg-video').forEach((video) => {
+      if (video.hasAttribute('data-desktop-only') && window.innerWidth < 768) return;
+      io.observe(video);
+    });
+  };
+  const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(init, { timeout: 2000 }) : setTimeout(init, 300));
+  if (!quiet) {
+    if (document.readyState === 'complete') whenIdle();
+    else window.addEventListener('load', whenIdle, { once: true });
+  }
+</script>
+
+<style>
+  .bg-video {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    object-fit: cover;
+    pointer-events: none;
+  }
+  .bg-video:global(.is-playing) { opacity: 1; }
+</style>

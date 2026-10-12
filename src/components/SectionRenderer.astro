@@ -1,0 +1,42 @@
+---
+/**
+ * Traduce cada "type" de site.json a su componente.
+ * Para crear un tipo de sección nuevo: crea el componente en sections/ y añádelo a este mapa.
+ */
+import Hero from './sections/Hero.astro';
+import About from './sections/About.astro';
+import CardCarousel from './sections/CardCarousel.astro';
+import Showcase from './sections/Showcase.astro';
+import Gallery from './sections/Gallery.astro';
+import Testimonials from './sections/Testimonials.astro';
+import Contact from './sections/Contact.astro';
+import type { Section } from '../lib/types';
+import type { LandingContext } from '../lib/context';
+
+interface Props {
+  section: Section;
+  ctx: LandingContext;
+}
+
+const COMPONENTS = {
+  hero: Hero,
+  about: About,
+  cards: CardCarousel,
+  showcase: Showcase,
+  gallery: Gallery,
+  testimonials: Testimonials,
+  contact: Contact,
+} as const;
+
+const { section, ctx } = Astro.props;
+const Component = COMPONENTS[section.type as keyof typeof COMPONENTS];
+if (!Component) {
+  throw new Error(`Tipo de sección desconocido "${section.type}" (sección "${section.id}" del sitio "${ctx.site}")`);
+}
+const text = ctx.t.sections?.[section.id];
+if (!text) {
+  throw new Error(`Faltan los textos de la sección "${section.id}" en src/sites/${ctx.site}/i18n/${ctx.lang}.json`);
+}
+---
+
+<Component section={section as never} text={text} ctx={ctx} />

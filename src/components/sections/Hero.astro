@@ -1,0 +1,120 @@
+---
+import Img from '../ui/Img.astro';
+import BgVideo from '../ui/BgVideo.astro';
+import Icon from '../ui/Icon.astro';
+import Button from '../ui/Button.astro';
+import LangSwitch from '../ui/LangSwitch.astro';
+import SocialLinks from '../ui/SocialLinks.astro';
+import type { HeroSection } from '../../lib/types';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  section: HeroSection;
+  text: Record<string, string>;
+  ctx: LandingContext;
+}
+const { section, text, ctx } = Astro.props;
+const { ui, config } = ctx;
+---
+
+<section id={section.id} class="hero" data-u aria-labelledby={`${section.id}-title`}>
+  <Img site={ctx.site} src={section.image} alt={text.imageAlt ?? ''} class="hero__bg" priority />
+  <BgVideo site={ctx.site} src={section.video} class="hero__bg" desktopOnly />
+  <div class="hero__overlay" aria-hidden="true"></div>
+
+  <LangSwitch links={ctx.langLinks} label={ui.language} class="hero__lang" />
+
+  <div class="container hero__content">
+    <h1 id={`${section.id}-title`} class="hero__title">{text.title}</h1>
+    <div class="hero__tagline">
+      <p>{text.tagline}</p>
+      <Button href={ctx.whatsapp}>{text.cta}</Button>
+    </div>
+  </div>
+
+  <SocialLinks networks={config.headerSocial} urls={config.social} labels={ui.social} variant="rail" class="hero__social" />
+
+  {
+    section.scrollTo && (
+      <a href={`#${section.scrollTo}`} class="hero__scroll" aria-label={ui.scrollDown}>
+        <Icon name="arrow-down" size={30} />
+      </a>
+    )
+  }
+</section>
+
+<style>
+  .hero {
+    /* En pantallas bajas (portátiles) el hero se escala por el alto para que todo quepa */
+    /* Los tamaños se adaptan también al alto; la posición horizontal sigue al resto de la página (--edge, --u-root). */
+    --u: calc(var(--scale) * min(1vw, 1.7778svh));
+    position: relative;
+    isolation: isolate;
+    min-height: clamp(48rem, 100svh, 108rem);
+    display: grid;
+    align-items: end;
+    padding-block: 18rem calc(clamp(6rem, calc(5.7 * var(--u)), 11rem) + 2rem);
+    overflow: clip;
+  }
+  .hero :global(.hero__bg) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  .hero__overlay { position: absolute; inset: 0; z-index: -1; background: var(--gradient-hero-overlay); }
+
+  .hero :global(.hero__lang) { position: absolute; top: clamp(9rem, calc(11.4 * var(--u)), 22rem); right: var(--cta-axis); transform: translateX(50%); }
+
+  .hero__content { position: relative; width: min(100% - 2 * var(--layout-gutter), calc(85.42 * var(--u-root))); }
+  .hero__title { font-size: calc(var(--size-hero) - 0.4rem); line-height: 0.947; max-width: 12ch; }
+
+  .hero__tagline {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(1rem, calc(0.8 * var(--u)), 1.6rem);
+    margin-top: clamp(1.6rem, calc(1.6 * var(--u)), 3rem);
+    margin-left: clamp(-1rem, -calc(0.52 * var(--u)), 0rem);
+    padding: clamp(0.8rem, calc(0.68 * var(--u)), 1.3rem) clamp(0.8rem, calc(0.83 * var(--u)), 1.6rem) clamp(0.8rem, calc(0.68 * var(--u)), 1.3rem) clamp(2rem, calc(2.34 * var(--u)), 4.5rem);
+    border-radius: var(--radius-pill);
+    background: var(--color-glass);
+    border: 1px solid var(--color-pill-border);
+  }
+  .hero__tagline p {
+    font-family: var(--font-heading);
+    font-weight: var(--heading-weight);
+    text-transform: var(--heading-transform);
+    font-size: calc(var(--size-tagline) - 0.2rem);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .hero :global(.hero__social) { position: absolute; right: var(--cta-axis); top: 52%; transform: translate(50%, -50%); }
+
+  .hero__scroll {
+    position: absolute;
+    right: var(--cta-axis);
+    bottom: clamp(6rem, calc(5.68 * var(--u)), 10.9rem);
+    display: grid;
+    place-items: center;
+    width: clamp(4.4rem, calc(3.33 * var(--u)), 6.4rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-arrow);
+    border: 1px solid var(--color-pill-border);
+    transition: transform 0.2s ease;
+  }
+  .hero__scroll { transform: translateX(50%); }
+  .hero__scroll:hover { transform: translate(50%, 4px); }
+
+  @media (max-width: 900px) {
+    .hero { padding-top: 14rem; }
+    .hero :global(.hero__social), .hero__scroll { display: none; }
+    .hero :global(.hero__lang) { top: 9rem; right: var(--layout-gutter); transform: none; }
+    .hero__tagline { flex-wrap: wrap; padding: 1.2rem; border-radius: var(--radius-lg); }
+    .hero__tagline p { padding-inline: 0.6rem; white-space: normal; }
+  }
+</style>

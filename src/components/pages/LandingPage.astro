@@ -1,0 +1,33 @@
+---
+import Header from '../layout/Header.astro';
+import Footer from '../layout/Footer.astro';
+import SectionRenderer from '../SectionRenderer.astro';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  ctx: LandingContext;
+}
+const { ctx } = Astro.props;
+---
+
+<a href="#main" class="skip-link">{ctx.ui.skipToContent}</a>
+<Header ctx={ctx} />
+<main id="main">
+  {ctx.config.sections.map((section) => <SectionRenderer section={section} ctx={ctx} />)}
+</main>
+<Footer ctx={ctx} />
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -10rem;
+    z-index: 100;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+    font-size: 1.6rem;
+  }
+  .skip-link:focus { top: 1rem; }
+</style>

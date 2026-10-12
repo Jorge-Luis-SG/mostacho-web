@@ -1,0 +1,695 @@
+{
+  "kind": "landing",
+  "route": "espana",
+  "assetsFrom": "ecuador",
+  "logo": "logo.png",
+  "contact": {
+    "whatsapp": "34000000000",
+    "email": ""
+  },
+  "social": {
+    "youtube": "https://www.youtube.com/",
+    "facebook": "https://www.facebook.com/",
+    "instagram": "https://www.instagram.com/"
+  },
+  "nav": [
+    "inicio",
+    "servicios",
+    "hora-loca",
+    "recibe",
+    "efectos",
+    "adicionales"
+  ],
+  "headerSocial": [
+    "youtube",
+    "facebook",
+    "instagram"
+  ],
+  "footerSocial": [
+    "facebook",
+    "instagram",
+    "youtube"
+  ],
+  "sections": [
+    {
+      "id": "inicio",
+      "type": "hero",
+      "image": "hero-fondo.jpg",
+      "scrollTo": "nosotros",
+      "video": "hero.mp4"
+    },
+    {
+      "id": "nosotros",
+      "type": "about",
+      "space": {
+        "top": 160,
+        "bottom": 100
+      },
+      "background": "about",
+      "awardImage": "nosotros-premio.png",
+      "teamImage": "nosotros-equipo.jpg",
+      "decor": [
+        {
+          "image": "bigote-1.png",
+          "x": -24,
+          "y": -593,
+          "w": 1229
+        }
+      ]
+    },
+    {
+      "id": "servicios",
+      "type": "cards",
+      "space": {
+        "top": 80,
+        "bottom": 60
+      },
+      "titleStyle": "plain",
+      "background": "services",
+      "showText": true,
+      "items": [
+        {
+          "id": "hora-loca",
+          "image": "servicio-hora-loca.jpg",
+          "titleSize": 48,
+          "video": "servicio-hora-loca.mp4"
+        },
+        {
+          "id": "recibe",
+          "image": "servicio-recibe.jpg",
+          "titleSize": 40
+        },
+        {
+          "id": "efectos",
+          "image": "servicio-efectos.jpg",
+          "titleSize": 40
+        },
+        {
+          "id": "infantiles",
+          "image": "servicio-infantiles.jpg",
+          "titleSize": 40,
+          "href": "#infantiles"
+        },
+        {
+          "id": "adicionales",
+          "image": "servicio-adicionales.jpg",
+          "titleSize": 40,
+          "href": "#adicionales"
+        }
+      ],
+      "decor": [
+        {
+          "image": "bigote-2.png",
+          "x": -102,
+          "y": 18,
+          "w": 383
+        },
+        {
+          "image": "bigote-3.png",
+          "x": 1464,
+          "y": 926,
+          "w": 334
+        }
+      ]
+    },
+    {
+      "id": "hora-loca",
+      "type": "showcase",
+      "space": {
+        "top": 60,
+        "bottom": 0,
+        "inner": 50
+      },
+      "background": "red-glow",
+      "slides": [
+        {
+          "id": "robots-led",
+          "image": "hora-loca-robots-led.jpg",
+          "accent": "#4500b7"
+        },
+        {
+          "id": "show-mirror",
+          "image": "hora-loca-show-mirror.jpg",
+          "accent": "#000000"
+        },
+        {
+          "id": "funky-animals",
+          "image": "hora-loca-funky-animals.jpg",
+          "accent": "#4b0035",
+          "glow": "rgba(190, 35, 121, 0.9)",
+          "glowAt": "36% 35%"
+        },
+        {
+          "id": "arlequines",
+          "image": "hora-loca-arlequines.jpg",
+          "accent": "#210d00",
+          "glow": "rgba(140, 65, 5, 0.85)",
+          "glowAt": "42% 60%"
+        },
+        {
+          "id": "monster-glitter",
+          "image": "hora-loca-monster-glitter.jpg",
+          "accent": "#1e1e1e",
+          "glow": "rgba(175, 175, 175, 0.8)",
+          "glowAt": "3% 30%"
+        },
+        {
+          "id": "galacticos",
+          "image": "hora-loca-galacticos.jpg",
+          "accent": "#1b002e",
+          "glow": "rgba(90, 0, 155, 0.9)",
+          "glowAt": "34% 25%"
+        },
+        {
+          "id": "white-wings",
+          "image": "hora-loca-white-wings.jpg",
+          "accent": "#060606",
+          "glow": "rgba(120, 110, 110, 0.5)",
+          "glowAt": "40% 40%"
+        },
+        {
+          "id": "robots-mirror",
+          "image": "hora-loca-robots-mirror.jpg",
+          "accent": "#030303",
+          "glow": "rgba(8, 8, 8, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "alicia",
+          "image": "hora-loca-alicia.jpg",
+          "accent": "#170303",
+          "glow": "rgba(72, 8, 8, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "artistas",
+          "image": "hora-loca-artistas.jpg",
+          "accent": "#030308",
+          "glow": "rgba(8, 8, 24, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "batucada-led",
+          "image": "hora-loca-batucada-led.jpg",
+          "accent": "#080308",
+          "glow": "rgba(24, 8, 24, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "charleston",
+          "image": "hora-loca-charleston.jpg",
+          "accent": "#1c0d03",
+          "glow": "rgba(88, 40, 8, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "folklore",
+          "image": "hora-loca-folklore.jpg",
+          "accent": "#31211c",
+          "glow": "rgba(152, 104, 88, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "garotas",
+          "image": "hora-loca-garotas.jpg",
+          "accent": "#080808",
+          "glow": "rgba(24, 24, 24, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "futbolista",
+          "image": "hora-loca-futbolista.jpg",
+          "accent": "#030308",
+          "glow": "rgba(8, 8, 24, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "casa-de-papel",
+          "image": "hora-loca-casa-de-papel.jpg",
+          "accent": "#030308",
+          "glow": "rgba(8, 8, 24, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "la-mascara",
+          "image": "hora-loca-la-mascara.jpg",
+          "accent": "#4f4f4f",
+          "glow": "rgba(248, 248, 248, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "neon",
+          "image": "hora-loca-neon.jpg",
+          "accent": "#030303",
+          "glow": "rgba(8, 8, 8, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "rabbit-girls",
+          "image": "hora-loca-rabbit-girls.jpg",
+          "accent": "#030303",
+          "glow": "rgba(8, 8, 8, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "rumberas",
+          "image": "hora-loca-rumberas.jpg",
+          "accent": "#08080d",
+          "glow": "rgba(24, 24, 40, 0.75)",
+          "glowAt": "30% 30%"
+        }
+      ]
+    },
+    {
+      "id": "recibe",
+      "type": "showcase",
+      "space": {
+        "top": 110,
+        "bottom": 0,
+        "inner": 50
+      },
+      "background": "dark-red",
+      "slides": [
+        {
+          "id": "rosas-doradas",
+          "image": "recibe-rosas-doradas.jpg",
+          "accent": "#0e0e0d",
+          "glow": "rgba(176, 106, 0, 0.85)",
+          "glowAt": "31% 22%"
+        },
+        {
+          "id": "rosas-rojas",
+          "image": "recibe-rosas-rojas.jpg",
+          "accent": "#320000",
+          "glow": "rgba(200, 0, 0, 0.9)",
+          "glowAt": "38% 55%"
+        },
+        {
+          "id": "rosas-blancas",
+          "image": "recibe-rosas-blancas.jpg",
+          "accent": "#000000"
+        },
+        {
+          "id": "personajes-golden",
+          "image": "recibe-personajes-golden.jpg",
+          "accent": "#2e0500",
+          "glow": "rgba(150, 80, 0, 0.85)",
+          "glowAt": "40% 60%"
+        },
+        {
+          "id": "personajes-silver",
+          "image": "recibe-personajes-silver.jpg",
+          "accent": "#2e2e2e",
+          "glow": "rgba(190, 190, 190, 0.8)",
+          "glowAt": "4% 25%"
+        },
+        {
+          "id": "afrodita",
+          "image": "recibe-afrodita.jpg",
+          "accent": "#640000",
+          "glow": "rgba(210, 0, 0, 0.95)",
+          "glowAt": "5% 20%"
+        },
+        {
+          "id": "arlequines",
+          "image": "recibe-arlequines.jpg",
+          "accent": "#0d0d08",
+          "glow": "rgba(40, 40, 24, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "black-and-white",
+          "image": "recibe-black-and-white.jpg",
+          "accent": "#030303",
+          "glow": "rgba(8, 8, 8, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "combinados",
+          "image": "recibe-combinados.jpg",
+          "accent": "#030303",
+          "glow": "rgba(8, 8, 8, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "elementos",
+          "image": "recibe-elementos.jpg",
+          "accent": "#030303",
+          "glow": "rgba(8, 8, 8, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "isis",
+          "image": "recibe-isis.jpg",
+          "accent": "#4f4f4f",
+          "glow": "rgba(248, 248, 248, 0.75)",
+          "glowAt": "30% 30%"
+        },
+        {
+          "id": "mimos",
+          "image": "recibe-mimos.jpg",
+          "accent": "#030303",
+          "glow": "rgba(8, 8, 8, 0.75)",
+          "glowAt": "30% 30%"
+        }
+      ]
+    },
+    {
+      "id": "efectos",
+      "type": "cards",
+      "space": {
+        "top": 140,
+        "bottom": 70
+      },
+      "background": "effects",
+      "items": [
+        {
+          "id": "bazooka",
+          "image": "efecto-bazooka.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "neblina",
+          "image": "efecto-neblina-baja.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "fuegos",
+          "image": "efecto-fuegos-artificiales.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "confeti",
+          "image": "efecto-confeti.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "neblina-pirotecnia",
+          "image": "efecto-neblina-pirotecnia.jpg",
+          "titleSize": 38
+        }
+      ],
+      "decor": [
+        {
+          "image": "bigote-4.png",
+          "x": 1314,
+          "y": 0,
+          "w": 995
+        }
+      ]
+    },
+    {
+      "id": "adicionales",
+      "type": "cards",
+      "space": {
+        "top": 70,
+        "bottom": 80
+      },
+      "background": "extras",
+      "items": [
+        {
+          "id": "glitter-bar",
+          "image": "adicional-glitter-bar.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "dj",
+          "image": "adicional-dj.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "maestros",
+          "image": "adicional-maestro-ceremonia.jpg",
+          "titleSize": 38
+        },
+        {
+          "id": "barra-cocteles",
+          "image": "adicional-barra-cocteles.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "batucada",
+          "image": "adicional-batucada.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "cabina-espejada",
+          "image": "adicional-cabina-espejada.jpg",
+          "titleSize": 52,
+          "video": "adicional-cabina-espejada.mp4"
+        },
+        {
+          "id": "montaje-bailes",
+          "image": "adicional-montaje-bailes.jpg",
+          "titleSize": 38
+        },
+        {
+          "id": "musica-en-vivo",
+          "image": "adicional-musica-en-vivo.jpg",
+          "titleSize": 52,
+          "video": "adicional-musica-en-vivo.mp4"
+        },
+        {
+          "id": "pantallas-carpas",
+          "image": "adicional-pantallas-carpas.jpg",
+          "titleSize": 38
+        },
+        {
+          "id": "totems-led",
+          "image": "adicional-totems-led.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "zanqueros",
+          "image": "adicional-zanqueros.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "party-shot",
+          "image": "adicional-party-shot.jpg",
+          "titleSize": 52
+        }
+      ],
+      "decor": [
+        {
+          "image": "bigote-5.png",
+          "x": -630,
+          "y": 304,
+          "w": 1381
+        }
+      ]
+    },
+    {
+      "id": "infantiles",
+      "type": "showcase",
+      "space": {
+        "top": 80,
+        "bottom": 0,
+        "inner": 50
+      },
+      "background": "kids",
+      "slides": [
+        {
+          "id": "kpop",
+          "image": "infantil-kpop.jpg",
+          "accent": "#1a002e",
+          "glow": "rgba(100, 0, 170, 0.85)",
+          "glowAt": "30% 15%",
+          "titleImage": "infantil-kpop-logo.png"
+        },
+        {
+          "id": "world-tour",
+          "image": "infantil-world-tour.jpg",
+          "accent": "#00202e",
+          "glow": "rgba(0, 150, 50, 0.9)",
+          "glowAt": "30% 10%"
+        }
+      ]
+    },
+    {
+      "id": "galeria",
+      "type": "gallery",
+      "space": {
+        "top": 100,
+        "bottom": 110
+      },
+      "background": "black",
+      "items": [
+        {
+          "id": "foto-1",
+          "image": "galeria-1.jpg"
+        },
+        {
+          "id": "foto-3",
+          "image": "galeria-3.jpg"
+        },
+        {
+          "id": "foto-4",
+          "image": "galeria-4.jpg"
+        },
+        {
+          "id": "foto-5",
+          "image": "galeria-5.jpg"
+        },
+        {
+          "id": "foto-6",
+          "image": "galeria-6.jpg"
+        },
+        {
+          "id": "foto-7",
+          "image": "galeria-7.jpg"
+        },
+        {
+          "id": "foto-8",
+          "image": "galeria-8.jpg"
+        },
+        {
+          "id": "foto-9",
+          "image": "galeria-9.jpg"
+        },
+        {
+          "id": "foto-13",
+          "image": "galeria-13.jpg"
+        },
+        {
+          "id": "foto-14",
+          "image": "galeria-14.jpg"
+        },
+        {
+          "id": "foto-17",
+          "image": "galeria-17.jpg"
+        },
+        {
+          "id": "foto-19",
+          "image": "galeria-19.jpg"
+        },
+        {
+          "id": "foto-20",
+          "image": "galeria-20.jpg"
+        },
+        {
+          "id": "foto-21",
+          "image": "galeria-21.jpg"
+        },
+        {
+          "id": "foto-22",
+          "image": "galeria-22.jpg"
+        },
+        {
+          "id": "foto-23",
+          "image": "galeria-23.jpg"
+        },
+        {
+          "id": "foto-24",
+          "image": "galeria-24.jpg"
+        },
+        {
+          "id": "foto-25",
+          "image": "galeria-25.jpg"
+        },
+        {
+          "id": "foto-26",
+          "image": "galeria-26.jpg"
+        },
+        {
+          "id": "foto-27",
+          "image": "galeria-27.jpg"
+        }
+      ],
+      "titleSize": "lg"
+    },
+    {
+      "id": "experiencia",
+      "type": "testimonials",
+      "space": {
+        "top": 90,
+        "bottom": 110
+      },
+      "titleStyle": "plain",
+      "background": "testimonials",
+      "items": [
+        {
+          "id": "carlos",
+          "kind": "review",
+          "rating": 5,
+          "platform": "google"
+        },
+        {
+          "id": "tatiana",
+          "kind": "image",
+          "image": "testimonio-whatsapp-tatiana.png"
+        },
+        {
+          "id": "maria-paulina",
+          "kind": "review",
+          "rating": 5,
+          "platform": "google"
+        },
+        {
+          "id": "geovanny",
+          "kind": "review",
+          "rating": 5,
+          "platform": "google"
+        },
+        {
+          "id": "prizi3",
+          "kind": "review",
+          "platform": "instagram"
+        },
+        {
+          "id": "melizayg",
+          "kind": "review",
+          "platform": "instagram"
+        }
+      ],
+      "titleSize": "lg"
+    },
+    {
+      "id": "contacto",
+      "type": "contact",
+      "space": {
+        "top": 80,
+        "bottom": 80
+      },
+      "background": "contact",
+      "social": [
+        "facebook",
+        "instagram",
+        "whatsapp"
+      ],
+      "fields": [
+        {
+          "id": "nombre",
+          "type": "text",
+          "required": true,
+          "autocomplete": "name"
+        },
+        {
+          "id": "tipo",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "fecha",
+          "type": "date"
+        },
+        {
+          "id": "ciudad",
+          "type": "text",
+          "autocomplete": "address-level2"
+        },
+        {
+          "id": "celular",
+          "type": "tel",
+          "required": true,
+          "autocomplete": "tel"
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "autocomplete": "email"
+        }
+      ]
+    }
+  ]
+}

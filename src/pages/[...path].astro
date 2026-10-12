@@ -1,0 +1,41 @@
+---
+/**
+ * Única página de Astro: genera todas las rutas a partir de src/sites/ y de los idiomas.
+ *   /              → portada (sitio "portal") en español
+ *   /en/           → portada en inglés
+ *   /ecuador/      → landing de Ecuador en español
+ *   /en/ecuador/   → landing de Ecuador en inglés
+ *   …y lo mismo para cada carpeta nueva que añadas en src/sites/
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LandingPage from '../components/pages/LandingPage.astro';
+import PortalPage from '../components/pages/PortalPage.astro';
+import { LANGS, pathFor } from '../lib/i18n';
+import { getSite, routeOf, siteKeys } from '../lib/sites';
+import { buildLandingContext } from '../lib/context';
+import type { PortalConfig } from '../lib/types';
+
+export function getStaticPaths() {
+  return siteKeys.flatMap((site) =>
+    LANGS.map((lang) => {
+      const path = pathFor(lang, routeOf(site)).replace(/^\/|\/$/g, '');
+      return { params: { path: path || undefined }, props: { site, lang } };
+    }),
+  );
+}
+
+const { site, lang } = Astro.props;
+const loaded = getSite(site, lang);
+const { config, theme, t } = loaded;
+const alternates = LANGS.map((l) => ({ lang: l, href: pathFor(l, routeOf(site)) }));
+---
+
+<BaseLayout lang={lang} title={t.meta.title} description={t.meta.description} theme={theme} alternates={alternates}>
+  {
+    config.kind === 'portal' ? (
+      <PortalPage site={site} lang={lang} config={config as PortalConfig} t={t} />
+    ) : (
+      <LandingPage ctx={buildLandingContext(loaded, lang)} />
+    )
+  }
+</BaseLayout>

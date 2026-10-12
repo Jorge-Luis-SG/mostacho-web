@@ -1,0 +1,60 @@
+---
+import SectionShell from '../layout/SectionShell.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+import Carousel from '../ui/Carousel.astro';
+import Img from '../ui/Img.astro';
+import type { GallerySection } from '../../lib/types';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  section: GallerySection;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  text: Record<string, any>;
+  ctx: LandingContext;
+}
+const { section, text, ctx } = Astro.props;
+const titleId = `${section.id}-title`;
+---
+
+<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} contained={false} labelledby={titleId}>
+  <div class="container">
+    <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
+  </div>
+  <div class="gallery">
+    <Carousel label={text.title} variant="gallery" arrows="sides" ui={ctx.ui.carousel}>
+      {
+        section.items.map((item) => (
+          <figure class="gallery__item">
+            <Img site={ctx.site} src={item.image} alt={text.items[item.id]?.alt ?? ''} sizes="(max-width: 700px) 88vw, 60vw" maxWidth={1920} />
+          </figure>
+        ))
+      }
+    </Carousel>
+  </div>
+</SectionShell>
+
+<style>
+  .gallery {
+    position: relative;
+    margin-top: clamp(2.4rem, calc(2.6 * var(--u)), 5rem);
+    padding-left: calc(var(--edge) + clamp(1.6rem, calc(5.63 * var(--u)), 10.8rem));
+    --carousel-gap: clamp(1.2rem, calc(2.34 * var(--u)), 4.5rem);
+  }
+  .gallery :global(.carousel__track) { grid-auto-columns: min(calc(59.7 * var(--u)), 114.6rem); }
+  @media (max-width: 700px) {
+    .gallery :global(.carousel__track) { grid-auto-columns: calc(86 * var(--u)); }
+  }
+  /* El diseño no muestra flechas: aparecen solo al pasar el ratón o con el teclado */
+  .gallery :global(.carousel__arrow) { opacity: 0; transition: opacity 0.2s ease; }
+  .gallery:hover :global(.carousel__arrow:not(:disabled)),
+  .gallery:focus-within :global(.carousel__arrow:not(:disabled)) { opacity: 1; }
+  .gallery :global(.carousel__arrow--prev) { left: 1.5rem; }
+  .gallery :global(.carousel__arrow--next) { right: 1.5rem; }
+  .gallery__item :global(img), .gallery__item :global(.img-missing) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1146 / 582;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+  }
+</style>

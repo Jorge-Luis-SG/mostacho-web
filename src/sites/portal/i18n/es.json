@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "title": "Mostacho Producciones | Experiencias legendarias",
+    "description": "Horas locas, shows y efectos especiales para tu celebración. Elige tu país: Ecuador o España."
+  },
+  "ui": {
+    "logoAlt": "Mostacho Producciones",
+    "language": "Idioma",
+    "social": {
+      "youtube": "YouTube",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp",
+      "tiktok": "TikTok"
+    }
+  },
+  "title": "¿Listo para una\nexperiencia legendaria?",
+  "subtitle": "¿Dónde es tu celebración?",
+  "countries": {
+    "ecuador": "Ecuador",
+    "espana": "España"
+  }
+}

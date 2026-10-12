@@ -1,0 +1,79 @@
+---
+/**
+ * Imagen de un sitio. Busca el archivo en src/sites/<sitio>/img/ y en el build lo optimiza a WebP
+ * (más rápido de decodificar que AVIF: el scroll va más fluido) en varios tamaños.
+ * Si el archivo no existe muestra un fondo borroso con el aviso "Faltan assets",
+ * o nada si es decorativa (optional).
+ */
+import { Picture } from 'astro:assets';
+import { resolveImage } from '../../lib/images';
+
+interface Props {
+  site: string;
+  src?: string;
+  alt: string;
+  class?: string;
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  priority?: boolean;
+  /** Decorativa: si falta el archivo no se muestra nada. */
+  optional?: boolean;
+  /** Ancho máximo que se genera (px). Ajústalo al tamaño en pantalla × 2 para no generar versiones de más. */
+  maxWidth?: number;
+}
+
+const { site, src, alt, class: className, sizes = '100vw', loading = 'lazy', priority = false, optional = false, maxWidth = 2560 } = Astro.props;
+const image = resolveImage(site, src);
+
+// Tamaños que se generan: nunca más grandes que el original ni que maxWidth.
+const BREAKPOINTS = [480, 960, 1440, 1920, 2560];
+const largest = image?.kind === 'raster' ? Math.min(image.meta.width, maxWidth, 3840) : 0;
+const widths = image?.kind === 'raster' ? [...BREAKPOINTS.filter((w) => w < largest), largest] : [];
+
+// En desarrollo se sirve el archivo original tal cual: generar versiones al vuelo satura la CPU
+// y hace que la página se trabe mientras navegas. La versión final (build) sí las optimiza.
+const DEV = import.meta.env.DEV;
+---
+
+{
+  image?.kind === 'raster' && DEV ? (
+    <img
+      src={image.meta.src}
+      width={image.meta.width}
+      height={image.meta.height}
+      alt={alt}
+      class={className}
+      loading={priority ? 'eager' : loading}
+      decoding="async"
+    />
+  ) : image?.kind === 'raster' ? (
+    <Picture
+      src={image.meta}
+      alt={alt}
+      formats={[]}
+      fallbackFormat="webp"
+      quality={80}
+      widths={widths}
+      sizes={sizes}
+      class={className}
+      loading={priority ? 'eager' : loading}
+      fetchpriority={priority ? 'high' : undefined}
+      decoding="async"
+      pictureAttributes={{ class: 'pic' }}
+    />
+  ) : image?.kind === 'svg' ? (
+    <img src={image.url} alt={alt} class={className} loading={priority ? 'eager' : loading} decoding="async" />
+  ) : optional ? null : (
+    <div
+      class:list={['img-missing', className]}
+      role={alt ? 'img' : undefined}
+      aria-label={alt || undefined}
+      data-missing-asset={src}
+    >
+      <span class="img-missing__label">
+        Faltan assets
+        <small>{src}</small>
+      </span>
+    </div>
+  )
+}

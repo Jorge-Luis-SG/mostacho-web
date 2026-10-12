@@ -1,0 +1,450 @@
+{
+  "meta": {
+    "title": "Mostacho Producciones | Quito's #1 Hora Loca",
+    "description": "Hora loca party shows, special effects and entertainment for weddings, quinceañeras and events in Quito. Winners of the Latin American Wedding & MICE Awards."
+  },
+  "ui": {
+    "home": "Go to top",
+    "logoAlt": "Mostacho Producciones",
+    "mainNav": "Main menu",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "skipToContent": "Skip to content",
+    "language": "Language",
+    "contact": "Contact",
+    "want": "I want it",
+    "scrollDown": "Go to next section",
+    "rating": "{n} out of 5 stars",
+    "whatsappDefault": "Hi Mostacho! I'd like information for my event.",
+    "whatsappService": "Hi Mostacho! I'd like information about: {service}",
+    "carousel": {
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Go to page {n}"
+    },
+    "social": {
+      "youtube": "YouTube",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp",
+      "tiktok": "TikTok"
+    }
+  },
+  "nav": {
+    "inicio": "Home",
+    "servicios": "Services",
+    "hora-loca": "Hora loca",
+    "recibe": "Welcome your guests",
+    "efectos": "Special effects",
+    "adicionales": "Extra services"
+  },
+  "sections": {
+    "inicio": {
+      "title": "Let's make\nyour event\nlegendary",
+      "tagline": "Quito's #1 hora loca",
+      "cta": "Contact",
+      "imageAlt": "Guests dancing at a Mostacho hora loca"
+    },
+    "nosotros": {
+      "title": "Hey! We are\nMostacho",
+      "text": "We are leaders in entertainment and specialists in creating legendary experiences, events and horas locas. A dream that began 11 years ago is now a team of more than 30 collaborators, able to produce up to 8 horas locas at the same time, bringing creativity, innovation and energy to every celebration — because for us, an event is not just an event. It's an experience, a story, a moment worth remembering.",
+      "awardTitle": "Winners of the Latin American Wedding & MICE Awards",
+      "awardSubtitle": "as the best hora loca in Quito",
+      "awardAlt": "Latin American Wedding & MICE Awards Ecuador trophy",
+      "teamAlt": "The Mostacho Producciones team celebrating the award"
+    },
+    "servicios": {
+      "title": "Services",
+      "items": {
+        "hora-loca": {
+          "title": "Hora loca",
+          "text": "One hour packed with fun: live show performance, props for your guests, karaoke and epic games",
+          "alt": "Party with a hora loca show"
+        },
+        "recibe": {
+          "title": "Welcome\nyour guests",
+          "text": "Give your guests an iconic experience as they arrive, with our unique characters for every occasion.",
+          "alt": "Newlyweds with golden rose characters"
+        },
+        "efectos": {
+          "title": "Special\neffects",
+          "text": "Take your moments to the next level with special effects: pyrotechnics, low fog, confetti and anything you can imagine.",
+          "alt": "Newlyweds firing CO2 bazookas"
+        },
+        "infantiles": {
+          "title": "Kids\nparties",
+          "text": "Choreographed shows with the little ones’ favorite characters, face painting, balloon art, entertainment and everything to make the kids happy.",
+          "alt": "Kids show with characters"
+        },
+        "adicionales": {
+          "title": "Extra\nservices",
+          "text": "Add-ons to give your celebration the extra touch it needs: glitter bar, party shot, mobile disco, cocktail bar and much more.",
+          "alt": "DJ booth with the Mostacho logo"
+        }
+      }
+    },
+    "hora-loca": {
+      "title": "Hora loca",
+      "slides": {
+        "robots-led": {
+          "title": "LED robot\nshow",
+          "alt": "Robots in LED light suits at a party"
+        },
+        "show-mirror": {
+          "title": "Mirror\nshow",
+          "alt": "Dancers wearing mirror-ball helmets"
+        },
+        "funky-animals": {
+          "title": "Funky\nanimals",
+          "alt": "Characters with animal heads and colorful suits"
+        },
+        "arlequines": {
+          "title": "Harlequin\nshow",
+          "alt": "Harlequins entertaining the guests"
+        },
+        "monster-glitter": {
+          "title": "Monster\nglitter",
+          "cta": "Contact",
+          "alt": "Characters covered in silver glitter"
+        },
+        "galacticos": {
+          "title": "Galactic\nshow",
+          "cta": "Contact",
+          "alt": "Galactic characters posing with guests"
+        },
+        "white-wings": {
+          "title": "White\nwings",
+          "cta": "Contact",
+          "alt": "Entertainer in a white suit with a microphone"
+        },
+        "robots-mirror": {
+          "title": "Mirror\nrobots",
+          "alt": "Giant robots in mirror suits"
+        },
+        "alicia": {
+          "title": "Alice in\nWonderland",
+          "alt": "Mad Hatter character"
+        },
+        "artistas": {
+          "title": "Artists",
+          "alt": "Artists and dancers entertaining the party"
+        },
+        "batucada-led": {
+          "title": "LED\nbatucada",
+          "alt": "Batucada drummers in LED suits"
+        },
+        "charleston": {
+          "title": "Charleston",
+          "alt": "Charleston dancers"
+        },
+        "folklore": {
+          "title": "Folklore",
+          "alt": "Folk characters with the newlyweds"
+        },
+        "garotas": {
+          "title": "Garotas",
+          "alt": "Brazilian dancers with feathers"
+        },
+        "futbolista": {
+          "title": "Football\nhora loca",
+          "alt": "Guests in football shirts celebrating"
+        },
+        "casa-de-papel": {
+          "title": "Money\nheist",
+          "alt": "Money Heist characters"
+        },
+        "la-mascara": {
+          "title": "The\nmask",
+          "alt": "The Mask characters"
+        },
+        "neon": {
+          "title": "Neon\nshow",
+          "alt": "Dancers in neon costumes"
+        },
+        "rabbit-girls": {
+          "title": "Rabbit\ngirls",
+          "alt": "Dancers with bunny ears and lights"
+        },
+        "rumberas": {
+          "title": "Rumberas",
+          "alt": "Rumba dancers entertaining guests"
+        }
+      }
+    },
+    "recibe": {
+      "title": "Welcome your guests",
+      "slides": {
+        "rosas-doradas": {
+          "title": "Golden\nglam\nroses",
+          "alt": "Characters with golden rose heads next to LOVE letters"
+        },
+        "rosas-rojas": {
+          "title": "Red\nglam\nroses",
+          "alt": "Red rose characters welcoming guests"
+        },
+        "rosas-blancas": {
+          "title": "White\nglam\nroses",
+          "alt": "Character in a white rose dress"
+        },
+        "personajes-golden": {
+          "title": "Golden\ncharacters",
+          "alt": "Characters with masks and golden jackets"
+        },
+        "personajes-silver": {
+          "title": "Silver\ncharacters",
+          "alt": "Characters with masks and silver suits"
+        },
+        "afrodita": {
+          "title": "Aphrodite",
+          "alt": "Aphrodite characters posing with guests"
+        },
+        "arlequines": {
+          "title": "Harlequins",
+          "alt": "Golden harlequin welcoming a guest"
+        },
+        "black-and-white": {
+          "title": "Black\nand white",
+          "alt": "Characters in black and white striped suits"
+        },
+        "combinados": {
+          "title": "Combined\ncharacters",
+          "alt": "Mimes and golden rose characters"
+        },
+        "elementos": {
+          "title": "Elements",
+          "alt": "Nature elements characters"
+        },
+        "isis": {
+          "title": "Isis",
+          "alt": "Dancer with white wings"
+        },
+        "mimos": {
+          "title": "Mimes",
+          "alt": "Mimes welcoming the guests"
+        }
+      }
+    },
+    "efectos": {
+      "title": "Special effects",
+      "items": {
+        "bazooka": {
+          "title": "Confetti\nbazooka",
+          "alt": "Quinceañera with a colored smoke bazooka"
+        },
+        "neblina": {
+          "title": "Low\nfog",
+          "alt": "Couple dancing on low fog"
+        },
+        "fuegos": {
+          "title": "Fireworks",
+          "alt": "Colored smoke at an outdoor wedding"
+        },
+        "confeti": {
+          "title": "Confetti",
+          "alt": "Quinceañera under a shower of confetti"
+        },
+        "neblina-pirotecnia": {
+          "title": "Low fog and\ncold sparks",
+          "alt": "Couple dancing with low fog and cold sparks"
+        }
+      }
+    },
+    "adicionales": {
+      "title": "Extra services",
+      "items": {
+        "glitter-bar": {
+          "title": "Mobile\nglitter bar",
+          "alt": "Make-up artist applying glitter"
+        },
+        "dj": {
+          "title": "Mobile\nDJ disco",
+          "alt": "DJ mixing music at an event"
+        },
+        "maestros": {
+          "title": "Masters of\nceremonies",
+          "alt": "Smiling master of ceremonies"
+        },
+        "barra-cocteles": {
+          "title": "Cocktail\nbar",
+          "alt": "Bartenders making cocktails outdoors"
+        },
+        "batucada": {
+          "title": "Batucada",
+          "alt": "Batucada drummers"
+        },
+        "cabina-espejada": {
+          "title": "Mirror\nbooth",
+          "alt": "Mirrored photo booth"
+        },
+        "montaje-bailes": {
+          "title": "Wedding and\nquinceañera dances",
+          "alt": "Wedding dance rehearsal"
+        },
+        "musica-en-vivo": {
+          "title": "Live\nmusic",
+          "alt": "Musicians playing live"
+        },
+        "pantallas-carpas": {
+          "title": "Screens,\nfurniture and tents",
+          "alt": "Tent with LED screens and furniture"
+        },
+        "totems-led": {
+          "title": "LED\ntotems",
+          "alt": "LED totems with the Mostacho logo"
+        },
+        "zanqueros": {
+          "title": "Stilt\nwalkers",
+          "alt": "Stilt walker with a top hat"
+        },
+        "party-shot": {
+          "title": "Party\nshot",
+          "alt": "LED robot serving shots"
+        }
+      }
+    },
+    "infantiles": {
+      "title": "Kids' parties",
+      "slides": {
+        "kpop": {
+          "kicker": "Show",
+          "title": "KPop Demon Hunters",
+          "alt": "KPop Demon Hunters dancers with children and confetti"
+        },
+        "world-tour": {
+          "kicker": "Mostacho",
+          "title": "World\ntour",
+          "alt": "Cartoon characters and mascots at a kids party"
+        }
+      }
+    },
+    "galeria": {
+      "title": "Gallery",
+      "items": {
+        "foto-1": {
+          "alt": "Quinceañera surrounded by golden rose characters"
+        },
+        "foto-3": {
+          "alt": "LED characters with the guests"
+        },
+        "foto-4": {
+          "alt": "Silver characters with the newlyweds in the garden"
+        },
+        "foto-5": {
+          "alt": "Galactic show on the light-up dance floor"
+        },
+        "foto-6": {
+          "alt": "Guests on the light-up dance floor"
+        },
+        "foto-7": {
+          "alt": "Characters with light effects"
+        },
+        "foto-8": {
+          "alt": "Character show on the dance floor"
+        },
+        "foto-9": {
+          "alt": "Colorful characters entertaining the party"
+        },
+        "foto-13": {
+          "alt": "Newlyweds surrounded by white feather characters"
+        },
+        "foto-14": {
+          "alt": "Characters with a light ring and a quinceañera"
+        },
+        "foto-17": {
+          "alt": "LED robots among the guests"
+        },
+        "foto-19": {
+          "alt": "Quinceañera with mirror characters"
+        },
+        "foto-20": {
+          "alt": "Quinceañera with a clown and characters"
+        },
+        "foto-21": {
+          "alt": "Clown at a themed party"
+        },
+        "foto-22": {
+          "alt": "Quinceañera with silver characters"
+        },
+        "foto-23": {
+          "alt": "Quinceañera with characters on the dance floor"
+        },
+        "foto-24": {
+          "alt": "Guests with light sticks"
+        },
+        "foto-25": {
+          "alt": "Quinceañera with top-hat characters"
+        },
+        "foto-26": {
+          "alt": "Artists entertaining the party"
+        },
+        "foto-27": {
+          "alt": "White feather characters with the newlyweds"
+        }
+      }
+    },
+    "experiencia": {
+      "title": "Mostacho Experience",
+      "items": {
+        "carlos": {
+          "name": "Chef Carlos Marquez",
+          "meta": "9 reviews",
+          "time": "A year ago",
+          "text": "The best parties are made with these guys! Really good, 100% recommended."
+        },
+        "tatiana": {
+          "alt": "WhatsApp message from a client: “I want to thank you from the bottom of my heart for all the magic you created on our night. My guests fell in love with the waltz and the hora loca.”"
+        },
+        "maria-paulina": {
+          "name": "María Paulina Fabara Padilla",
+          "meta": "2 reviews",
+          "time": "8 months ago",
+          "text": "Mostacho Producciones gave us excellent service this Saturday, January 24, at my daughter’s quinceañera at the Finlandia hotel in Quito.\nVery professional and super dynamic; the LED robot is spectacular. We also hired Rafael as master of ceremonies and he was very professional.\nExcellent service, highly recommended 👍👌"
+        },
+        "geovanny": {
+          "name": "Geovanny Herrera",
+          "meta": "1 review",
+          "time": "2 years ago",
+          "text": "An excellent production, they had us dancing from start to finish. Thank you for everything, it was an unforgettable day thanks to you."
+        },
+        "prizi3": {
+          "name": "prizi3",
+          "meta": "Instagram",
+          "text": "🙌 What a spectacular show! 👏 We thank you from the bottom of our hearts for all that energy on our wedding day. Without a doubt the best at shows 🔥🔥!! 💯"
+        },
+        "melizayg": {
+          "name": "melizayg",
+          "meta": "Instagram",
+          "text": "Excellent energy and an unmatched vibe 👏 they left us wanting to keep dancing 😍 and joining in 👏🙌🔥"
+        }
+      }
+    },
+    "contacto": {
+      "title": "Contact us!",
+      "intro": "Hi Mostacho! I'd like information for my event:",
+      "submit": "Send via WhatsApp",
+      "fields": {
+        "nombre": {
+          "label": "Name"
+        },
+        "tipo": {
+          "label": "Type of event"
+        },
+        "fecha": {
+          "label": "Date"
+        },
+        "ciudad": {
+          "label": "City"
+        },
+        "celular": {
+          "label": "Mobile"
+        },
+        "email": {
+          "label": "E-mail"
+        }
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 Mostacho Producciones"
+  }
+}

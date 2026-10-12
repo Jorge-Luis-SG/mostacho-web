@@ -1,0 +1,120 @@
+---
+import SectionShell from '../layout/SectionShell.astro';
+import Img from '../ui/Img.astro';
+import type { AboutSection } from '../../lib/types';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  section: AboutSection;
+  text: Record<string, string>;
+  ctx: LandingContext;
+}
+const { section, text, ctx } = Astro.props;
+const titleId = `${section.id}-title`;
+---
+
+<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} labelledby={titleId} class="about">
+  <div class="about__grid">
+    <div class="about__copy">
+      <h2 id={titleId}>{text.title}</h2>
+      <p>{text.text}</p>
+    </div>
+
+    <figure class="about__media">
+      {/* Bigote 3D: posición y ancho en px del diseño, relativos a la esquina del marco trofeo+foto (870 px de ancho en el diseño). Se escala con el marco. */}
+      {section.decor?.map((d) => (
+        <div class="about__decor" aria-hidden="true" style={`left:${((d.x / 870) * 100).toFixed(3)}cqw;top:${((d.y / 870) * 100).toFixed(3)}cqw;width:${((d.w / 870) * 100).toFixed(3)}cqw`}>
+          <Img site={ctx.site} src={d.image} alt="" sizes="60vw" maxWidth={1440} optional />
+        </div>
+      ))}
+      <div class="about__frame">
+        <div class="about__award-cell">
+          <Img site={ctx.site} src={section.awardImage} alt={text.awardAlt} class="about__award" sizes="(max-width: 900px) 30vw, 12vw" maxWidth={480} />
+        </div>
+        <div class="about__team-cell">
+          <Img site={ctx.site} src={section.teamImage} alt={text.teamAlt} class="about__team" sizes="(max-width: 900px) 60vw, 30vw" maxWidth={1440} />
+        </div>
+      </div>
+      <figcaption>
+        <strong>{text.awardTitle}</strong>
+        <span>{text.awardSubtitle}</span>
+      </figcaption>
+    </figure>
+  </div>
+</SectionShell>
+
+<style>
+  /* Medidas tomadas del diseño a 1920 px */
+  /* Sección completa: ocupa el alto de la pantalla y centra el contenido */
+  :global(section.shell.about) {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  :global(section.shell.about) > :global(.shell__inner) { width: min(100% - 2 * var(--layout-gutter), var(--layout-container)); }
+  .about__media { position: relative; isolation: isolate; container-type: inline-size; }
+  .about__decor { position: absolute; z-index: -1; pointer-events: none; }
+  .about__decor :global(img) { width: 100%; height: auto; }
+  .about__frame, figcaption { position: relative; }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 63.5fr) minmax(0, 87fr);
+    gap: clamp(2rem, calc(7.1 * var(--u)), 13.7rem);
+    align-items: start;
+  }
+  h2 { font-size: var(--size-display); line-height: 0.973; }
+  @media (min-width: 901px) { h2 { white-space: pre; } }
+  .about__copy p {
+    margin-top: clamp(1.2rem, calc(1.2 * var(--u)), 2.4rem);
+    color: var(--color-text-muted);
+    font-size: var(--size-lead);
+    line-height: 1.2;
+    white-space: pre-line;
+  }
+
+  .about__media { margin-top: clamp(6rem, calc(11.9 * var(--u)), 22.8rem); }
+  .about__frame {
+    display: grid;
+    grid-template-columns: 31fr 56fr;
+    border-radius: var(--radius-lg);
+    background: var(--color-frame);
+  }
+  .about__award-cell { position: relative; grid-area: 1 / 1; }
+  .about__team-cell { grid-area: 1 / 2; }
+  .about__award-cell :global(.about__award) {
+    position: absolute;
+    left: 15.5%;
+    bottom: 20.5%;
+    width: 71%;
+    height: auto;
+    object-fit: contain;
+  }
+  .about__award-cell :global(.img-missing.about__award) { aspect-ratio: 220 / 460; }
+  .about__frame :global(.about__team) {
+    width: 100%;
+    aspect-ratio: 560 / 260;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+  }
+  figcaption {
+    display: grid;
+    margin-top: clamp(1.4rem, calc(1.7 * var(--u)), 3.2rem);
+    padding-left: clamp(0rem, calc(1.75 * var(--u)), 3.4rem);
+    font-family: var(--font-heading);
+    text-transform: var(--heading-transform);
+    color: var(--color-text-soft);
+    font-size: var(--size-caption);
+    line-height: 1.2;
+  }
+  figcaption strong { font-weight: var(--heading-weight); text-wrap: balance; }
+  figcaption span { font-weight: 400; }
+
+  @media (max-width: 900px) {
+    .about__grid { grid-template-columns: 1fr; }
+    .about__media { margin-top: 18rem; }
+    figcaption { padding-left: 0; }
+  }
+</style>

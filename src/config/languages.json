@@ -1,0 +1,6 @@
+{
+  "default": "es",
+  "available": ["es", "en"],
+  "labels": { "es": "ES", "en": "EN" },
+  "switcherOrder": ["en", "es"]
+}

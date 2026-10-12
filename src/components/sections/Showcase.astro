@@ -1,0 +1,126 @@
+---
+/** Título + diapositivas a ancho completo (Hora loca, Recibe a tus invitados, Fiestas infantiles…). */
+import SectionShell from '../layout/SectionShell.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+import Carousel from '../ui/Carousel.astro';
+import Img from '../ui/Img.astro';
+import Button from '../ui/Button.astro';
+import type { ShowcaseSection } from '../../lib/types';
+import { fluid } from '../../lib/scale';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  section: ShowcaseSection;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  text: Record<string, any>;
+  ctx: LandingContext;
+}
+const { section, text, ctx } = Astro.props;
+const { ui } = ctx;
+const titleId = `${section.id}-title`;
+---
+
+<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} contained={false} labelledby={titleId} flushBottom>
+  <div class="container">
+    <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
+  </div>
+  <div class="showcase__slides" style={section.space?.inner !== undefined ? `margin-top: ${fluid(section.space.inner)}` : undefined}>
+    <Carousel label={text.title} variant="showcase" dots="overlay" arrows="edge" ui={ui.carousel}>
+      {
+        section.slides.map((slide, i) => {
+          const s = text.slides[slide.id];
+          return (
+            <article
+              class:list={['slide', slide.glow && 'slide--glow']}
+              style={[slide.accent && `--accent:${slide.accent}`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`].filter(Boolean).join(';') || undefined}
+            >
+              <Img site={ctx.site} src={slide.image} alt={s.alt ?? ''} class="slide__img" sizes="100vw" />
+              <div class="slide__shade" aria-hidden="true" />
+              <div class="slide__content">
+                {s.kicker && <p class="slide__kicker">{s.kicker}</p>}
+                {slide.titleImage ? (
+                  <h3 class="slide__title-img">
+                    <Img site={ctx.site} src={slide.titleImage} alt={s.title} sizes="40vw" maxWidth={1440} />
+                  </h3>
+                ) : (
+                  <h3 class="slide__title">{s.title}</h3>
+                )}
+                <Button href={ctx.whatsappFor(s.title)}>{s.cta ?? ui.want}</Button>
+              </div>
+            </article>
+          );
+        })
+      }
+    </Carousel>
+  </div>
+</SectionShell>
+
+<style>
+  .showcase__slides {
+    margin-top: clamp(2.4rem, calc(2.6 * var(--u)), 5rem);
+    --carousel-gap: 0px;
+    --carousel-dots-left: calc(var(--edge) + clamp(2rem, calc(11.9 * var(--u)), 22.8rem));
+  }
+  .showcase__slides :global(.carousel__track) { grid-auto-columns: 95.94%; }
+  .showcase__slides :global(.carousel__dots--overlay) { bottom: clamp(3rem, calc(3.3 * var(--u)), 6.3rem); gap: clamp(1.4rem, calc(1.35 * var(--u)), 2.6rem); }
+  .showcase__slides :global(.carousel__dot) { width: clamp(1.2rem, calc(0.94 * var(--u)), 1.8rem); }
+  .showcase__slides :global(.carousel__dots--overlay) { right: var(--carousel-dots-left); flex-wrap: wrap; }
+  @media (max-width: 700px) {
+    .showcase__slides :global(.carousel__dots--overlay) { gap: 1rem; bottom: 2.4rem; }
+    .showcase__slides :global(.carousel__dot) { width: 1rem; }
+  }
+  @media (max-width: 700px) {
+    .showcase__slides :global(.carousel__track) { grid-auto-columns: 100%; }
+  }
+
+  .slide {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(34rem, min(calc(38 * var(--u)), 72svh), 85.3rem);
+    padding: clamp(4rem, calc(4 * var(--u)), 8rem) var(--carousel-dots-left) clamp(7rem, calc(7.5 * var(--u)), 14rem);
+    overflow: hidden;
+    --accent: var(--color-showcase-accent);
+  }
+  .slide :global(.slide__img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% center;
+  }
+  .slide__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 88%, transparent) 30%, color-mix(in srgb, var(--accent) 35%, transparent) 50%, transparent 62%);
+  }
+  .slide--glow .slide__shade {
+    background:
+      radial-gradient(ellipse 30% 45% at var(--glow-at, 31% 22%), var(--glow) 0%, transparent 100%),
+      linear-gradient(90deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 88%, transparent) 30%, color-mix(in srgb, var(--accent) 35%, transparent) 50%, transparent 62%);
+  }
+  .slide__content { display: grid; justify-items: start; gap: clamp(2.4rem, calc(2.6 * var(--u)), 5rem); max-width: 80rem; }
+  .slide__kicker {
+    font-family: var(--font-heading);
+    font-weight: var(--heading-weight);
+    text-transform: var(--heading-transform);
+    font-size: var(--size-showcase-kicker);
+    line-height: 0.9;
+    margin-bottom: clamp(-2.4rem, -calc(1.25 * var(--u)), -1rem);
+  }
+  .slide__title { font-size: var(--size-showcase); line-height: 0.873; }
+  .slide__title-img { width: min(100%, calc(26.04 * var(--u))); }
+  .slide__title-img :global(img), .slide__title-img :global(.img-missing) { width: 100%; height: auto; }
+  .slide__title-img :global(.img-missing) { aspect-ratio: 497 / 315; }
+
+  @media (max-width: 700px) {
+    .slide { padding-bottom: 8rem; }
+    .slide__shade, .slide--glow .slide__shade {
+      background: linear-gradient(0deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 70%, transparent) 45%, transparent 80%);
+    }
+  }
+</style>

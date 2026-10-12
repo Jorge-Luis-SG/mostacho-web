@@ -1,0 +1,111 @@
+{
+  "color": {
+    "bg": "#000000",
+    "surface": "#121212",
+    "surface-3": "#343434",
+    "text": "#ffffff",
+    "text-muted": "#8e8e8e",
+    "text-soft": "#c1c1c1",
+    "primary": "#F5333F",
+    "primary-contrast": "#ffffff",
+    "whatsapp": "#00FF6C",
+    "whatsapp-contrast": "#101010",
+    "focus": "#ffd400",
+    "divider": "rgba(255, 255, 255, 0.35)",
+    "glass": "rgba(40, 36, 44, 0.72)",
+    "pill": "rgba(70, 30, 34, 0.55)",
+    "pill-border": "rgba(255, 255, 255, 0.28)",
+    "rail": "linear-gradient(180deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.12) 100%)",
+    "arrow": "rgba(255, 255, 255, 0.16)",
+    "arrow-hover": "rgba(255, 255, 255, 0.3)",
+    "dot": "rgba(255, 255, 255, 0.27)",
+    "dot-active": "#ffffff",
+    "frame": "linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 100%)",
+    "card": "#121212",
+    "input": "#4d4d4d",
+    "input-focus": "#575757",
+    "review-bg": "#ffffff",
+    "review-text": "#3c4043",
+    "review-muted": "#70757a",
+    "star": "#fbbc04",
+    "showcase-accent": "#1a1a1a",
+    "footer-bg": "#FF3441",
+    "footer-text": "#111111",
+    "flag-ring": "rgba(255, 255, 255, 0.28)",
+    "shot-bg": "#0a0a0a",
+    "footer-divider": "rgba(0, 0, 0, 0.75)"
+  },
+  "font": {
+    "heading": "'Neue Montreal', 'Segoe UI', system-ui, sans-serif",
+    "body": "'Neue Montreal', 'Segoe UI', system-ui, sans-serif",
+    "ui": "'Neue Montreal', 'Segoe UI', Roboto, Arial, sans-serif"
+  },
+  "heading": {
+    "weight": "700",
+    "transform": "uppercase",
+    "letter-spacing": "0.01em",
+    "line-height": "0.95",
+    "word-spacing": "0.16em"
+  },
+  "size": {
+    "body": "1.6rem",
+    "lead": "clamp(1.6rem, calc(1.3 * var(--u)), 2.5rem)",
+    "hero": "clamp(4.4rem, calc(6.93 * var(--u)), 13.3rem)",
+    "display": "calc(clamp(3.4rem, calc(5.1 * var(--u)), 9.8rem) - 0.4rem)",
+    "section-title": "clamp(2.2rem, calc(2.75 * var(--u)), 5.3rem)",
+    "showcase": "var(--size-display)",
+    "card-title": "clamp(2.6rem, calc(2.7 * var(--u)), 5.2rem)",
+    "card-text": "clamp(1.5rem, calc(1.07 * var(--u)), 2.05rem)",
+    "tagline": "clamp(1.7rem, calc(1.655 * var(--u)), 3.18rem)",
+    "nav": "clamp(1.15rem, calc(0.99 * var(--u)), 1.9rem)",
+    "button": "clamp(1.4rem, calc(1.04 * var(--u)), 2rem)",
+    "button-lg": "clamp(1.25rem, calc(1.04 * var(--u)), 2rem)",
+    "caption": "clamp(1.3rem, calc(1.2 * var(--u)), 2.3rem)",
+    "label": "clamp(1.5rem, calc(1.2 * var(--u)), 2.2rem)",
+    "contact-title": "clamp(2rem, calc(1.7 * var(--u)), 3.2rem)",
+    "small": "clamp(1.4rem, calc(1.04 * var(--u)), 2rem)",
+    "portal-title": "clamp(3.2rem, calc(4.885 * var(--u)), 9.4rem)",
+    "portal-subtitle": "clamp(1.8rem, calc(2.287 * var(--u)), 4.4rem)",
+    "section-title-lg": "clamp(2.4rem, calc(3.05 * var(--u)), 5.9rem)",
+    "showcase-kicker": "clamp(2.6rem, calc(4.2 * var(--u)), 8.1rem)",
+    "review": "clamp(1.7rem, calc(1.46 * var(--u)), 2.8rem)",
+    "review-meta": "clamp(1.5rem, calc(1.2 * var(--u)), 2.3rem)",
+    "lang": "clamp(1.6rem, calc(1.18 * var(--u)), 2.26rem)"
+  },
+  "space": {
+    "section": "clamp(4rem, calc(4.2 * var(--u)), 8rem)",
+    "md": "clamp(3rem, calc(4 * var(--u)), 7rem)",
+    "lg": "clamp(2rem, calc(4 * var(--u)), 7.5rem)"
+  },
+  "layout": {
+    "container": "calc(85.42 * var(--u))",
+    "cards": "calc(71.15 * var(--u))",
+    "gutter": "clamp(1.6rem, calc(4 * var(--u)), 4rem)",
+    "testimonials": "calc(78.02 * var(--u))",
+    "contact": "calc(70.68 * var(--u))"
+  },
+  "radius": {
+    "md": "2.4rem",
+    "lg": "clamp(2.4rem, calc(2.8 * var(--u)), 5.4rem)",
+    "pill": "999px"
+  },
+  "shadow": {
+    "button": "0 10px 30px -12px rgba(245, 51, 63, 0.7)"
+  },
+  "gradient": {
+    "hero-overlay": "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(10,0,40,0.25) 45%, rgba(0,0,0,0.75) 85%, #000 100%)",
+    "about": "radial-gradient(ellipse 55% 75% at 80% 20%, #9b0a1a 0%, #4a0008 38%, #000 72%)",
+    "services": "radial-gradient(ellipse 60% 60% at 50% 100%, #b00000 0%, #4a0000 45%, #000 85%)",
+    "red-glow": "radial-gradient(ellipse 60% 70% at 50% 0%, #b00000 0%, #4a0000 45%, #000 85%)",
+    "dark-red": "linear-gradient(90deg, #000 0%, #0d0000 50%, #240000 100%)",
+    "effects": "radial-gradient(ellipse 80% 45% at 50% 5%, #a30000 0%, #3d0000 50%, #000 85%)",
+    "extras": "radial-gradient(ellipse 45% 70% at 0% 100%, #8a0000 0%, #3a0000 45%, #000 90%)",
+    "kids": "radial-gradient(ellipse 45% 45% at 0% 0%, #8a0000 0%, #3a0000 45%, #000 90%)",
+    "black": "#000000",
+    "testimonials": "#191919",
+    "contact": "#343434",
+    "card": "linear-gradient(180deg, rgba(40,40,44,0.45) 0%, rgba(24,24,26,0.8) 55%, #121212 100%)",
+    "portal": "linear-gradient(100deg, #ff3441 0%, #c4121e 55%, #2a0004 100%)",
+    "portal-overlay": "linear-gradient(90deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.35) 100%)"
+  }
+}

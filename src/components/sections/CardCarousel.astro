@@ -1,0 +1,126 @@
+---
+/** Título + carrusel de tarjetas (Servicios, Efectos especiales, Servicios adicionales…). */
+import SectionShell from '../layout/SectionShell.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+import Carousel from '../ui/Carousel.astro';
+import Img from '../ui/Img.astro';
+import BgVideo from '../ui/BgVideo.astro';
+import Button from '../ui/Button.astro';
+import type { CardsSection } from '../../lib/types';
+import { fluid } from '../../lib/scale';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  section: CardsSection;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  text: Record<string, any>;
+  ctx: LandingContext;
+}
+const { section, text, ctx } = Astro.props;
+const { ui } = ctx;
+const titleId = `${section.id}-title`;
+---
+
+<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} labelledby={titleId}>
+  <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
+  <div class="cards">
+    <Carousel label={text.title} variant="cards" dots="top" ui={ui.carousel}>
+      {
+        section.items.map((item) => {
+          const card = text.items[item.id];
+          return (
+            <article class:list={['card', section.showText && 'card--text']}>
+              <Img site={ctx.site} src={item.image} alt={card.alt ?? ''} class="card__img" sizes="(max-width: 700px) 85vw, 420px" maxWidth={960} />
+              <BgVideo site={ctx.site} src={item.video} class="card__img" />
+              <div class="card__spacer" />
+              <div class="card__body">
+                {/* Copia desenfocada (pregenerada por npm run assets): mismo efecto que backdrop-filter, sin coste al hacer scroll */}
+                <Img site={ctx.site} src={`blur/${item.image}`} alt="" class="card__blur" sizes="160px" maxWidth={160} optional />
+                <h3 style={item.titleSize ? `font-size: ${fluid(item.titleSize, 0.55)}` : undefined}>{card.title}</h3>
+                {section.showText && card.text && <p>{card.text}</p>}
+                <Button href={item.href ?? ctx.whatsappFor(card.title)}>{card.cta ?? ui.contact}</Button>
+              </div>
+            </article>
+          );
+        })
+      }
+    </Carousel>
+  </div>
+</SectionShell>
+
+<style>
+  .cards {
+    margin-top: clamp(1.6rem, calc(1.8 * var(--u)), 3.4rem);
+    width: min(100%, var(--layout-cards));
+    margin-inline: auto;
+    --carousel-gap: clamp(1.2rem, calc(2.82 * var(--u)), 5.4rem);
+    --carousel-arrow-offset: clamp(6rem, calc(5.83 * var(--u)), 11.2rem);
+  }
+  .cards :global(.carousel__dots--top) { margin-bottom: clamp(2rem, calc(2.4 * var(--u)), 4.6rem); }
+  .cards :global(.carousel__track) {
+    grid-auto-columns: calc((100% - 2 * var(--carousel-gap)) / 3);
+  }
+  @media (max-width: 1000px) {
+    .cards :global(.carousel__track) { grid-auto-columns: calc((100% - var(--carousel-gap)) / 2); }
+  }
+  @media (max-width: 640px) {
+    .cards :global(.carousel__track) { grid-auto-columns: 85%; }
+  }
+
+  /* Tarjeta de alto fijo (419×679 en el diseño): la foto ocupa todo el fondo
+     y la parte del texto la muestra desenfocada. */
+  .card {
+    --body: 0.442; /* fracción del alto de la tarjeta que ocupa el bloque de texto */
+    container-type: inline-size;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 419 / 679;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-card);
+  }
+  .card :global(.card__img) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  .card__spacer { flex: 1 1 0; }
+  /* Alto fijo del bloque de texto (diseño: 300 px sin descripción, 365 px con descripción) */
+  /* La foto desenfocada ocupa el alto de toda la tarjeta y se alinea abajo con ella,
+     así coincide con la foto nítida aunque el bloque de texto crezca. */
+  .card :global(.card__blur) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: -2;
+    width: 100cqw;
+    height: calc(100cqw * 679 / 419);
+    max-width: none;
+    object-fit: cover;
+    object-position: center top;
+  }
+  .card__body {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    /* alto mínimo según el diseño (300 / 365 px de 679); crece si el texto es más largo */
+    flex: 0 0 auto;
+    min-height: calc(100cqw * 679 / 419 * var(--body));
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: clamp(2rem, calc(2.45 * var(--u)), 4.7rem) clamp(1.6rem, calc(1.56 * var(--u)), 3rem) clamp(2rem, calc(2.1 * var(--u)), 4rem) clamp(2rem, calc(2.1 * var(--u)), 4rem);
+  }
+  .card__body::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--gradient-card); }
+  h3 { font-size: var(--size-card-title); line-height: 0.94; }
+  p { margin-top: clamp(1rem, calc(1.1 * var(--u)), 2.2rem); font-size: var(--size-card-text); line-height: 1.3; text-wrap: pretty; }
+  .card--text { --body: 0.538; }
+  .card__body :global(.btn) { margin-top: auto; }
+  .card__body > :nth-last-child(2) { margin-bottom: clamp(1.6rem, calc(2 * var(--u)), 3.8rem); }
+</style>

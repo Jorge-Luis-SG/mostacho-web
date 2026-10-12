@@ -1,0 +1,35 @@
+---
+interface Props {
+  text: string;
+  variant?: 'plain' | 'pill';
+  as?: 'h1' | 'h2' | 'h3';
+  id?: string;
+  size?: 'md' | 'lg';
+}
+const { text, variant = 'pill', as: Tag = 'h2', id, size = 'md' } = Astro.props;
+---
+
+<div class:list={['section-title', `section-title--${variant}`, `section-title--${size}`]}>
+  <Tag id={id}>{text}</Tag>
+</div>
+
+<style>
+  .section-title {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+  h1, h2, h3 { font-size: var(--size-section-title); line-height: 1.12; }
+  .section-title--lg > * { font-size: var(--size-section-title-lg); }
+  .section-title--pill.section-title--lg > * { padding: 0.2em 0.75em; }
+
+  .section-title--pill > * {
+    padding: 0.29em 1.05em 0.29em;
+    border-radius: var(--radius-pill);
+    background: var(--color-pill);
+    border: 1px solid var(--color-pill-border);
+  }
+  @media (max-width: 640px) {
+    .section-title--pill > * { border-radius: 2.4rem; }
+  }
+</style>

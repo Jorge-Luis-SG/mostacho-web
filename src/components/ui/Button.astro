@@ -1,0 +1,60 @@
+---
+import Icon from './Icon.astro';
+import { isExternal } from '../../lib/links';
+
+interface Props {
+  href: string;
+  variant?: 'primary' | 'whatsapp';
+  size?: 'md' | 'lg';
+  icon?: 'whatsapp';
+  class?: string;
+}
+
+const { href, variant = 'primary', size = 'md', icon, class: className } = Astro.props;
+const external = isExternal(href);
+---
+
+<a
+  href={href}
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener' : undefined}
+>
+  {Astro.slots.has('icon') ? <span class="btn__icon"><slot name="icon" /></span> : icon && <Icon name={icon} size={size === 'lg' ? 50 : 24} class="btn__icon" />}
+  <span><slot /></span>
+</a>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    min-height: clamp(4.6rem, calc(3.8 * var(--u)), 7.3rem);
+    padding: 0.6em 2.8em;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-heading);
+    font-weight: var(--heading-weight);
+    font-size: var(--size-button);
+    text-transform: var(--heading-transform);
+    line-height: 1;
+    white-space: nowrap;
+    transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  .btn--primary {
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+    box-shadow: var(--shadow-button);
+  }
+  .btn--whatsapp {
+    background: var(--color-whatsapp);
+    color: var(--color-whatsapp-contrast);
+  }
+  .btn--lg { min-height: clamp(4.8rem, calc(4.7 * var(--u)), 9rem); padding: 0.4em 1.75em 0.4em 0.9em; font-size: var(--size-button-lg); }
+  .btn__icon { flex: none; }
+  .btn--lg .btn__icon { width: 2.5em; height: 2.5em; display: grid; place-items: center; }
+  .btn__icon :global(img) { width: 100%; height: 100%; object-fit: contain; }
+</style>

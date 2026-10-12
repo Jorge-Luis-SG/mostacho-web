@@ -1,0 +1,48 @@
+---
+import '../styles/fonts.css';
+import '../styles/global.css';
+import { themeToCss } from '../lib/theme';
+import type { Theme } from '../lib/types';
+
+interface Props {
+  lang: string;
+  title: string;
+  description: string;
+  theme: Theme;
+  alternates: { lang: string; href: string }[];
+}
+
+const { lang, title, description, theme, alternates } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={new URL(a.href, Astro.site)} />)}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content={(theme.color as Record<string, string> | undefined)?.bg ?? '#000000'} />
+    {
+      theme.fontsUrl && (
+        <>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+          <link rel="stylesheet" href={theme.fontsUrl} />
+        </>
+      )
+    }
+    <link rel="preload" href="/fonts/NeueMontreal-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <style is:inline set:html={themeToCss(theme)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

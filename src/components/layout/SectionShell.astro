@@ -1,0 +1,65 @@
+---
+/**
+ * Envoltorio común de las secciones: id para el menú, fondo del tema y decoraciones.
+ */
+import Img from '../ui/Img.astro';
+import type { Decor } from '../../lib/types';
+import { fluid } from '../../lib/scale';
+
+interface Props {
+  id: string;
+  site: string;
+  background?: string;
+  decor?: Decor[];
+  contained?: boolean;
+  class?: string;
+  labelledby?: string;
+  /** Sin espacio inferior (p. ej. cuando la sección termina en una imagen a sangre). */
+  flushBottom?: boolean;
+  /** Espacio arriba/abajo en px del diseño a 1920 (viene de site.json → space). */
+  space?: { top?: number; bottom?: number };
+}
+
+const { id, site, background, decor = [], contained = true, class: className, labelledby, flushBottom = false, space } = Astro.props;
+const style =
+  [
+    background && `background: var(--gradient-${background})`,
+    space?.top !== undefined && `padding-top: ${fluid(space.top)}`,
+    space?.bottom !== undefined && `padding-bottom: ${fluid(space.bottom)}`,
+  ]
+    .filter(Boolean)
+    .join(';') || undefined;
+---
+
+<section id={id} class:list={['shell', flushBottom && 'shell--flush-bottom', decor.length > 0 && 'shell--decor', className]} style={style} aria-labelledby={labelledby}>
+  {
+    decor.length > 0 && (
+      <div class="decor-canvas" aria-hidden="true">
+        {decor.map((d) => (
+          <div class="decor" style={`left:calc(${(d.x / 19.2).toFixed(3)} * var(--u));top:calc(${(d.y / 19.2).toFixed(3)} * var(--u));width:calc(${(d.w / 19.2).toFixed(3)} * var(--u))`}>
+            <Img site={site} src={d.image} alt="" optional sizes="60vw" maxWidth={1440} />
+          </div>
+        ))}
+      </div>
+    )
+  }
+  {contained ? <div class="container shell__inner"><slot /></div> : <div class="shell__inner"><slot /></div>}
+</section>
+
+<style>
+  .shell {
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--space-section);
+    /* Sin recorte: los decorados pueden asomar a la sección siguiente (el recorte horizontal lo hace <main>) */
+    scroll-margin-top: 1rem;
+  }
+  .shell--flush-bottom { padding-bottom: 0; }
+  /* Los decorados pueden asomar sobre la sección siguiente, como en el diseño */
+  .shell--decor { z-index: 1; }
+  .shell__inner { position: relative; z-index: 1; }
+
+  .decor-canvas { position: absolute; top: 0; bottom: 0; left: var(--edge); width: calc(100 * var(--u)); z-index: 0; pointer-events: none; }
+  .decor { position: absolute; }
+  .decor :global(img) { width: 100%; height: auto; }
+</style>

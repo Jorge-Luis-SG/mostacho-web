@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "title": "Mostacho Producciones | Legendary experiences",
+    "description": "Hora loca party shows and special effects for your celebration. Choose your country: Ecuador or Spain."
+  },
+  "ui": {
+    "logoAlt": "Mostacho Producciones",
+    "language": "Language",
+    "social": {
+      "youtube": "YouTube",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp",
+      "tiktok": "TikTok"
+    }
+  },
+  "title": "Ready for a\nlegendary experience?",
+  "subtitle": "Where is your celebration?",
+  "countries": {
+    "ecuador": "Ecuador",
+    "espana": "Spain"
+  }
+}

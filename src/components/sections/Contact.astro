@@ -1,0 +1,139 @@
+---
+/**
+ * Formulario de contacto. Sin servidor: al enviar, abre WhatsApp con los datos ya escritos.
+ * Si más adelante quieres enviarlo por email (Formspree, Netlify Forms…), solo cambia el script.
+ */
+import SectionShell from '../layout/SectionShell.astro';
+import SocialLinks from '../ui/SocialLinks.astro';
+import type { ContactSection } from '../../lib/types';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  section: ContactSection;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  text: Record<string, any>;
+  ctx: LandingContext;
+}
+const { section, text, ctx } = Astro.props;
+const { config, ui } = ctx;
+const titleId = `${section.id}-title`;
+const socialUrls = { ...config.social, whatsapp: ctx.whatsapp };
+---
+
+<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} labelledby={titleId} class="contact-shell">
+  <div class="contact__grid">
+    <form
+      id={`${section.id}-form`}
+      class="contact__form"
+      data-contact-form
+      data-phone={config.contact.whatsapp.replace(/\D/g, '')}
+      data-intro={text.intro}
+      aria-labelledby={titleId}
+    >
+      {
+        section.fields.map((field) => {
+          const f = text.fields[field.id];
+          const id = `${section.id}-${field.id}`;
+          return (
+            <div class:list={['field', field.type === 'textarea' && 'field--wide']}>
+              <label for={id}>{f.label}</label>
+              {field.type === 'textarea' ? (
+                <textarea id={id} name={field.id} rows="4" required={field.required} placeholder={f.placeholder} data-label={f.label} />
+              ) : (
+                <input
+                  id={id}
+                  name={field.id}
+                  type={field.type}
+                  required={field.required}
+                  autocomplete={field.autocomplete}
+                  placeholder={f.placeholder}
+                  data-label={f.label}
+                />
+              )}
+            </div>
+          );
+        })
+      }
+      <!-- Sin botón visible (como en el diseño): Enter envía, y el icono de WhatsApp de la derecha también -->
+      <button type="submit" class="sr-only" tabindex="-1">{text.submit}</button>
+    </form>
+
+    <div class="contact__aside">
+      <h2 id={titleId}>{text.title}</h2>
+      <SocialLinks networks={section.social} urls={socialUrls} labels={ui.social} variant="circle" />
+    </div>
+  </div>
+</SectionShell>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const lines = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-label]'))
+        .filter((el) => el.value.trim())
+        .map((el) => `• ${el.dataset.label}: ${el.value.trim()}`);
+      const message = [form.dataset.intro, ...lines].join('\n');
+      window.open(`https://wa.me/${form.dataset.phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+    });
+
+    // El icono de WhatsApp de la sección envía el formulario si se ha rellenado algo
+    const wa = form.closest('section')?.querySelector<HTMLAnchorElement>('.social__link--whatsapp');
+    wa?.addEventListener('click', (event) => {
+      const filled = Array.from(form.querySelectorAll<HTMLInputElement>('[data-label]')).some((el) => el.value.trim());
+      if (!filled) return;
+      event.preventDefault();
+      form.requestSubmit();
+    });
+  });
+</script>
+
+<style>
+
+  .contact__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 73.4fr) minmax(0, 62.3fr);
+    width: min(100%, var(--layout-contact));
+    margin-inline: auto;
+  }
+  .contact__form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, calc(16.15 * var(--u))));
+    gap: clamp(1.8rem, calc(2.4 * var(--u)), 4.6rem) clamp(2rem, calc(4 * var(--u)), 7.7rem);
+    align-content: start;
+  }
+  .field { display: grid; gap: clamp(0.6rem, calc(0.6 * var(--u)), 1.2rem); }
+  .field--wide { grid-column: 1 / -1; }
+  label { font-family: var(--font-ui); font-size: clamp(1.5rem, calc(1.3 * var(--u)), 2.5rem); font-weight: 300; line-height: 1.1; }
+  input, textarea {
+    width: 100%;
+    padding: 0.6rem 1.8rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    background: var(--color-input);
+    color: var(--color-text);
+    font-size: clamp(1.4rem, calc(0.9 * var(--u)), 1.7rem);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  input { height: clamp(3.6rem, calc(2.2 * var(--u)), 4.4rem); }
+  textarea { border-radius: var(--radius-md); resize: vertical; }
+  input:focus, textarea:focus { outline: none; border-color: var(--color-primary); background: var(--color-input-focus); }
+  input::placeholder, textarea::placeholder { color: var(--color-text-muted); }
+  input[type='date'] { color-scheme: dark; }
+
+
+  .contact__aside { display: grid; align-content: start; justify-items: start; gap: clamp(1.6rem, calc(1.8 * var(--u)), 3.4rem); padding-left: clamp(2rem, calc(16.6 * var(--u)), 31.8rem); }
+  h2 { font-family: var(--font-ui); font-weight: 400; text-transform: none; letter-spacing: 0; font-size: var(--size-contact-title); line-height: 1.1; white-space: nowrap; }
+
+  @media (max-width: 1100px) {
+    .contact__aside { padding-left: 4rem; }
+  }
+  @media (max-width: 900px) {
+    .contact__grid { grid-template-columns: 1fr; gap: 4rem; }
+    .contact__aside { order: -1; padding-left: 0; }
+    .contact__form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .contact__form { grid-template-columns: 1fr; gap: 2.4rem; }
+  }
+</style>

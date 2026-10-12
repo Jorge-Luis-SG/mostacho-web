@@ -1,0 +1,36 @@
+# Dependencias y archivos generados
+node_modules/
+dist/
+.astro/
+.vite/
+
+# Variables de entorno y credenciales
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Material de diseño y originales (pesados y privados): solo se suben las versiones optimizadas de src/
+capturas/
+
+# Prompts y notas internas
+PROMPT-*.md
+prompts/
+
+# Tests y reportes
+tests/
+test/
+coverage/
+playwright-report/
+test-results/
+
+# Herramientas locales, editores y sistema
+.claude/
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+desktop.ini
