@@ -217,7 +217,9 @@ html.anim [data-pin='ring'] .slide__content { will-change: transform, opacity; }
 
 /* Recibe: puertas dobles; las sombras son capas propias (cambiar su opacidad no obliga a repintar) */
 html.anim [data-pin='doors'] .carousel__track { perspective: 1800px; }
-html.anim [data-pin='doors'] .slide { overflow: visible; isolation: auto; transform-style: preserve-3d; will-change: transform, opacity; }
+html.anim [data-pin='doors'] .slide { overflow: visible; isolation: auto; transform-style: preserve-3d; will-change: transform, opacity; background: transparent; }
+/* El fondo opaco va en cada hoja (si fuera en la diapositiva, taparía la siguiente al abrirse las puertas) */
+html.anim .leaf { background: var(--accent); }
 html.anim .leaf {
   position: absolute;
   inset: 0;

@@ -25,6 +25,19 @@ export type ResolvedImage =
   | { kind: 'raster'; meta: ImageMetadata }
   | { kind: 'svg'; url: string };
 
+/**
+ * Foto demasiado pequeña para la caja donde se muestra (a 1920 px de pantalla): devuelve el tamaño máximo al que
+ * se puede enseñar sin pixelarse (maxUp veces su tamaño real). Si da la talla, devuelve undefined.
+ * Se usa para mostrarla entera sobre un fondo desenfocado de sí misma en vez de ampliarla hasta pixelarla.
+ */
+export function lowRes(site: string, file: string | undefined, box: [number, number], limit = 1.5, maxUp = 1.8) {
+  const img = resolveImage(site, file);
+  if (img?.kind !== 'raster') return undefined;
+  const { width, height } = img.meta;
+  const k = Math.max(box[0] / width, box[1] / height);
+  return k > limit ? { width: Math.round(width * maxUp), height: Math.round(height * maxUp) } : undefined;
+}
+
 export function resolveImage(site: string, file?: string): ResolvedImage | undefined {
   if (!file) return undefined;
   const key = `/src/sites/${site}/img/${file}`;

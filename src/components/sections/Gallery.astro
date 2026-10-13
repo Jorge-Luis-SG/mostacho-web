@@ -4,6 +4,7 @@ import SectionTitle from '../ui/SectionTitle.astro';
 import Carousel from '../ui/Carousel.astro';
 import Img from '../ui/Img.astro';
 import type { GallerySection } from '../../lib/types';
+import { lowRes } from '../../lib/images';
 import type { LandingContext } from '../../lib/context';
 
 interface Props {
@@ -23,11 +24,16 @@ const titleId = `${section.id}-title`;
   <div class="gallery">
     <Carousel label={text.title} variant="gallery" arrows="sides" ui={ctx.ui.carousel}>
       {
-        section.items.map((item) => (
-          <figure class="gallery__item">
-            <Img site={ctx.site} src={item.image} alt={text.items[item.id]?.alt ?? ''} sizes="(max-width: 700px) 88vw, 60vw" maxWidth={1920} />
-          </figure>
-        ))
+        section.items.map((item) => {
+          // Foto de la galería a 1920 de pantalla: hasta 1376 × 699 px (la animación la muestra grande)
+          const small = lowRes(ctx.site, item.image, [1376, 699]);
+          return (
+            <figure class:list={['gallery__item', small && 'gallery__item--lowres']}>
+              {small && <Img site={ctx.site} src={item.image} alt="" class="gallery__backdrop" sizes="480px" maxWidth={480} />}
+              <Img site={ctx.site} src={item.image} alt={text.items[item.id]?.alt ?? ''} sizes="(max-width: 700px) 88vw, 60vw" maxWidth={1920} />
+            </figure>
+          );
+        })
       }
     </Carousel>
   </div>
@@ -50,6 +56,20 @@ const titleId = `${section.id}-title`;
   .gallery:focus-within :global(.carousel__arrow:not(:disabled)) { opacity: 1; }
   .gallery :global(.carousel__arrow--prev) { left: 1.5rem; }
   .gallery :global(.carousel__arrow--next) { right: 1.5rem; }
+  /* Foto vertical o pequeña: entera, sobre un fondo desenfocado de sí misma (sin ampliarla hasta pixelarla) */
+  .gallery__item--lowres { position: relative; isolation: isolate; overflow: hidden; border-radius: var(--radius-lg); aspect-ratio: 1146 / 582; }
+  .gallery__item--lowres :global(.gallery__backdrop) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(24px) brightness(0.55) saturate(1.2);
+    transform: scale(1.15);
+    border-radius: 0;
+  }
+  .gallery__item--lowres :global(img:not(.gallery__backdrop)) { position: absolute; inset: 0; object-fit: contain; border-radius: 0; }
   .gallery__item :global(img), .gallery__item :global(.img-missing) {
     width: 100%;
     height: auto;
