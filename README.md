@@ -24,6 +24,7 @@ npm run assets       # importa fotos, videos y fuentes desde capturas/assets/ (v
 npm run validate     # revisa textos, idiomas, temas e imágenes que faltan
 npm run build        # valida y genera el sitio final en dist/
 npm run preview      # sirve dist/ para comprobar el build
+npm run build:pages  # build para GitHub Pages (subcarpeta /mostacho-web/) en dist-pages/
 ```
 
 > **OneDrive:** el servidor de desarrollo vigila los archivos en modo *polling* (`astro.config.mjs`); si alguna vez no ves
@@ -141,6 +142,21 @@ El menú superior se define en `nav` (lista de ids de sección).
 ### Añadir un idioma
 1. Añádelo a `src/config/languages.json` (`available` y `labels`).
 2. Crea `i18n/<idioma>.json` en cada sitio, copiando uno existente y traduciéndolo.
+
+### Animaciones con el scroll
+Cada sección elige su animación en `site.json` → `"anim"` (lista y explicación en `src/lib/anim.ts`):
+`mask` (inicio), `guide` (bigote de Nosotros), `slide`, `ring`, `doors`, `deal`, `spotlight`, `pop`, `tunnel` y `sides`.
+Sin `"anim"`, la sección se ve normal. Las cartas de Efectos lanzan un efecto a pantalla completa según `items[].fx`
+(`smoke`, `fog`, `fireworks`, `confetti`, `fog-sparks`).
+
+Solo se activan en ordenadores (≥ 900 px, con ratón o trackpad) y si el usuario no pidió reducir el movimiento:
+en móviles y tablets la página se ve exactamente como el diseño. El código está en `src/scripts/animations.ts`
+y los estilos en `src/styles/animations.css`.
+
+### Publicar en GitHub Pages
+`npm run build:pages` genera `dist-pages/` con todas las rutas bajo `/mostacho-web/`. Su contenido se sube a la rama
+`gh-pages` y en GitHub → Settings → Pages se elige *Deploy from a branch* → `gh-pages` / `(root)`.
+Para un dominio propio: `SITE_URL=https://midominio.com BASE_PATH=/ npm run build:pages`.
 
 ### Formulario de contacto
 Al enviar, abre WhatsApp con los datos ya escritos (no necesita servidor). El número está en

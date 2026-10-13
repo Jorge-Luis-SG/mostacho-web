@@ -16,7 +16,7 @@ const { section, text, ctx } = Astro.props;
 const titleId = `${section.id}-title`;
 ---
 
-<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} contained={false} labelledby={titleId}>
+<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} contained={false} labelledby={titleId} anim={section.anim} count={section.items.length}>
   <div class="container">
     <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
   </div>

@@ -1,0 +1,256 @@
+/*
+ * Animaciones con el scroll (src/scripts/animations.ts; cada sección elige la suya en site.json → "anim").
+ * Todo cuelga de html.anim, que solo se pone en escritorio y sin "reducir movimiento":
+ * sin esa clase (móvil, sin JS…) nada de esto aplica y la página se ve igual que siempre.
+ */
+
+/* ---------- Tramos fijos: la sección se queda pegada mientras se recorre su tramo ---------- */
+.pin { display: contents; }
+/* Sin "anclaje" del scroll: con secciones fijas el navegador podría corregir la posición por su cuenta y saltar */
+html.anim { overflow-anchor: none; }
+html.anim .pin { display: block; position: relative; height: var(--pin); }
+html.anim .pin > section {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  min-height: 0;
+  overflow: clip;
+}
+/* En las secciones con bigotes decorativos, estos pueden asomar por arriba y por abajo (como en el diseño) */
+html.anim :is([data-pin='guide'], [data-pin='slide'], [data-pin='deal'], [data-pin='spotlight']) > section { overflow-x: clip; overflow-y: visible; }
+/* Elementos lejos del que se ve: ocultos hasta que se acercan */
+/* (se ocultan sin sacarlas del layout: así sus fotos, ya precargadas, siguen listas y no parpadean al volver) */
+html.anim .pin .far { visibility: hidden !important; }
+/* Las secciones lejanas sueltan sus capas de la tarjeta gráfica (menos memoria); se preparan al acercarse */
+html.anim .pin:not(.near) * { will-change: auto !important; }
+
+/* Carruseles que mueve el scroll: sin barra ni imán propio */
+html.anim .pin .carousel__track { overflow: visible; scroll-snap-type: none; }
+/* Sin esto, el imán de cada tarjeta pasaría a la página y el scroll saltaría de tarjeta en tarjeta */
+html.anim :is(.pin .carousel__track, .carousel__track.is-entering) > * { scroll-snap-align: none; }
+
+/* ---------- Inicio: la fiesta se ve a través del bigote ---------- */
+html.anim .pin .hero { background: var(--color-bg); }
+/* La ventana en forma de bigote se pinta una vez; al crecer solo se escala la capa (y la foto y el video al revés) */
+html.anim .pin .hero__media { will-change: transform; }
+html.anim .pin .hero__media :is(.hero__bg, .hero__overlay) { will-change: transform; }
+/* La cabecera se queda fija mientras dura el inicio (el script la suelta al terminar) */
+html.anim .header.is-fixed { position: fixed; }
+html.anim .hero__stache {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: min(62%, max(640px, 33.3vw));
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter: drop-shadow(0 30px 40px rgb(245 51 63 / 0.25));
+  will-change: opacity, transform;
+}
+html.anim .hero :is(.hero__content, .hero__social, .hero__lang, .hero__scroll) { will-change: opacity; }
+/* Borde de luz del bigote al empezar: el script lo pinta una sola vez en un lienzo; aquí solo late */
+.hero__led { display: none; }
+html.anim .hero__led {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+html.anim .hero__led canvas { display: block; animation: anim-led 1.8s ease-in-out infinite; will-change: opacity; }
+html.anim .pin:not(.live) .hero__led canvas { animation-play-state: paused; }
+@keyframes anim-led { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+/* ---------- Bigote guía: viaja de «Nosotros» a Servicios ---------- */
+html.anim .about__decor { will-change: transform; transform-origin: 50% 50%; }
+/* En su camino a la esquina pasa por detrás del marco y también del texto */
+html.anim [data-pin='guide'] .about__copy { position: relative; z-index: 1; }
+.anim-guide, .anim-traveler { left: 0; top: 0; pointer-events: none; visibility: hidden; will-change: transform; }
+.anim-guide { position: fixed; z-index: 15; }
+.anim-traveler { position: absolute; z-index: 0; }
+.anim-guide.on, .anim-traveler.on { visibility: visible; }
+.anim-guide img, .anim-traveler img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; }
+
+/* ---------- Tarjetas que avanzan (slide) y que se reparten (deal) ---------- */
+html.anim [data-pin='slide'] .carousel__track {
+  grid-auto-columns: min(calc((100% - 2 * var(--carousel-gap)) / 3), calc((100svh - 26rem) * 419 / 679));
+}
+html.anim [data-pin='slide'] .carousel__track { overflow: clip; margin-inline: auto; }
+html.anim [data-pin='slide'] .carousel__track > * { will-change: transform; }
+
+/* Efectos: el bloque se centra en la pantalla y las tarjetas caben enteras */
+html.anim [data-pin='deal'] > section { display: flex; flex-direction: column; justify-content: center; padding-top: 0 !important; padding-bottom: 0 !important; }
+html.anim [data-pin='deal'] .carousel__track {
+  grid-auto-columns: min(calc((100% - 2 * var(--carousel-gap)) / 3), calc((100svh - 24rem) * 419 / 679));
+}
+
+html.anim [data-pin='deal'] .carousel__track { perspective: 1600px; }
+html.anim .flip { position: relative; aspect-ratio: 419 / 679; transform-style: preserve-3d; will-change: transform; }
+html.anim .flip > * { opacity: var(--o, 1); transition: opacity var(--fade, 0s) ease var(--fade-delay, 0ms); }
+/* Al repartirse, la carta sube un poco en el aire antes de caer en su sitio */
+html.anim .flip.is-lift { animation: anim-lift 0.7s ease-in-out both; }
+@keyframes anim-lift { 0%, 100% { translate: 0 0; } 45% { translate: 0 -5vh; } }
+html.anim .flip > .card { position: absolute; inset: 0; aspect-ratio: auto; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+html.anim .anim-back {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  background: radial-gradient(circle at 50% 40%, #f5333f 0%, #5d0000 62%, #1a0000 100%);
+}
+html.anim .anim-back img { width: 72%; height: auto; }
+
+/* ---------- Una fila que se recorre entera; la del centro se ilumina (spotlight) ---------- */
+html.anim [data-pin='spotlight'] .carousel__viewport { perspective: 1400px; }
+/* Puntos con aire: algo más arriba y bastante más abajo (la tarjeta del centro crece y sube) */
+html.anim [data-pin='spotlight'] .carousel__dots--top {
+  margin-top: 2rem;
+  margin-bottom: calc(clamp(4.4rem, calc(4.6 * var(--u)), 8.8rem) - 0.6rem);
+  gap: calc(2.4rem + 1rem);
+  align-items: center;
+}
+/* El punto de la tarjeta que se ve, más grande */
+html.anim [data-pin='spotlight'] .carousel__dot[aria-current='true'] { transform: scale(1.45); }
+html.anim [data-pin='spotlight'] .carousel__track {
+  --xw: min(calc(21.8 * var(--u)), calc((100svh - 32rem) * 419 / 679));
+  display: flex;
+  width: max-content;
+  padding-inline: calc(50% - var(--xw) / 2);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+/* La fila ocupa todo el ancho: las flechas van a los bordes de la pantalla para no tapar las tarjetas */
+html.anim [data-pin='spotlight'] .carousel__arrow--prev { left: calc(50% - 50vw + var(--layout-gutter, 2rem)); }
+html.anim [data-pin='spotlight'] .carousel__arrow--next { right: calc(50% - 50vw + var(--layout-gutter, 2rem)); }
+html.anim .xcard { position: relative; flex: none; width: var(--xw); aspect-ratio: 419 / 679; will-change: transform, opacity; }
+html.anim .xglow {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 58px rgb(245 51 63 / 0.9), 0 0 16px rgb(245 51 63 / 0.7);
+  opacity: 0.35;
+  will-change: opacity;
+}
+html.anim .xring {
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--color-primary);
+}
+html.anim .xring::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  z-index: -1;
+  background: conic-gradient(from 0deg, transparent 0 55%, #ff6b74 68%, #ffe1e3 75%, #ff6b74 82%, transparent 95%);
+  animation: anim-beam 3.4s linear infinite;
+}
+html.anim :is(.pin:not(.live), .xcard.is-off) .xring::before { animation-play-state: paused; }
+html.anim .xcard.is-off .xring::before { opacity: 0; }
+html.anim .xcard.is-far .xglow { visibility: hidden; }
+html.anim .xring::before { transition: opacity 0.3s ease; }
+/* Las tarjetas que no están en el centro quedan en penumbra */
+html.anim .xshade { position: absolute; inset: 0; border-radius: var(--radius-lg); background: #000; opacity: 0; pointer-events: none; will-change: opacity; }
+html.anim .xring > .card { height: 100%; aspect-ratio: auto; border-radius: calc(var(--radius-lg) - 2px); }
+@keyframes anim-beam { to { transform: rotate(1turn); } }
+
+/* ---------- Galería en túnel a pantalla completa ---------- */
+html.anim [data-pin='tunnel'] > section > .shell__inner { position: static; }
+html.anim [data-pin='tunnel'] .container { position: relative; z-index: 2; }
+html.anim [data-pin='tunnel'] :is(.carousel, .gallery) { position: static; }
+html.anim [data-pin='tunnel'] .carousel__viewport { position: absolute; inset: 0; z-index: 1; }
+
+html.anim [data-pin='tunnel'] .carousel__viewport { perspective: 1000px; }
+html.anim [data-pin='tunnel'] .carousel__track { position: absolute; inset: 0; display: block; transform-style: preserve-3d; }
+html.anim [data-pin='tunnel'] .gallery__item {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  margin: 0;
+  width: min(76vw, calc(64svh * 1146 / 582));
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.9);
+  will-change: transform, opacity;
+}
+
+/* ---------- Diapositivas apiladas: Hora loca (ring), puertas (doors) y apertura en círculo (pop) ---------- */
+html.anim :is([data-pin='ring'], [data-pin='doors'], [data-pin='pop']) .carousel__track {
+  display: block;
+  position: relative;
+  height: var(--slide-h, clamp(34rem, min(calc(38 * var(--u)), 72svh), 85.3rem));
+}
+html.anim :is([data-pin='ring'], [data-pin='doors'], [data-pin='pop']) .slide { position: absolute; left: 0; top: 0; width: 95.94%; height: 100%; min-height: 0; }
+
+/* Franja derecha: la diapositiva siguiente asoma desenfocada (el script elige cuál) */
+html.anim .anim-peek {
+  position: absolute;
+  top: 0;
+  left: 95.94%;
+  right: 0;
+  height: var(--slide-h, clamp(34rem, min(calc(38 * var(--u)), 72svh), 85.3rem));
+  overflow: hidden;
+  pointer-events: none;
+  background: #151515;
+}
+html.anim .anim-peek img[hidden] { display: block !important; visibility: hidden; }
+html.anim .anim-peek img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 0% 50%; transform: scale(1.5); filter: blur(14px) brightness(0.85) saturate(1.1); }
+
+/* Hora loca: el banner que se va se retira hacia el fondo; el que llega entra por la derecha por encima */
+html.anim [data-pin='ring'] .slide { transform-origin: 20% 50%; will-change: transform, opacity; box-shadow: -40px 0 60px -30px rgb(0 0 0 / 0.85); }
+html.anim [data-pin='ring'] .slide__content { will-change: transform, opacity; }
+
+/* Recibe: puertas dobles; las sombras son capas propias (cambiar su opacidad no obliga a repintar) */
+html.anim [data-pin='doors'] .carousel__track { perspective: 1800px; }
+html.anim [data-pin='doors'] .slide { overflow: visible; isolation: auto; transform-style: preserve-3d; will-change: transform, opacity; }
+html.anim .leaf {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: inherit;
+  overflow: hidden;
+  isolation: isolate;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+}
+html.anim .leaf--l { clip-path: inset(0 50% 0 0); transform-origin: 0 50%; }
+html.anim .leaf--r { clip-path: inset(0 0 0 50%); transform-origin: 100% 50%; }
+html.anim .anim-shade { position: absolute; inset: 0; z-index: 6; background: #000; opacity: 0; pointer-events: none; will-change: opacity; }
+html.anim .anim-dim { z-index: 7; }
+
+html.anim [data-pin='pop'] .slide { will-change: clip-path; }
+html.anim [data-pin='pop'] .slide__title-img { will-change: transform; }
+.anim-word { display: inline-block; white-space: nowrap; }
+.anim-ch { display: inline-block; will-change: transform; }
+
+/* ---------- Reseñas que entran desde los lados ---------- */
+html.anim .carousel__track.is-entering { overflow: visible; }
+
+/* ---------- Detalles: confeti y el icono de WhatsApp que baila ---------- */
+/* El lienzo se dibuja a la resolución de la pantalla (o a la mitad, en el del humo) pero siempre ocupa la pantalla entera */
+.anim-confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 70; pointer-events: none; }
+.anim-fx { z-index: 69; }
+html.anim .header__cta .btn__icon img { transform-origin: 50% 55%; }
+html.anim .header__cta:is(:hover, :focus-visible) .btn__icon img { animation: anim-wig 0.5s ease-in-out infinite; }
+@keyframes anim-wig {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-14deg) scale(1.08); }
+  75% { transform: rotate(14deg) scale(1.08); }
+}

@@ -29,9 +29,7 @@ npm run validate
 
 | Archivo | Tamaño (2x) | Por qué falta |
 |---|---|---|
-| `recibe-rosas-rojas.jpg` | 3684 × 1706 | La foto recibida (`ROSAS GLAM ROJAS.jpg`) es una historia de Instagram con textos encima. |
-| `recibe-rosas-blancas.jpg` | 3684 × 1706 | La foto recibida (`ROSAS GLAM BLANCAS.png`) mide solo 158 × 284 px. |
-| `infantil-kpop-logo.png` | 994 × 630 | Logo "KPop Demon Hunters" en **PNG transparente**: no venía en la carpeta. |
+| `recibe-rosas-blancas.jpg` | 3684 × 1706 | Ya se usa `ROSAS GLAM BLANCAS.png`, pero mide solo 158 × 284 px y se ve borrosa: hace falta una versión grande. |
 
 ### Portada → `src/sites/portal/img/`
 
@@ -55,4 +53,4 @@ Usa los mismos nombres que Ecuador. Por ahora solo tiene `logo.png`; el resto mu
 
 ## Ya colocados ✔
 
-Logo, fondo y video del hero, trofeo, foto del equipo, 5 bigotes 3D, 5 tarjetas de Servicios, 20 diapositivas de Hora loca, 10 de 12 de Recibe a tus invitados, 5 efectos especiales, 12 servicios adicionales, 2 diapositivas infantiles, 27 fotos de galería, 6 testimonios y la tipografía Neue Montreal.
+Logo, fondo y video del hero, trofeo, foto del equipo, 5 bigotes 3D, 5 tarjetas de Servicios, 20 diapositivas de Hora loca, 12 de Recibe a tus invitados (Rosas glam rojas usa `COMBINADOS(2).heif`; Rosas glam blancas, la foto pequeña), 5 efectos especiales, 12 servicios adicionales, 2 diapositivas infantiles, 27 fotos de galería, 6 testimonios y la tipografía Neue Montreal.

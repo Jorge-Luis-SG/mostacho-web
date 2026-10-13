@@ -8,7 +8,8 @@
     "build": "npm run validate && astro build",
     "preview": "astro preview",
     "validate": "node scripts/validate-content.mjs",
-    "assets": "node scripts/import-assets.mjs"
+    "assets": "node scripts/import-assets.mjs",
+    "build:pages": "node scripts/build-pages.mjs"
   },
   "dependencies": {
     "astro": "7.3.5"

@@ -10,7 +10,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LandingPage from '../components/pages/LandingPage.astro';
 import PortalPage from '../components/pages/PortalPage.astro';
-import { LANGS, pathFor } from '../lib/i18n';
+import { LANGS, pathFor, routePath } from '../lib/i18n';
 import { getSite, routeOf, siteKeys } from '../lib/sites';
 import { buildLandingContext } from '../lib/context';
 import type { PortalConfig } from '../lib/types';
@@ -18,7 +18,7 @@ import type { PortalConfig } from '../lib/types';
 export function getStaticPaths() {
   return siteKeys.flatMap((site) =>
     LANGS.map((lang) => {
-      const path = pathFor(lang, routeOf(site)).replace(/^\/|\/$/g, '');
+      const path = routePath(lang, routeOf(site));
       return { params: { path: path || undefined }, props: { site, lang } };
     }),
   );

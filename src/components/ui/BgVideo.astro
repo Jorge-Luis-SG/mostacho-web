@@ -41,6 +41,8 @@ const url = resolveVideo(site, src);
 
   const start = (video: HTMLVideoElement) => {
     if (!video.src) video.src = video.dataset.src!;
+    // Tarjeta apartada en una animación (src/scripts/animations.ts): se carga pero no se reproduce hasta que pase al centro
+    if (video.closest('.is-off')) return;
     video.play().then(() => video.classList.add('is-playing')).catch(() => {});
   };
 

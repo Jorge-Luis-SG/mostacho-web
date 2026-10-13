@@ -21,7 +21,7 @@ const { ui } = ctx;
 const titleId = `${section.id}-title`;
 ---
 
-<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} labelledby={titleId}>
+<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} labelledby={titleId} anim={section.anim} count={section.items.length}>
   <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
   <div class="cards">
     <Carousel label={text.title} variant="cards" dots="top" ui={ui.carousel}>
@@ -29,14 +29,14 @@ const titleId = `${section.id}-title`;
         section.items.map((item) => {
           const card = text.items[item.id];
           return (
-            <article class:list={['card', section.showText && 'card--text']}>
+            <article class:list={['card', section.showText && 'card--text']} data-fx={item.fx}>
               <Img site={ctx.site} src={item.image} alt={card.alt ?? ''} class="card__img" sizes="(max-width: 700px) 85vw, 420px" maxWidth={960} />
               <BgVideo site={ctx.site} src={item.video} class="card__img" />
               <div class="card__spacer" />
               <div class="card__body">
                 {/* Copia desenfocada (pregenerada por npm run assets): mismo efecto que backdrop-filter, sin coste al hacer scroll */}
                 <Img site={ctx.site} src={`blur/${item.image}`} alt="" class="card__blur" sizes="160px" maxWidth={160} optional />
-                <h3 style={item.titleSize ? `font-size: ${fluid(item.titleSize, 0.55)}` : undefined}>{card.title}</h3>
+                <h3 style={item.titleSize ? `font-size: calc(${fluid(item.titleSize, 0.55)} - 0.5rem)` : undefined}>{card.title}</h3>
                 {section.showText && card.text && <p>{card.text}</p>}
                 <Button href={item.href ?? ctx.whatsappFor(card.title)}>{card.cta ?? ui.contact}</Button>
               </div>
@@ -118,7 +118,8 @@ const titleId = `${section.id}-title`;
     padding: clamp(2rem, calc(2.45 * var(--u)), 4.7rem) clamp(1.6rem, calc(1.56 * var(--u)), 3rem) clamp(2rem, calc(2.1 * var(--u)), 4rem) clamp(2rem, calc(2.1 * var(--u)), 4rem);
   }
   .card__body::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--gradient-card); }
-  h3 { font-size: var(--size-card-title); line-height: 0.94; }
+  /* Títulos de las tarjetas: 5 px por debajo del tamaño del diseño */
+  h3 { font-size: calc(var(--size-card-title) - 0.5rem); line-height: 0.94; }
   p { margin-top: clamp(1rem, calc(1.1 * var(--u)), 2.2rem); font-size: var(--size-card-text); line-height: 1.3; text-wrap: pretty; }
   .card--text { --body: 0.538; }
   .card__body :global(.btn) { margin-top: auto; }

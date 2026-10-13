@@ -7,6 +7,9 @@ import LangSwitch from '../ui/LangSwitch.astro';
 import SocialLinks from '../ui/SocialLinks.astro';
 import type { HeroSection } from '../../lib/types';
 import type { LandingContext } from '../../lib/context';
+import { getImage } from 'astro:assets';
+import { resolveImage } from '../../lib/images';
+import { pinLength } from '../../lib/anim';
 
 interface Props {
   section: HeroSection;
@@ -15,12 +18,30 @@ interface Props {
 }
 const { section, text, ctx } = Astro.props;
 const { ui, config } = ctx;
+
+// Animación "mask": la silueta (bigote) hace de ventana; en el build se sirve en WebP
+const pin = pinLength(section.anim);
+const Wrap = pin ? 'div' : Fragment;
+const wrapAttrs = pin ? { class: 'pin', 'data-pin': section.anim, style: `--pin:${pin}vh` } : {};
+const silhouette = section.anim === 'mask' ? resolveImage(ctx.site, section.animImage) : undefined;
+const mask =
+  silhouette?.kind === 'raster'
+    ? {
+        src: import.meta.env.DEV ? silhouette.meta.src : (await getImage({ src: silhouette.meta, format: 'webp', width: Math.min(1280, silhouette.meta.width), quality: 80 })).src,
+        ratio: (silhouette.meta.height / silhouette.meta.width).toFixed(4),
+      }
+    : undefined;
 ---
 
-<section id={section.id} class="hero" data-u aria-labelledby={`${section.id}-title`}>
-  <Img site={ctx.site} src={section.image} alt={text.imageAlt ?? ''} class="hero__bg" priority />
-  <BgVideo site={ctx.site} src={section.video} class="hero__bg" desktopOnly />
-  <div class="hero__overlay" aria-hidden="true"></div>
+<Wrap {...wrapAttrs}>
+<section id={section.id} class="hero" data-u aria-labelledby={`${section.id}-title`} data-anim={section.anim}>
+  <div class="hero__media">
+    <Img site={ctx.site} src={section.image} alt={text.imageAlt ?? ''} class="hero__bg" priority />
+    <BgVideo site={ctx.site} src={section.video} class="hero__bg" desktopOnly />
+    <div class="hero__overlay" aria-hidden="true"></div>
+  </div>
+  {mask && <link rel="preload" as="image" href={mask.src} media="(min-width: 900px) and (prefers-reduced-motion: no-preference)" />}
+  {mask && <img class="hero__stache" src={mask.src} data-ratio={mask.ratio} alt="" aria-hidden="true" loading="lazy" decoding="async" />}
 
   <LangSwitch links={ctx.langLinks} label={ui.language} class="hero__lang" />
 
@@ -42,6 +63,7 @@ const { ui, config } = ctx;
     )
   }
 </section>
+</Wrap>
 
 <style>
   .hero {
@@ -66,6 +88,9 @@ const { ui, config } = ctx;
     object-position: center top;
   }
   .hero__overlay { position: absolute; inset: 0; z-index: -1; background: var(--gradient-hero-overlay); }
+  /* Fondo + video + degradado juntos: así la animación "mask" los recorta a la vez */
+  .hero__media { position: absolute; inset: 0; z-index: -1; }
+  .hero__stache { display: none; }
 
   .hero :global(.hero__lang) { position: absolute; top: clamp(9rem, calc(11.4 * var(--u)), 22rem); right: var(--cta-axis); transform: translateX(50%); }
 

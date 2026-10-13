@@ -36,7 +36,9 @@
       "type": "hero",
       "image": "hero-fondo.jpg",
       "scrollTo": "nosotros",
-      "video": "hero.mp4"
+      "video": "hero.mp4",
+      "anim": "mask",
+      "animImage": "bigote-1.png"
     },
     {
       "id": "nosotros",
@@ -55,7 +57,8 @@
           "y": -593,
           "w": 1229
         }
-      ]
+      ],
+      "anim": "guide"
     },
     {
       "id": "servicios",
@@ -110,7 +113,8 @@
           "y": 926,
           "w": 334
         }
-      ]
+      ],
+      "anim": "slide"
     },
     {
       "id": "hora-loca",
@@ -258,7 +262,8 @@
           "glow": "rgba(24, 24, 40, 0.75)",
           "glowAt": "30% 30%"
         }
-      ]
+      ],
+      "anim": "ring"
     },
     {
       "id": "recibe",
@@ -352,7 +357,8 @@
           "glow": "rgba(8, 8, 8, 0.75)",
           "glowAt": "30% 30%"
         }
-      ]
+      ],
+      "anim": "doors"
     },
     {
       "id": "efectos",
@@ -366,27 +372,32 @@
         {
           "id": "bazooka",
           "image": "efecto-bazooka.jpg",
-          "titleSize": 52
+          "titleSize": 52,
+          "fx": "smoke"
         },
         {
           "id": "neblina",
           "image": "efecto-neblina-baja.jpg",
-          "titleSize": 52
+          "titleSize": 52,
+          "fx": "fog"
         },
         {
           "id": "fuegos",
           "image": "efecto-fuegos-artificiales.jpg",
-          "titleSize": 52
+          "titleSize": 52,
+          "fx": "fireworks"
         },
         {
           "id": "confeti",
           "image": "efecto-confeti.jpg",
-          "titleSize": 52
+          "titleSize": 52,
+          "fx": "confetti"
         },
         {
           "id": "neblina-pirotecnia",
           "image": "efecto-neblina-pirotecnia.jpg",
-          "titleSize": 38
+          "titleSize": 38,
+          "fx": "fog-sparks"
         }
       ],
       "decor": [
@@ -396,7 +407,8 @@
           "y": 0,
           "w": 995
         }
-      ]
+      ],
+      "anim": "deal"
     },
     {
       "id": "adicionales",
@@ -477,7 +489,8 @@
           "y": 304,
           "w": 1381
         }
-      ]
+      ],
+      "anim": "spotlight"
     },
     {
       "id": "infantiles",
@@ -504,7 +517,8 @@
           "glow": "rgba(0, 150, 50, 0.9)",
           "glowAt": "30% 10%"
         }
-      ]
+      ],
+      "anim": "pop"
     },
     {
       "id": "galeria",
@@ -596,7 +610,8 @@
           "image": "galeria-27.jpg"
         }
       ],
-      "titleSize": "lg"
+      "titleSize": "lg",
+      "anim": "tunnel"
     },
     {
       "id": "experiencia",
@@ -642,7 +657,8 @@
           "platform": "instagram"
         }
       ],
-      "titleSize": "lg"
+      "titleSize": "lg",
+      "anim": "sides"
     },
     {
       "id": "contacto",

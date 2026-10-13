@@ -3,6 +3,7 @@ import Header from '../layout/Header.astro';
 import Footer from '../layout/Footer.astro';
 import SectionRenderer from '../SectionRenderer.astro';
 import type { LandingContext } from '../../lib/context';
+import '../../styles/animations.css';
 
 interface Props {
   ctx: LandingContext;
@@ -10,12 +11,20 @@ interface Props {
 const { ctx } = Astro.props;
 ---
 
+{/* Animaciones con el scroll: solo en escritorio (con ratón o trackpad) y si no se pidió reducir el movimiento. Se decide antes de pintar para que no salte el layout. */}
+<script is:inline>
+  if (matchMedia('(min-width: 900px) and (min-height: 500px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('anim');
+</script>
 <a href="#main" class="skip-link">{ctx.ui.skipToContent}</a>
 <Header ctx={ctx} />
 <main id="main">
   {ctx.config.sections.map((section) => <SectionRenderer section={section} ctx={ctx} />)}
 </main>
 <Footer ctx={ctx} />
+
+<script>
+  import '../../scripts/animations';
+</script>
 
 <style>
   .skip-link {

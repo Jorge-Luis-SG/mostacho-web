@@ -6,6 +6,8 @@
  * - i18n/*.json → TODOS los textos que ve el cliente, uno por idioma.
  */
 
+import type { AnimMode } from './anim';
+
 export type Network = 'youtube' | 'facebook' | 'instagram' | 'whatsapp' | 'tiktok';
 
 /** Imagen decorativa (p. ej. bigotes 3D). Posición y ancho en px del diseño a 1920, relativos a la sección. */
@@ -27,6 +29,8 @@ export interface SectionBase {
   decor?: Decor[];
   /** Espacio arriba/abajo en px del diseño a 1920 (se escala con la pantalla). */
   space?: { top?: number; bottom?: number; inner?: number };
+  /** Animación con el scroll (solo escritorio). Ver src/lib/anim.ts */
+  anim?: AnimMode;
 }
 
 export interface HeroSection extends SectionBase {
@@ -35,6 +39,8 @@ export interface HeroSection extends SectionBase {
   /** Video de fondo opcional (src/sites/<sitio>/video/). La imagen hace de póster. */
   video?: string;
   scrollTo?: string;
+  /** Silueta para la animación "mask" (normalmente el bigote). */
+  animImage?: string;
 }
 
 export interface AboutSection extends SectionBase {
@@ -52,6 +58,8 @@ export interface CardItem {
   video?: string;
   /** Si se indica, el botón lleva a ese ancla/URL en vez de a WhatsApp. */
   href?: string;
+  /** Efecto a pantalla completa al aparecer la tarjeta (animación "deal"): smoke | fog | fireworks | confetti | fog-sparks */
+  fx?: 'smoke' | 'fog' | 'fireworks' | 'confetti' | 'fog-sparks';
 }
 
 export interface CardsSection extends SectionBase {

@@ -20,7 +20,7 @@ const { ui } = ctx;
 const titleId = `${section.id}-title`;
 ---
 
-<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} contained={false} labelledby={titleId} flushBottom>
+<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} contained={false} labelledby={titleId} flushBottom anim={section.anim} count={section.slides.length}>
   <div class="container">
     <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
   </div>
@@ -59,15 +59,34 @@ const titleId = `${section.id}-title`;
   .showcase__slides {
     margin-top: clamp(2.4rem, calc(2.6 * var(--u)), 5rem);
     --carousel-gap: 0px;
-    --carousel-dots-left: calc(var(--edge) + clamp(2rem, calc(11.9 * var(--u)), 22.8rem));
+    /* Margen del texto, el botón y los puntos: 228 px de 1920 en el diseño (la diapositiva va a sangre, así que
+       se mide sobre el ancho de la pantalla, no sobre el lienzo escalado) */
+    --carousel-dots-left: max(2rem, 11.9vw);
+    /* Alto de la diapositiva: proporción del diseño (1842 × 853), sin pasar del 72 % del alto de la pantalla */
+    --slide-h: clamp(34rem, min(44.4vw, 72svh), 85.3rem);
   }
   .showcase__slides :global(.carousel__track) { grid-auto-columns: 95.94%; }
   .showcase__slides :global(.carousel__dots--overlay) { bottom: clamp(3rem, calc(3.3 * var(--u)), 6.3rem); gap: clamp(1.4rem, calc(1.35 * var(--u)), 2.6rem); }
-  .showcase__slides :global(.carousel__dot) { width: clamp(1.2rem, calc(0.94 * var(--u)), 1.8rem); }
+  .showcase__slides :global(.carousel__dot) { width: calc(clamp(1.2rem, calc(0.94 * var(--u)), 1.8rem) - 0.2rem); }
   .showcase__slides :global(.carousel__dots--overlay) { right: var(--carousel-dots-left); flex-wrap: wrap; }
+  /* Franja derecha: la diapositiva siguiente asoma desenfocada, como en el diseño */
+  @media (min-width: 701px) {
+    :global(html:not(.anim)) .showcase__slides :global(.carousel__viewport)::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 95.94%;
+      right: 0;
+      z-index: 1;
+      pointer-events: none;
+      -webkit-backdrop-filter: blur(14px) brightness(0.85);
+      backdrop-filter: blur(14px) brightness(0.85);
+    }
+  }
   @media (max-width: 700px) {
     .showcase__slides :global(.carousel__dots--overlay) { gap: 1rem; bottom: 2.4rem; }
-    .showcase__slides :global(.carousel__dot) { width: 1rem; }
+    .showcase__slides :global(.carousel__dot) { width: 0.8rem; }
   }
   @media (max-width: 700px) {
     .showcase__slides :global(.carousel__track) { grid-auto-columns: 100%; }
@@ -78,19 +97,29 @@ const titleId = `${section.id}-title`;
     isolation: isolate;
     display: flex;
     align-items: flex-end;
-    min-height: clamp(34rem, min(calc(38 * var(--u)), 72svh), 85.3rem);
+    min-height: var(--slide-h);
     padding: clamp(4rem, calc(4 * var(--u)), 8rem) var(--carousel-dots-left) clamp(7rem, calc(7.5 * var(--u)), 14rem);
     overflow: hidden;
     --accent: var(--color-showcase-accent);
   }
+  /* La foto no ocupa todo el ancho: como en el diseño, empieza al 29,6 % (detrás del degradado) y se ajusta por alto */
   .slide :global(.slide__img) {
     position: absolute;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    left: 29.6%;
     z-index: -2;
-    width: 100%;
+    width: 84.9%; /* como en el diseño, la foto sigue un poco más allá del borde derecho (queda recortada) */
     height: 100%;
     object-fit: cover;
-    object-position: 70% center;
+    object-position: 0% 50%;
+    /* Su borde izquierdo se funde con el degradado (sin línea visible) */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+  }
+  /* En el móvil la diapositiva es vertical: la foto vuelve a ocuparla entera */
+  @media (max-width: 700px) {
+    .slide :global(.slide__img) { left: 0; width: 100%; object-position: 70% center; -webkit-mask-image: none; mask-image: none; }
   }
   .slide__shade {
     position: absolute;

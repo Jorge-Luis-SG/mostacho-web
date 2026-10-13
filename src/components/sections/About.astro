@@ -13,7 +13,7 @@ const { section, text, ctx } = Astro.props;
 const titleId = `${section.id}-title`;
 ---
 
-<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} labelledby={titleId} class="about">
+<SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} labelledby={titleId} class="about" anim={section.anim}>
   <div class="about__grid">
     <div class="about__copy">
       <h2 id={titleId}>{text.title}</h2>

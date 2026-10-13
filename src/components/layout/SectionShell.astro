@@ -5,6 +5,7 @@
 import Img from '../ui/Img.astro';
 import type { Decor } from '../../lib/types';
 import { fluid } from '../../lib/scale';
+import { pinLength, type AnimMode } from '../../lib/anim';
 
 interface Props {
   id: string;
@@ -18,9 +19,16 @@ interface Props {
   flushBottom?: boolean;
   /** Espacio arriba/abajo en px del diseño a 1920 (viene de site.json → space). */
   space?: { top?: number; bottom?: number };
+  /** Animación con el scroll (site.json → anim) y nº de elementos que recorre. */
+  anim?: AnimMode;
+  count?: number;
 }
 
-const { id, site, background, decor = [], contained = true, class: className, labelledby, flushBottom = false, space } = Astro.props;
+const { id, site, background, decor = [], contained = true, class: className, labelledby, flushBottom = false, space, anim, count } = Astro.props;
+// Si la animación fija la sección, se envuelve en un tramo alto (.pin). Sin animaciones el envoltorio no afecta al layout.
+const pin = pinLength(anim, count);
+const Wrap = pin ? 'div' : Fragment;
+const wrapAttrs = pin ? { class: 'pin', 'data-pin': anim, style: `--pin:${pin}vh` } : {};
 const style =
   [
     background && `background: var(--gradient-${background})`,
@@ -31,7 +39,8 @@ const style =
     .join(';') || undefined;
 ---
 
-<section id={id} class:list={['shell', flushBottom && 'shell--flush-bottom', decor.length > 0 && 'shell--decor', className]} style={style} aria-labelledby={labelledby}>
+<Wrap {...wrapAttrs}>
+<section id={id} class:list={['shell', flushBottom && 'shell--flush-bottom', decor.length > 0 && 'shell--decor', className]} style={style} aria-labelledby={labelledby} data-anim={anim}>
   {
     decor.length > 0 && (
       <div class="decor-canvas" aria-hidden="true">
@@ -45,6 +54,7 @@ const style =
   }
   {contained ? <div class="container shell__inner"><slot /></div> : <div class="shell__inner"><slot /></div>}
 </section>
+</Wrap>
 
 <style>
   .shell {

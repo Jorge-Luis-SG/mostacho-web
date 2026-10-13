@@ -61,6 +61,13 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
     const pageLabel = root.dataset.pageLabel ?? '{n}';
     const items = () => Array.from(track.children) as HTMLElement[];
 
+    // Modo "dirigido": cuando una animación con el scroll mueve el carrusel (src/scripts/animations.ts),
+    // los puntos y las flechas piden ir a un elemento ('driven:go') y la animación dice cuál está activo ('driven:active').
+    let driven = Number(root.dataset.driven) || 0;
+    let active = 0;
+    const go = (i: number) =>
+      root.dispatchEvent(new CustomEvent('driven:go', { bubbles: true, detail: { index: Math.max(0, Math.min(driven - 1, i)) } }));
+
     const metrics = () => {
       const first = items()[0];
       if (!first) return { step: track.clientWidth, perPage: 1, pages: 1 };
@@ -92,6 +99,12 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
     };
 
     const update = () => {
+      if (driven) {
+        if (prev) prev.disabled = active <= 0;
+        if (next) next.disabled = active >= driven - 1;
+        dots?.querySelectorAll('button').forEach((dot, i) => dot.setAttribute('aria-current', String(i === active)));
+        return;
+      }
       const { step, pages } = metrics();
       const max = track.scrollWidth - track.clientWidth;
       const current = track.scrollLeft >= max - 2 ? pages - 1 : Math.round(track.scrollLeft / step);
@@ -103,7 +116,7 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
 
     const renderDots = () => {
       if (!dots) return;
-      const { pages } = metrics();
+      const pages = driven || metrics().pages;
       dots.style.visibility = pages < 2 ? 'hidden' : '';
       if (dots.childElementCount !== pages) {
         dots.replaceChildren(
@@ -112,7 +125,7 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
             dot.type = 'button';
             dot.className = 'carousel__dot';
             dot.setAttribute('aria-label', pageLabel.replace('{n}', String(i + 1)));
-            dot.addEventListener('click', () => goTo(i));
+            dot.addEventListener('click', () => (driven ? go(i) : goTo(i)));
             return dot;
           }),
         );
@@ -120,8 +133,16 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
       update();
     };
 
-    prev?.addEventListener('click', () => track.scrollBy({ left: -metrics().step, behavior: 'smooth' }));
-    next?.addEventListener('click', () => track.scrollBy({ left: metrics().step, behavior: 'smooth' }));
+    prev?.addEventListener('click', () => (driven ? go(active - 1) : track.scrollBy({ left: -metrics().step, behavior: 'smooth' })));
+    next?.addEventListener('click', () => (driven ? go(active + 1) : track.scrollBy({ left: metrics().step, behavior: 'smooth' })));
+    root.addEventListener('driven:on', (e) => {
+      driven = (e as CustomEvent<{ count: number }>).detail.count;
+      renderDots();
+    });
+    root.addEventListener('driven:active', (e) => {
+      const i = (e as CustomEvent<{ index: number }>).detail.index;
+      if (i !== active) { active = i; update(); }
+    });
 
     let frame = 0;
     track.addEventListener('scroll', () => {
@@ -196,7 +217,7 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
     z-index: 2;
   }
   .carousel__dots :global(.carousel__dot) {
-    width: 1.6rem;
+    width: 1.4rem;
     aspect-ratio: 1;
     border-radius: 50%;
     background: var(--color-dot);

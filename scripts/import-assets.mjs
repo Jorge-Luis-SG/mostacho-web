@@ -59,8 +59,10 @@ const images = {
   'hora-loca-rumberas.jpg': 'HORA LOCA/RUMBERAS(2).JPG',
 
   'recibe-rosas-doradas.jpg': 'RECIBIMIENTO DE INVITADOS/ROSAS GLAM DORADAS.jpg',
-  // recibe-rosas-rojas.jpg   → falta (la imagen recibida lleva textos de Instagram encima)
-  // recibe-rosas-blancas.jpg → falta (la imagen recibida mide solo 158 × 284 px)
+  // Rosas glam rojas: la de "ROSAS GLAM ROJAS.jpg" lleva textos de Instagram encima; se usa la de COMBINADOS con las rosas rojas
+  'recibe-rosas-rojas.jpg': 'RECIBIMIENTO DE INVITADOS/COMBINADOS(2).heif',
+  // Rosas glam blancas: la única que hay mide 158 × 284 px (se verá borrosa; cambiarla en cuanto llegue una más grande)
+  'recibe-rosas-blancas.jpg': 'RECIBIMIENTO DE INVITADOS/ROSAS GLAM BLANCAS.png',
   'recibe-personajes-golden.jpg': 'RECIBIMIENTO DE INVITADOS/GOLDEN.jpg',
   'recibe-personajes-silver.jpg': 'RECIBIMIENTO DE INVITADOS/SILVER.heif',
   'recibe-afrodita.jpg': 'RECIBIMIENTO DE INVITADOS/AFRODITOS(2).jpg',
@@ -90,6 +92,7 @@ const images = {
 
   'infantil-kpop.jpg': 'SERVICIOS/MOSTACHO INFANTILES 1.jpg',
   'infantil-world-tour.jpg': 'SERVICIOS/MOSTACHO INFANTILES.jpg',
+  'infantil-kpop-logo.png': '../k-pop-demon-hunters.png', // logo transparente (está en capturas/, no en assets/)
 
   'testimonio-whatsapp-tatiana.png': 'MOSTACHO EXPERIENCE/IMG_1072.PNG',
 };

@@ -5,10 +5,18 @@ export const DEFAULT_LANG: string = languages.default;
 export const LANG_LABELS: Record<string, string> = languages.labels;
 export const SWITCHER_ORDER: string[] = languages.switcherOrder ?? LANGS;
 
-/** "/" · "/en/" · "/ecuador/" · "/en/ecuador/" */
+/** Raíz donde se publica la web ("/" o, p. ej., "/mostacho-web/"), siempre con barra final */
+const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
+/** Ruta interna de una página, sin barras: "" · "en" · "ecuador" · "en/ecuador" */
+export function routePath(lang: string, route: string): string {
+  return [lang === DEFAULT_LANG ? '' : lang, route].filter(Boolean).join('/');
+}
+
+/** URL de una página: "/" · "/en/" · "/ecuador/" · "/en/ecuador/" (dentro de la raíz de publicación) */
 export function pathFor(lang: string, route: string): string {
-  const segments = [lang === DEFAULT_LANG ? '' : lang, route].filter(Boolean);
-  return segments.length ? `/${segments.join('/')}/` : '/';
+  const path = routePath(lang, route);
+  return path ? `${BASE}${path}/` : BASE;
 }
 
 /** Reemplaza {variables} dentro de un texto: fill('Hola {name}', { name: 'Ana' }) */
