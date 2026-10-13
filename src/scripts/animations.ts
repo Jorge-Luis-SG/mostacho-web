@@ -175,13 +175,13 @@ function start() {
     else todo.push(...mine);
     pump();
   };
-  /** Precarga los elementos desde i hasta i + ahead */
-  const ahead = (items: HTMLElement[], n = 4) => {
+  /** A medida que se avanza, el elemento actual y los n siguientes pasan al frente de la cola de descargas */
+  const ahead = (items: HTMLElement[], n = 3) => {
     let last = -1;
     return (i: number) => {
       if (i === last) return;
       last = i;
-      preload(items.slice(Math.max(0, i - 1), i + n + 1));
+      preload(items.slice(i, i + n + 1), true);
     };
   };
 
