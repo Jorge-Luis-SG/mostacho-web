@@ -38,6 +38,8 @@ type Anim = {
   live?: boolean;
   near?: boolean;
   warmed?: boolean;
+  /** Ya se preparó (se hace al acercarse, para no cargar todo el trabajo al abrir la página) */
+  built?: boolean;
 };
 type Part = Omit<Anim, 'mode' | 'pin' | 'len'>;
 /** Animación que no fija la sección: lee en la fase de lectura y escribe después */
@@ -618,8 +620,10 @@ function start() {
           const tk = Math.round(t * 1000);
           if (tk !== shown) {
             shown = tk;
+            const rise = ((1 - ease(t)) * 28).toFixed(1);
             ui.forEach((el) => {
               el.style.opacity = t.toFixed(3);
+              el.style.translate = t < 1 ? `0 ${rise}px` : ''; // sube un poco mientras aparece (sin tocar su transform)
               el.style.visibility = t > 0 ? '' : 'hidden';
               el.style.pointerEvents = t > 0.5 ? '' : 'none';
             });
@@ -678,6 +682,7 @@ function start() {
       const { root, view, items } = c;
       const N = items.length;
       const texts = items.map((s) => s.querySelector<HTMLElement>('.slide__content'));
+      const pics = items.map((s) => s.querySelector<HTMLElement>('.slide__img'));
       const side = peek(view, items);
       const warm = ahead(items);
       const PAD = 0.25 / N;
@@ -699,6 +704,7 @@ function start() {
             if (i === s) {
               el.style.visibility = 'visible';
               el.style.zIndex = '1';
+              if (pics[i]) pics[i]!.style.translate = '';
               el.style.transform = `translate3d(${(-f * 6).toFixed(2)}%, 0, 0) scale(${(1 - f * 0.12).toFixed(4)})`;
               el.style.opacity = (1 - f * 0.6).toFixed(3);
               if (tx) {
@@ -710,6 +716,9 @@ function start() {
               el.style.zIndex = '2';
               // Entra desde la franja de la derecha, donde ya asomaba
               el.style.transform = `translate3d(${((1 - f) * 100).toFixed(2)}%, 0, 0)`;
+              // Profundidad: la foto entra algo más despacio que el banner
+              const pic = pics[i];
+              if (pic) pic.style.translate = f < 1 ? `${(-(1 - f) * 12).toFixed(2)}% 0` : '';
               el.style.opacity = '1';
               if (tx) {
                 tx.style.opacity = clamp((f - 0.45) / 0.55).toFixed(3);
@@ -1167,13 +1176,23 @@ function start() {
   };
 
   // ---------- Montaje ----------
+  // Cada sección se prepara (se reorganiza su HTML para la animación) cuando se acerca a la pantalla: así al abrir
+  // la página solo se hace el trabajo del inicio y lo que está cerca, y el resto se reparte mientras se baja.
   const anims: Anim[] = [];
   document.querySelectorAll<HTMLElement>('.pin[data-pin]').forEach((pin) => {
     const mode = pin.dataset.pin as AnimMode;
-    const sec = pin.firstElementChild as HTMLElement | null;
-    const part = sec && builders[mode]?.(pin, sec);
-    if (part) anims.push({ mode, pin, len: 1, ...part });
+    if (pin.firstElementChild && builders[mode]) anims.push({ mode, pin, len: 1, run: () => {} });
   });
+  const build = (a: Anim) => {
+    if (a.built) return;
+    a.built = true;
+    const part = builders[a.mode]!(a.pin, a.pin.firstElementChild as HTMLElement);
+    if (!part) return;
+    Object.assign(a, part);
+    a.measure?.();
+  };
+  // El inicio y «Nosotros» (con su bigote guía) se preparan ya
+  anims.filter((a) => a.mode === 'mask' || a.mode === 'guide').forEach(build);
   const extras = Array.from(document.querySelectorAll<HTMLElement>('section[data-anim="sides"]'))
     .map(sides)
     .filter((x): x is Extra => !!x);
@@ -1334,8 +1353,10 @@ function start() {
     anims.forEach((a, i) => {
       const r = rects[i];
       a.each?.(r, a.len);
-      // A 4 pantallas: se adelantan sus fotos. A pantalla y media: se preparan sus capas (lejos se liberan)
-      if (!a.warmed && r.top < vh * 4) {
+      // A 3 pantallas: se prepara la animación. A 4 (cuando la página ya cargó): se adelantan sus fotos.
+      // A pantalla y media: se preparan sus capas (lejos se liberan)
+      if (!a.built && r.top < vh * 3 && r.bottom > -vh * 2) build(a);
+      if (!a.warmed && loaded && r.top < vh * 4) {
         a.warmed = true;
         a.warm?.();
       }
@@ -1369,7 +1390,7 @@ function start() {
       a.pin.classList.toggle('pin--free', sec.scrollHeight > vh + 4);
     });
     anims.forEach((a) => (a.len = a.pin.classList.contains('pin--free') ? Math.max(1, a.pin.offsetHeight) : Math.max(1, a.pin.offsetHeight - vh)));
-    anims.forEach((a) => a.measure?.());
+    anims.forEach((a) => a.built && a.measure?.());
     extras.forEach((x) => x.measure?.());
     guide?.measure();
   };
@@ -1377,6 +1398,8 @@ function start() {
     measure();
     frame();
   };
+  // Las fotos se adelantan solo cuando la página ya terminó de cargar (no compiten con lo que se ve al entrar)
+  let loaded = document.readyState === 'complete';
 
   addEventListener('scroll', request, { passive: true });
 
@@ -1452,6 +1475,7 @@ function start() {
   // Puntos y flechas de un carrusel dirigido: llevan el scroll hasta ese elemento
   document.addEventListener('driven:go', (e) => {
     const a = anims.find((x) => x.pin.contains(e.target as Node));
+    if (a) build(a);
     if (!a?.at) return;
     const i = (e as CustomEvent<{ index: number }>).detail.index;
     bypass = performance.now() + 1800;
@@ -1470,9 +1494,34 @@ function start() {
     history.pushState(null, '', link.hash);
   });
 
+  // Los títulos de sección entran suavemente desde abajo la primera vez que aparecen
+  const titles = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        titles.unobserve(e.target);
+      }),
+    { threshold: 0.6 },
+  );
+  document.querySelectorAll('main .section-title').forEach((t) => {
+    // Los que ya están en pantalla al cargar se quedan como están
+    if (t.getBoundingClientRect().top < innerHeight) t.classList.add('is-in');
+    else titles.observe(t);
+  });
+
   init();
-  document.fonts?.ready.then(init);
-  addEventListener('load', init);
+  // Al cargar las fuentes y al terminar de cargar la página se vuelve a medir (una sola vez si coinciden)
+  let again = 0;
+  const reinit = () => {
+    cancelAnimationFrame(again);
+    again = requestAnimationFrame(init);
+  };
+  document.fonts?.ready.then(reinit);
+  addEventListener('load', () => {
+    loaded = true;
+    reinit();
+  });
 }
 
 /** Separa el título en letras (para que salten una a una). El texto sigue disponible entero para lectores de pantalla. */

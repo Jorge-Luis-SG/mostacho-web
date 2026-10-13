@@ -260,6 +260,10 @@ html.anim [data-pin='pop'] .slide__title-img { will-change: transform; }
 .anim-word { display: inline-block; white-space: nowrap; }
 .anim-ch { display: inline-block; will-change: transform; }
 
+/* ---------- Títulos de sección: entran suavemente desde abajo ---------- */
+html.anim main .section-title { transition: opacity 0.7s ease, translate 0.7s cubic-bezier(0.2, 0.8, 0.25, 1); }
+html.anim main .section-title:not(.is-in) { opacity: 0; translate: 0 22px; }
+
 /* ---------- Reseñas que entran desde los lados ---------- */
 html.anim .carousel__track.is-entering { overflow: visible; }
 
