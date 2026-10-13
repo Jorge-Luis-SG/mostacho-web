@@ -75,7 +75,7 @@ const titleId = `${section.id}-title`;
   .showcase__slides :global(.carousel__dots--overlay) { right: var(--carousel-dots-left); flex-wrap: wrap; }
   /* Franja derecha: la diapositiva siguiente asoma desenfocada, como en el diseño */
   @media (min-width: 701px) {
-    :global(html:not(.anim)) .showcase__slides :global(.carousel__viewport)::after {
+    :global(section:not([data-anim])) .showcase__slides :global(.carousel__viewport)::after {
       content: '';
       position: absolute;
       top: 0;

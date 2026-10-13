@@ -263,24 +263,13 @@ html.anim [data-pin='pop'] .slide__title-img { will-change: transform; }
 .anim-word { display: inline-block; white-space: nowrap; }
 .anim-ch { display: inline-block; will-change: transform; }
 
-/* ---------- Títulos de sección: entran suavemente desde abajo ---------- */
-html.anim main .section-title { transition: opacity 0.7s ease, translate 0.7s cubic-bezier(0.2, 0.8, 0.25, 1); }
-html.anim main .section-title:not(.is-in) { opacity: 0; translate: 0 22px; }
-
 /* ---------- Reseñas que entran desde los lados ---------- */
 html.anim .carousel__track.is-entering { overflow: visible; }
 
-/* ---------- Detalles: confeti y el icono de WhatsApp que baila ---------- */
+/* ---------- Partículas de Efectos especiales (chispas, humo, fuegos…) ---------- */
 /* El lienzo se dibuja a la resolución de la pantalla (o a la mitad, en el del humo) pero siempre ocupa la pantalla entera */
 .anim-confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 70; pointer-events: none; }
 .anim-fx { z-index: 69; }
-html.anim .header__cta .btn__icon img { transform-origin: 50% 55%; }
-html.anim .header__cta:is(:hover, :focus-visible) .btn__icon img { animation: anim-wig 0.5s ease-in-out infinite; }
-@keyframes anim-wig {
-  0%, 100% { transform: rotate(0); }
-  25% { transform: rotate(-14deg) scale(1.08); }
-  75% { transform: rotate(14deg) scale(1.08); }
-}
 
 /* ---------- Pantallas medianas y pequeñas ---------- */
 /* Pantallas en vertical (móviles y tablets): las diapositivas (Hora loca, Recibe, Infantiles) más altas y todo

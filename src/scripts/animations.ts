@@ -513,12 +513,6 @@ function start() {
     fxQueue.push({ run, done });
     nextFx();
   };
-  document.addEventListener('click', (e) => {
-    const b = (e.target as Element | null)?.closest?.('.btn, .social__link--whatsapp');
-    if (!b) return;
-    const r = b.getBoundingClientRect();
-    burst(r.left + r.width / 2, r.top + r.height / 2);
-  });
 
   // Silueta del bigote (la del inicio o, si no hay, la de «Nosotros») para el dorso de las tarjetas
   const stache = document.querySelector<HTMLImageElement>('.hero__stache')?.src || srcOf(document.querySelector('.about__decor'));
@@ -1511,22 +1505,6 @@ function start() {
     e.preventDefault();
     scrollTo({ top: pin.getBoundingClientRect().top + scrollY, behavior: 'smooth' });
     history.pushState(null, '', link.hash);
-  });
-
-  // Los títulos de sección entran suavemente desde abajo la primera vez que aparecen
-  const titles = new IntersectionObserver(
-    (entries) =>
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        e.target.classList.add('is-in');
-        titles.unobserve(e.target);
-      }),
-    { threshold: 0.6 },
-  );
-  document.querySelectorAll('main .section-title').forEach((t) => {
-    // Los que ya están en pantalla al cargar se quedan como están
-    if (t.getBoundingClientRect().top < innerHeight) t.classList.add('is-in');
-    else titles.observe(t);
   });
 
   init();

@@ -39,9 +39,7 @@
       "image": "hero-fondo.jpg",
       "scrollTo": "nosotros",
       "video": "hero.mp4",
-      "videoMobile": "hero-movil.mp4",
-      "anim": "mask",
-      "animImage": "bigote-1.png"
+      "videoMobile": "hero-movil.mp4"
     },
     {
       "id": "nosotros",
@@ -60,8 +58,7 @@
           "y": -593,
           "w": 1229
         }
-      ],
-      "anim": "guide"
+      ]
     },
     {
       "id": "servicios",
@@ -116,8 +113,7 @@
           "y": 926,
           "w": 334
         }
-      ],
-      "anim": "slide"
+      ]
     },
     {
       "id": "hora-loca",
@@ -265,8 +261,7 @@
           "glow": "rgba(24, 24, 40, 0.75)",
           "glowAt": "30% 30%"
         }
-      ],
-      "anim": "ring"
+      ]
     },
     {
       "id": "recibe",
@@ -360,8 +355,7 @@
           "glow": "rgba(8, 8, 8, 0.75)",
           "glowAt": "30% 30%"
         }
-      ],
-      "anim": "doors"
+      ]
     },
     {
       "id": "efectos",
@@ -492,8 +486,7 @@
           "y": 304,
           "w": 1381
         }
-      ],
-      "anim": "spotlight"
+      ]
     },
     {
       "id": "infantiles",
@@ -520,8 +513,7 @@
           "glow": "rgba(0, 150, 50, 0.9)",
           "glowAt": "30% 10%"
         }
-      ],
-      "anim": "pop"
+      ]
     },
     {
       "id": "galeria",
@@ -613,8 +605,7 @@
           "image": "galeria-27.jpg"
         }
       ],
-      "titleSize": "lg",
-      "anim": "tunnel"
+      "titleSize": "lg"
     },
     {
       "id": "experiencia",
@@ -660,8 +651,7 @@
           "platform": "instagram"
         }
       ],
-      "titleSize": "lg",
-      "anim": "sides"
+      "titleSize": "lg"
     },
     {
       "id": "contacto",

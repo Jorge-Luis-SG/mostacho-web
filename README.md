@@ -144,6 +144,9 @@ El menú superior se define en `nav` (lista de ids de sección).
 2. Crea `i18n/<idioma>.json` en cada sitio, copiando uno existente y traduciéndolo.
 
 ### Animaciones con el scroll
+Ahora mismo solo **Efectos especiales** tiene animación (`"anim": "deal"`); el resto de secciones se ven con el diseño
+normal. Para volver a activar otra, basta con añadirle su `"anim"` en `site.json`.
+
 Cada sección elige su animación en `site.json` → `"anim"` (lista y explicación en `src/lib/anim.ts`):
 `mask` (inicio), `guide` (bigote de Nosotros), `slide`, `ring`, `doors`, `deal`, `spotlight`, `pop`, `tunnel` y `sides`.
 Sin `"anim"`, la sección se ve normal. Las cartas de Efectos lanzan un efecto a pantalla completa según `items[].fx`
