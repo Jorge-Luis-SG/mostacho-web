@@ -4,13 +4,14 @@
   "assetsFrom": "ecuador",
   "logo": "logo.png",
   "contact": {
-    "whatsapp": "34000000000",
-    "email": ""
+    "whatsapp": "593999771245",
+    "email": "contacto@mostachoproducciones.com"
   },
   "social": {
-    "youtube": "https://www.youtube.com/",
-    "facebook": "https://www.facebook.com/",
-    "instagram": "https://www.instagram.com/"
+    "youtube": "https://www.youtube.com/@mostachoproducciones",
+    "facebook": "https://www.facebook.com/mostachoproducciones",
+    "instagram": "https://www.instagram.com/mostachoproducciones",
+    "tiktok": "https://www.tiktok.com/@mostachoproducciones"
   },
   "nav": [
     "inicio",
@@ -28,7 +29,8 @@
   "footerSocial": [
     "facebook",
     "instagram",
-    "youtube"
+    "youtube",
+    "tiktok"
   ],
   "sections": [
     {

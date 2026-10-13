@@ -36,7 +36,6 @@ npm run validate
 | Archivo | Tamaño (2x) | Qué es |
 |---|---|---|
 | `fondo.jpg` | 3840 × 2160 | Fondo de franjas rojas, sin logo ni textos (opcional: mientras falte, se ve un degradado rojo). |
-| `bandera-ecuador.png` · `bandera-espana.png` | 240 × 240 | Banderas redondas o cuadradas (la web las recorta en círculo). |
 
 ### España → `src/sites/espana/`
 

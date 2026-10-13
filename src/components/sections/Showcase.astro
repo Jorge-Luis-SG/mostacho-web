@@ -34,7 +34,7 @@ const titleId = `${section.id}-title`;
               class:list={['slide', slide.glow && 'slide--glow']}
               style={[slide.accent && `--accent:${slide.accent}`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`].filter(Boolean).join(';') || undefined}
             >
-              <Img site={ctx.site} src={slide.image} alt={s.alt ?? ''} class="slide__img" sizes="100vw" />
+              <Img site={ctx.site} src={slide.image} alt={s.alt ?? ''} class="slide__img" sizes="(max-width: 700px) 100vw, 82vw" />
               <div class="slide__shade" aria-hidden="true" />
               <div class="slide__content">
                 {s.kicker && <p class="slide__kicker">{s.kicker}</p>}

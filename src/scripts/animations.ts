@@ -32,8 +32,8 @@ type Anim = {
   each?: (r: DOMRect, len: number) => void;
   /** Si devuelve un número, no se deja bajar el scroll más allá de esa posición (la sección aún no terminó) */
   hold?: () => number | null;
-  /** Al acercarse la sección (una vez): adelanta la carga de sus fotos */
-  warm?: () => void;
+  /** Al acercarse la sección (una vez): adelanta la carga de sus fotos. urgent: ya está en pantalla */
+  warm?: (urgent?: boolean) => void;
   live?: boolean;
   near?: boolean;
   warmed?: boolean;
@@ -132,39 +132,47 @@ function start() {
     return s + smooth(clamp((U - s - a) / (1 - 2 * a)));
   };
 
-  /** Adelanta la descarga y la decodificación de las fotos (así no aparecen en negro al llegar).
-   *  Se usa una copia suelta de cada foto con sus mismos tamaños: no se cancela aunque la diapositiva salga
-   *  del layout, y cuando la original la pide ya está en la caché del navegador. */
-  //  Se descargan de 4 en 4 y en orden (las primeras de cada sección llegan antes en vez de competir todas a la vez).
-  const keep: HTMLImageElement[] = [];
+  /** Adelanta la descarga de las fotos (así no aparecen en negro al llegar): la propia foto pasa a cargar ya,
+   *  en orden y de 4 en 4 (las primeras de cada sección llegan antes en vez de competir todas a la vez).
+   *  Si una tarda más de 6 s, la cola sigue igualmente: nunca se queda atascada. */
   const todo: HTMLImageElement[] = [];
   let busy = 0;
   const pump = () => {
     while (busy < 4 && todo.length) {
       const img = todo.shift()!;
+      if (img.complete && img.naturalWidth) continue;
       busy++;
-      const copy = new Image();
-      copy.decoding = 'async';
-      if (img.srcset) {
-        copy.sizes = img.sizes;
-        copy.srcset = img.srcset;
-      }
-      copy.src = img.src;
-      keep.push(copy);
-      copy.decode().catch(() => {}).then(() => {
+      let done = false;
+      const next = () => {
+        if (done) return;
+        done = true;
         busy--;
         pump();
-      });
+      };
+      img.addEventListener('load', next, { once: true });
+      img.addEventListener('error', next, { once: true });
+      setTimeout(next, 6000);
+      img.loading = 'eager';
     }
   };
-  const preload = (els: HTMLElement[]) => {
+  /** urgent: la sección ya está en pantalla → sus fotos pendientes pasan delante en la cola */
+  const preload = (els: HTMLElement[], urgent = false) => {
+    const mine: HTMLImageElement[] = [];
     els.forEach((el) =>
       el.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
-        if (img.dataset.warm || !img.src) return;
+        if (!img.src || (img.complete && img.naturalWidth)) return;
+        if (img.dataset.warm) {
+          if (!urgent) return;
+          const k = todo.indexOf(img);
+          if (k < 0) return; // ya se está descargando
+          todo.splice(k, 1);
+        }
         img.dataset.warm = '1';
-        todo.push(img);
+        mine.push(img);
       }),
     );
+    if (urgent) todo.unshift(...mine);
+    else todo.push(...mine);
     pump();
   };
   /** Precarga los elementos desde i hasta i + ahead */
@@ -635,7 +643,7 @@ function start() {
       const d = driver(root);
       let m = cardsMetrics(track, view, items);
       return {
-        warm: () => preload(c.items),
+        warm: (urgent) => preload(c.items, urgent),
         measure() {
           // El carril mide justo lo que ocupan las tarjetas que caben (si se encogen por el alto, no asoma la siguiente)
           track.style.width = '';
@@ -704,7 +712,7 @@ function start() {
           warm(s);
           d.active(Math.round(v));
         },
-        warm: () => preload(items),
+        warm: (urgent) => preload(items, urgent),
       };
     },
 
@@ -753,7 +761,7 @@ function start() {
       const warm = ahead(items);
       return {
         at,
-        warm: () => preload(items),
+        warm: (urgent) => preload(items, urgent),
         run(p) {
           const v = plateau(clamp((p - PAD) / (1 - 2 * PAD)) * (RN - 1));
           const s = Math.min(RN - 2, Math.floor(v));
@@ -935,7 +943,7 @@ function start() {
       let endY = 0;
       let inside = false;
       return {
-        warm: () => preload(flips),
+        warm: (urgent) => preload(flips, urgent),
         measure() {
           m = cardsMetrics(track, view, flips);
           nat = flips.map((f) => f.offsetLeft - flips[0].offsetLeft);
@@ -982,7 +990,7 @@ function start() {
       d.count(XN);
       let stepX = 0;
       return {
-        warm: () => preload(c.items),
+        warm: (urgent) => preload(c.items, urgent),
         measure: () => (stepX = cards[1].offsetLeft - cards[0].offsetLeft),
         at: (i) => PAD + (1 - 2 * PAD) * (i / (XN - 1)),
         run(p) {
@@ -1036,7 +1044,7 @@ function start() {
       d.count(items.length);
       let from: { x: number; y: number; r: number }[] = [];
       return {
-        warm: () => preload(c.items),
+        warm: (urgent) => preload(c.items, urgent),
         measure() {
           const b = track.getBoundingClientRect();
           from = items.map((s) => {
@@ -1079,7 +1087,7 @@ function start() {
       const warm = ahead(frames);
       return {
         at: (i) => clamp((i + 0.2) / SPAN),
-        warm: () => preload(frames),
+        warm: (urgent) => preload(frames, urgent),
         run(p) {
           const U = p * SPAN;
           warm(Math.max(0, Math.floor(U)));
@@ -1330,6 +1338,7 @@ function start() {
       if (on !== a.live) {
         a.live = on;
         a.pin.classList.toggle('live', on);
+        if (on) a.warm?.(true); // al entrar en pantalla, sus fotos pendientes van primero
       }
       if (!on) return;
       if (a.mode === 'ring') ringLive = true;

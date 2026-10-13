@@ -4,13 +4,25 @@
   "logo": "logo.png",
   "background": "fondo.jpg",
   "social": {
-    "youtube": "https://www.youtube.com/",
-    "facebook": "https://www.facebook.com/",
-    "instagram": "https://www.instagram.com/"
+    "youtube": "https://www.youtube.com/@mostachoproducciones",
+    "facebook": "https://www.facebook.com/mostachoproducciones",
+    "instagram": "https://www.instagram.com/mostachoproducciones",
+    "tiktok": "https://www.tiktok.com/@mostachoproducciones"
   },
-  "socialOrder": ["youtube", "facebook", "instagram"],
+  "socialOrder": [
+    "youtube",
+    "facebook",
+    "instagram",
+    "tiktok"
+  ],
   "countries": [
-    { "site": "ecuador", "flag": "bandera-ecuador.png" },
-    { "site": "espana", "flag": "bandera-espana.png" }
+    {
+      "site": "ecuador",
+      "flag": "bandera-ecuador.png"
+    },
+    {
+      "site": "espana",
+      "flag": "bandera-espana.png"
+    }
   ]
 }

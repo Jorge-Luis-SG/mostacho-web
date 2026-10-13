@@ -24,6 +24,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}favicon.png`} />
     {alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={new URL(a.href, Astro.site)} />)}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
