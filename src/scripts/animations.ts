@@ -141,7 +141,8 @@ function start() {
 
   /** Adelanta la descarga de las fotos (así no aparecen en negro al llegar): la propia foto pasa a cargar ya,
    *  en orden y de 4 en 4 (las primeras de cada sección llegan antes en vez de competir todas a la vez).
-   *  Si una tarda más de 6 s, la cola sigue igualmente: nunca se queda atascada. */
+   *  Si una tarda más de 6 s, la cola sigue igualmente: nunca se queda atascada.
+   *  Cada foto queda además descomprimida antes de verse (evita tirones al aparecer en móviles lentos). */
   const todo: HTMLImageElement[] = [];
   let busy = 0;
   const pump = () => {
@@ -156,7 +157,8 @@ function start() {
         busy--;
         pump();
       };
-      img.addEventListener('load', next, { once: true });
+      // Al llegar, se descomprime en segundo plano (decode): así al aparecer no hay que hacerlo en pleno scroll
+      img.addEventListener('load', () => (img.decode().catch(() => {}), next()), { once: true }); // la descompresión no frena la cola
       img.addEventListener('error', next, { once: true });
       setTimeout(next, 6000);
       img.loading = 'eager';
