@@ -149,8 +149,9 @@ Cada sección elige su animación en `site.json` → `"anim"` (lista y explicaci
 Sin `"anim"`, la sección se ve normal. Las cartas de Efectos lanzan un efecto a pantalla completa según `items[].fx`
 (`smoke`, `fog`, `fireworks`, `confetti`, `fog-sparks`).
 
-Solo se activan en ordenadores (≥ 900 px, con ratón o trackpad) y si el usuario no pidió reducir el movimiento:
-en móviles y tablets la página se ve exactamente como el diseño. El código está en `src/scripts/animations.ts`
+Se activan en todas las pantallas de 500 px de alto o más (móviles en vertical, tablets y ordenadores) si el usuario
+no pidió reducir el movimiento; en móviles en horizontal (muy bajos) la página se ve como el diseño, sin animaciones.
+Funcionan con rueda, teclado, barra de scroll y dedo, y se adaptan al ancho (3 / 2 / 1 tarjetas por pantalla). El código está en `src/scripts/animations.ts`
 y los estilos en `src/styles/animations.css`.
 
 ### Publicar en GitHub Pages

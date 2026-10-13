@@ -73,6 +73,18 @@ h1, h2, h3, h4, .btn, .header__nav a, .hero__tagline p, figcaption, .slide__kick
 ::selection { background: var(--color-primary); color: var(--color-primary-contrast); }
 
 /* ---------- Layout ---------- */
+/* Móviles y tablets: el contenido usa todo el ancho (con su margen lateral). En escritorio los anchos salen
+   del diseño y se escalan con la pantalla; en pantallas estrechas eso dejaba el contenido demasiado angosto.
+   (html:root gana a los valores del tema, que se definen en :root) */
+@media (max-width: 1000px) {
+  html:root {
+    --layout-gutter: clamp(1.6rem, 5vw, 4.8rem);
+    --layout-container: 100vw;
+    --layout-cards: 100vw;
+    --layout-testimonials: 100vw;
+    --layout-contact: 100vw;
+  }
+}
 main { overflow-x: clip; }
 .container {
   width: min(100% - 2 * var(--layout-gutter), var(--layout-container));

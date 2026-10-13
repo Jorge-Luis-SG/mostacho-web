@@ -19,6 +19,12 @@ html.anim .pin > section {
 }
 /* En las secciones con bigotes decorativos, estos pueden asomar por arriba y por abajo (como en el diseño) */
 html.anim :is([data-pin='guide'], [data-pin='slide'], [data-pin='deal'], [data-pin='spotlight']) > section { overflow-x: clip; overflow-y: visible; }
+/* Medidor del alto de pantalla estable (sin la barra de direcciones del móvil) */
+.anim-probe { position: fixed; top: 0; left: 0; width: 1px; height: 100vh; height: 100svh; visibility: hidden; pointer-events: none; }
+/* «Nosotros» en pantallas donde no cabe: no se queda fija, baja con normalidad */
+html.anim .pin.pin--free { height: auto; }
+html.anim .pin.pin--free > section { position: relative; height: auto; min-height: 100svh; overflow: visible; }
+
 /* Elementos lejos del que se ve: ocultos hasta que se acercan */
 /* (se ocultan sin sacarlas del layout: así sus fotos, ya precargadas, siguen listas y no parpadean al volver) */
 html.anim .pin .far { visibility: hidden !important; }
@@ -82,6 +88,12 @@ html.anim [data-pin='guide'] .about__copy { position: relative; z-index: 1; }
 html.anim [data-pin='slide'] .carousel__track {
   grid-auto-columns: min(calc((100% - 2 * var(--carousel-gap)) / 3), calc((100svh - 26rem) * 419 / 679));
 }
+@media (max-width: 1000px) {
+  html.anim [data-pin='slide'] .carousel__track { grid-auto-columns: min(calc((100% - var(--carousel-gap)) / 2), calc((100svh - 26rem) * 419 / 679)); }
+}
+@media (max-width: 640px) {
+  html.anim [data-pin='slide'] .carousel__track { grid-auto-columns: min(85%, calc((100svh - 22rem) * 419 / 679)); }
+}
 html.anim [data-pin='slide'] .carousel__track { overflow: clip; margin-inline: auto; }
 html.anim [data-pin='slide'] .carousel__track > * { will-change: transform; }
 
@@ -89,6 +101,12 @@ html.anim [data-pin='slide'] .carousel__track > * { will-change: transform; }
 html.anim [data-pin='deal'] > section { display: flex; flex-direction: column; justify-content: center; padding-top: 0 !important; padding-bottom: 0 !important; }
 html.anim [data-pin='deal'] .carousel__track {
   grid-auto-columns: min(calc((100% - 2 * var(--carousel-gap)) / 3), calc((100svh - 24rem) * 419 / 679));
+}
+@media (max-width: 1000px) {
+  html.anim [data-pin='deal'] .carousel__track { grid-auto-columns: min(calc((100% - var(--carousel-gap)) / 2), calc((100svh - 24rem) * 419 / 679)); }
+}
+@media (max-width: 640px) {
+  html.anim [data-pin='deal'] .carousel__track { grid-auto-columns: min(80%, calc((100svh - 22rem) * 419 / 679)); }
 }
 
 html.anim [data-pin='deal'] .carousel__track { perspective: 1600px; }
@@ -255,4 +273,24 @@ html.anim .header__cta:is(:hover, :focus-visible) .btn__icon img { animation: an
   0%, 100% { transform: rotate(0); }
   25% { transform: rotate(-14deg) scale(1.08); }
   75% { transform: rotate(14deg) scale(1.08); }
+}
+
+/* ---------- Pantallas medianas y pequeñas ---------- */
+/* Pantallas en vertical (móviles y tablets): las diapositivas (Hora loca, Recibe, Infantiles) más altas y todo
+   centrado en la pantalla, sin hueco vacío debajo */
+@media (max-width: 700px), (max-aspect-ratio: 1/1) {
+  html.anim :is([data-pin='ring'], [data-pin='doors'], [data-pin='pop']) > section { display: flex; flex-direction: column; justify-content: center; }
+  html.anim :is([data-pin='ring'], [data-pin='doors'], [data-pin='pop']) .carousel__track { height: min(66svh, 150vw); }
+  html.anim .anim-peek { height: min(66svh, 150vw); }
+  /* Tarjetas (Servicios, Efectos, Adicionales) también centradas */
+  html.anim [data-pin='slide'] > section { display: flex; flex-direction: column; justify-content: center; }
+}
+@media (max-width: 1000px) {
+  html.anim [data-pin='spotlight'] .carousel__track { --xw: min(40vw, calc((100svh - 30rem) * 419 / 679)); }
+}
+@media (max-width: 640px) {
+  html.anim [data-pin='spotlight'] .carousel__track { --xw: min(66vw, calc((100svh - 26rem) * 419 / 679)); }
+}
+@media (max-width: 700px) {
+  html.anim [data-pin='tunnel'] .gallery__item { width: 92vw; }
 }

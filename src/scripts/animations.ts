@@ -3,7 +3,8 @@
  * Cada sección elige la suya en site.json → "anim" (lista en src/lib/anim.ts). Las que se quedan fijas
  * mientras se animan van envueltas en un tramo alto (.pin) y aquí se dibujan según cuánto se ha recorrido.
  *
- * - Solo corre si <html> tiene la clase "anim" (escritorio y sin "reducir movimiento"); si no, la web queda tal cual.
+ * - Solo corre si <html> tiene la clase "anim" (pantallas de 500 px de alto o más y sin "reducir movimiento");
+ *   si no, la web queda tal cual. Funciona con rueda, teclado, barra de scroll y dedo.
  * - No añade textos: solo mueve, recorta o duplica (de forma decorativa) lo que ya está en la página.
  * - Todo depende solo de la posición del scroll (sin muelles ni imanes): nunca se mueve sola ni va y vuelve.
  *   En las que van de un elemento a otro, cada uno se queda quieto un tramo y la transición ocupa el resto.
@@ -46,7 +47,6 @@ const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 const smooth = (x: number) => x * x * (3 - 2 * x);
-const unease = (e: number) => (e < 0.5 ? Math.sqrt(e / 2) : 1 - Math.sqrt((1 - e) / 2));
 const inOut = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 const backOut = (x: number) => 1 + 2.70158 * Math.pow(x - 1, 3) + 1.70158 * Math.pow(x - 1, 2);
 const box = (el: Element): Box => {
@@ -84,9 +84,14 @@ if (html.classList.contains('anim')) {
 
 function start() {
   // Al pasar a móvil (o al revés) se recarga: así la página queda exactamente como debe en cada caso
-  matchMedia('(min-width: 900px) and (min-height: 500px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').addEventListener('change', () => location.reload());
+  matchMedia('(min-height: 500px) and (prefers-reduced-motion: no-preference)').addEventListener('change', () => location.reload());
 
-  let vh = innerHeight;
+  // Alto de pantalla estable: el de la pantalla con la barra de direcciones visible (100svh), así en el móvil
+  // no cambia nada cuando esa barra aparece o desaparece al hacer scroll
+  const probe = make('div', 'anim-probe');
+  document.body.append(probe);
+  const screenH = () => probe.offsetHeight || innerHeight;
+  let vh = screenH();
   let vw = html.clientWidth;
   const mouse = { x: 0, y: 0 };
   let ticking = false;
@@ -646,19 +651,23 @@ function start() {
         warm: (urgent) => preload(c.items, urgent),
         measure() {
           // El carril mide justo lo que ocupan las tarjetas que caben (si se encogen por el alto, no asoma la siguiente)
-          track.style.width = '';
+          track.style.width = track.style.gridAutoColumns = '';
           m = cardsMetrics(track, view, items);
+          // Ancho de tarjeta fijo en px: si no, al estrechar el carril las tarjetas (en %) se encogerían con él
+          track.style.gridAutoColumns = `${m.cw}px`;
           track.style.width = `${m.visible * m.step - m.gap}px`;
           m = cardsMetrics(track, view, items);
           d.count(m.pages);
         },
         run(p) {
-          const t = ease(clamp((p - 0.1) / 0.8));
+          // Avanza de tarjeta en tarjeta: cada una se queda quieta un tramo (en el móvil se ve una entera cada vez)
+          const steps = Math.max(1, items.length - m.visible);
+          const t = plateau(clamp((p - 0.06) / 0.88) * steps * 0.9999, 0.22) / steps;
           const x = `translate3d(${(-m.max * t).toFixed(1)}px, 0, 0)`;
           items.forEach((el) => (el.style.transform = x));
           d.active(Math.round(t * (m.pages - 1)));
         },
-        at: (i) => (m.pages > 1 ? 0.1 + 0.8 * unease(i / (m.pages - 1)) : 0),
+        at: (i) => (m.pages > 1 ? 0.06 + 0.88 * (i / (m.pages - 1)) : 0),
       };
     },
 
@@ -1314,7 +1323,8 @@ function start() {
   let ringLive = false;
   function frame() {
     ticking = false;
-    // Si se arrastró la barra de scroll más allá del bloqueo, se vuelve al final de la sección
+    // Si se arrastró la barra de scroll (o la inercia del dedo) más allá del bloqueo, se vuelve al final de la sección
+    guard(anims.some((a) => a.hold && a.live));
     const lock = limit();
     if (lock != null && scrollY > lock + 1) scrollTo({ top: lock, behavior: 'instant' });
     const rects = anims.map((a) => a.pin.getBoundingClientRect());
@@ -1348,9 +1358,17 @@ function start() {
   }
 
   const measure = () => {
-    vh = innerHeight;
+    vh = screenH();
     vw = html.clientWidth;
-    anims.forEach((a) => (a.len = Math.max(1, a.pin.offsetHeight - vh)));
+    // «Nosotros» se queda fija solo si cabe en la pantalla; en pantallas pequeñas (texto largo) baja con normalidad
+    // y el bigote hace su viaje mientras la sección pasa
+    anims.forEach((a) => {
+      if (a.mode !== 'guide') return;
+      const sec = a.pin.firstElementChild as HTMLElement;
+      a.pin.classList.remove('pin--free');
+      a.pin.classList.toggle('pin--free', sec.scrollHeight > vh + 4);
+    });
+    anims.forEach((a) => (a.len = a.pin.classList.contains('pin--free') ? Math.max(1, a.pin.offsetHeight) : Math.max(1, a.pin.offsetHeight - vh)));
     anims.forEach((a) => a.measure?.());
     extras.forEach((x) => x.measure?.());
     guide?.measure();
@@ -1362,32 +1380,62 @@ function start() {
 
   addEventListener('scroll', request, { passive: true });
 
-  // Secciones que no dejan bajar hasta terminar (Efectos especiales: hasta que sale el efecto de la última carta)
+  // Secciones que no dejan bajar hasta terminar (Efectos especiales: hasta que sale el efecto de la última carta).
+  // Los saltos del menú, de la flecha o de los puntos lo atraviesan (bypass).
+  let bypass = 0;
   const limit = () => {
+    if (performance.now() < bypass) return null;
     for (const a of anims) {
       const y = a.hold?.();
       if (y != null) return y;
     }
     return null;
   };
-  addEventListener(
-    'wheel',
-    (e) => {
-      const y = limit();
-      if (y == null || e.deltaY <= 0 || scrollY + e.deltaY <= y) return;
-      e.preventDefault();
-      if (scrollY < y) scrollTo({ top: y, behavior: 'instant' });
-    },
-    { passive: false },
-  );
-  addEventListener('keydown', (e) => {
+  const onWheel = (e: WheelEvent) => {
+    const y = limit();
+    if (y == null || e.deltaY <= 0 || scrollY + e.deltaY <= y) return;
+    e.preventDefault();
+    if (scrollY < y) scrollTo({ top: y, behavior: 'instant' });
+  };
+  let touchY = 0;
+  const onTouchStart = (e: TouchEvent) => (touchY = e.touches[0]?.clientY ?? 0);
+  const onTouchMove = (e: TouchEvent) => {
+    const y = limit();
+    const dy = touchY - (e.touches[0]?.clientY ?? touchY); // > 0: el dedo sube = la página baja
+    if (y == null || dy <= 0 || scrollY < y - 2) return;
+    if (e.cancelable) e.preventDefault();
+  };
+  const onKey = (e: KeyboardEvent) => {
     if (!['ArrowDown', 'PageDown', 'End', ' ', 'Spacebar'].includes(e.key) || (e.target as Element | null)?.closest?.('input, textarea, select, [contenteditable]')) return;
     const y = limit();
     if (y == null || scrollY < y - 2) return;
     e.preventDefault();
-  });
+  };
+  // Estos escuchadores frenan el scroll del navegador (tiene que esperar a ver si se cancela): solo se ponen
+  // mientras la sección que bloquea está en pantalla, para no restar fluidez al resto de la página
+  let guarding = false;
+  const guard = (on: boolean) => {
+    if (on === guarding) return;
+    guarding = on;
+    const opts = { passive: false } as AddEventListenerOptions;
+    if (on) {
+      addEventListener('wheel', onWheel, opts);
+      addEventListener('touchstart', onTouchStart, { passive: true });
+      addEventListener('touchmove', onTouchMove, opts);
+      addEventListener('keydown', onKey);
+    } else {
+      removeEventListener('wheel', onWheel, opts);
+      removeEventListener('touchstart', onTouchStart);
+      removeEventListener('touchmove', onTouchMove, opts);
+      removeEventListener('keydown', onKey);
+    }
+  };
+  // En el móvil, la barra de direcciones cambia el alto de la ventana al hacer scroll: eso no es un cambio de tamaño
+  let lastW = innerWidth;
   let resizing = 0;
   addEventListener('resize', () => {
+    if (innerWidth === lastW && Math.abs(screenH() - vh) < 2) return request();
+    lastW = innerWidth;
     cancelAnimationFrame(resizing);
     resizing = requestAnimationFrame(init);
   });
@@ -1406,6 +1454,7 @@ function start() {
     const a = anims.find((x) => x.pin.contains(e.target as Node));
     if (!a?.at) return;
     const i = (e as CustomEvent<{ index: number }>).detail.index;
+    bypass = performance.now() + 1800;
     scrollTo({ top: a.pin.getBoundingClientRect().top + scrollY + a.at(i) * a.len, behavior: 'smooth' });
   });
 
@@ -1413,6 +1462,7 @@ function start() {
   document.addEventListener('click', (e) => {
     const link = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[href^="#"]');
     if (!link || e.defaultPrevented || link.hash.length < 2) return;
+    bypass = performance.now() + 2500; // un salto del menú atraviesa las secciones que bloquean
     const pin = document.getElementById(decodeURIComponent(link.hash.slice(1)))?.closest<HTMLElement>('.pin');
     if (!pin) return;
     e.preventDefault();

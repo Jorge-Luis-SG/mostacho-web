@@ -11,9 +11,9 @@ interface Props {
 const { ctx } = Astro.props;
 ---
 
-{/* Animaciones con el scroll: solo en escritorio (con ratón o trackpad) y si no se pidió reducir el movimiento. Se decide antes de pintar para que no salte el layout. */}
+{/* Animaciones con el scroll: en todas las pantallas (salvo móviles en horizontal, muy bajos) y si no se pidió reducir el movimiento. Se decide antes de pintar para que no salte el layout. */}
 <script is:inline>
-  if (matchMedia('(min-width: 900px) and (min-height: 500px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('anim');
+  if (matchMedia('(min-height: 500px) and (prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('anim');
 </script>
 <a href="#main" class="skip-link">{ctx.ui.skipToContent}</a>
 <Header ctx={ctx} />
