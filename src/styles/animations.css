@@ -84,6 +84,9 @@ html.anim [data-pin='guide'] .about__copy { position: relative; z-index: 1; }
 .anim-guide.on, .anim-traveler.on { visibility: visible; }
 .anim-guide img, .anim-traveler img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; }
 
+/* Servicios fija: el bigote de abajo a la derecha queda dentro de la pantalla (si no, el bigote guía «desaparece» al llegar) */
+html.anim [data-pin='slide']:not(.pin--free) > section > .decor-canvas > .decor:nth-child(2) { top: auto !important; bottom: 3svh; }
+
 /* ---------- Tarjetas que avanzan (slide) y que se reparten (deal) ---------- */
 html.anim [data-pin='slide'] .carousel__track {
   grid-auto-columns: min(calc((100% - 2 * var(--carousel-gap)) / 3), calc((100svh - 26rem) * 419 / 679));
@@ -198,9 +201,9 @@ html.anim [data-pin='tunnel'] .carousel__track { position: absolute; inset: 0; d
 html.anim [data-pin='tunnel'] .gallery__item {
   position: absolute;
   left: 50%;
-  top: 56%;
+  top: 55%;
   margin: 0;
-  width: min(76vw, calc(64svh * 1146 / 582));
+  width: min(86vw, calc(74svh * 1146 / 582));
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.9);
@@ -295,6 +298,9 @@ html.anim .header__cta:is(:hover, :focus-visible) .btn__icon img { animation: an
 @media (max-width: 640px) {
   html.anim [data-pin='spotlight'] .carousel__track { --xw: min(66vw, calc((100svh - 26rem) * 419 / 679)); }
 }
-@media (max-width: 700px) {
-  html.anim [data-pin='tunnel'] .gallery__item { width: 92vw; }
+/* Pantallas en vertical: la foto en un marco vertical que llena la pantalla (no una franja horizontal con negro alrededor) */
+@media (max-width: 700px), (max-aspect-ratio: 1/1) {
+  html.anim [data-pin='tunnel'] .gallery__item { width: min(90vw, calc(70svh * 4 / 5)); aspect-ratio: 4 / 5; top: 54%; }
+  html.anim [data-pin='tunnel'] .gallery__item img { height: 100%; aspect-ratio: auto; }
+  html.anim [data-pin='tunnel'] .gallery__item--lowres { aspect-ratio: 4 / 5; }
 }

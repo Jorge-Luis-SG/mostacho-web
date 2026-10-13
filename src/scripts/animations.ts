@@ -448,7 +448,7 @@ function start() {
       const fromLeft = Math.random() < 0.5;
       puffs.push({ x: fromLeft ? rnd(-150, innerWidth * 0.5) : rnd(innerWidth * 0.5, innerWidth + 150), y: innerHeight + rnd(-50, 70), vx: (fromLeft ? 1 : -1) * rnd(0.6, 2.2), vy: -rnd(0.15, 0.5), s: rnd(240, 380), grow: rnd(0.8, 1.6), drag: 0.997, g: 0, a: 0.2, life: 1, decay: rnd(0.0075, 0.009), spr: puffOf(pick(['#f2f2f6', '#dcdce4', '#ffffff'])) });
     });
-    return ms + 2200;
+    return ms + 1600; // emisión + la mayor parte del desvanecido
   };
   const FX: Record<string, (r: DOMRect) => number> = {
     // Bazooka: un chorro de humo de colores sale de la esquina superior derecha de la carta y se abre por la pantalla
@@ -497,13 +497,15 @@ function start() {
     while (!fxBusy && fxQueue.length) {
       const { run, done } = fxQueue.shift()!;
       const ms = run();
-      if (ms > 0)
+      if (ms > 0) {
+        // Se avisa de que terminó cuando va por el 85 % (lo que queda es solo el desvanecido final);
+        // el siguiente efecto sí espera al final para no pisarse
+        window.setTimeout(() => done?.(), ms * 0.85);
         fxBusy = window.setTimeout(() => {
           fxBusy = 0;
-          done?.();
           nextFx();
         }, ms);
-      else done?.();
+      } else done?.();
     }
   };
   /** Encola un efecto; done se llama cuando termina (o si se salta) */
@@ -844,7 +846,6 @@ function start() {
       // al empezar una tanda nueva, la anterior se retira). steps = cartas + 1.
       let stage = -1;
       const tok = flips.map(() => 0); // cada carta lleva su propia cuenta (sus chispas no se cancelan por las demás)
-      const steps = () => n + 1;
       const batchOf = (i: number) => Math.floor(i / m.visible);
       const slotX = (i: number) => {
         const b = batchOf(i);
@@ -973,17 +974,16 @@ function start() {
           snapAll();
         },
         run(p, len, top) {
-          // Baraja cerrada hasta que la sección está casi entera en pantalla; luego, una carta por cada tramo de scroll
-          // (el último tramo dura el doble: da tiempo a ver la última carta antes de seguir bajando).
-          const S = steps();
-          goal = top > vh * 0.3 ? 0 : Math.min(S - 1, Math.floor(clamp(p) * (S + 1) * 0.9999));
+          // Baraja cerrada hasta que la sección está casi entera en pantalla; luego, una carta por cada tramo de scroll.
+          // La última sale al 90 % del recorrido: al terminar su efecto apenas queda scroll y se sigue bajando enseguida.
+          goal = top > vh * 0.3 ? 0 : p >= 0.9 ? n : Math.floor((clamp(p) / 0.9) * n);
           away = top < -len - vh * 0.8; // la sección ya se fue por arriba
           endY = scrollY + top + len;
           inside = top <= vh * 0.3 && -top <= len + 2;
           advance();
         },
         hold: () => (inside && !(stage === n && !pending) ? endY : null),
-        at: (i) => (i * m.visible + 1 + 0.5) / (steps() + 1),
+        at: (i) => Math.min(0.95, ((i * m.visible + 1) / n) * 0.9),
       };
     },
 
@@ -1229,7 +1229,8 @@ function start() {
     const [gA, gB] = kids(g) as HTMLImageElement[];
     const [tA, tB] = kids(tr) as HTMLImageElement[];
     // a: bigote de «Nosotros» (relativo a la sección)
-    let K: { a: Box } | null = null;
+    // tb: caja de la copia que viaja por Servicios (algo más grande que el bigote, para crecer sin perder nitidez)
+    let K: { a: Box; tb: Box } | null = null;
     let idle = '';
     const show = (el: HTMLElement, on: boolean) => {
       const v = on ? '' : 'hidden';
@@ -1268,11 +1269,11 @@ function start() {
         const sg = box(abSec);
         const d1 = box(stD1);
         const d2 = box(stD2);
-        K = { a: { x: a.x - sg.x, y: a.y - sg.y, w: a.w, h: a.h } };
+        K = { a: { x: a.x - sg.x, y: a.y - sg.y, w: a.w, h: a.h }, tb: { x: 0, y: 0, w: d1.w * 1.4, h: d1.h * 1.4 } };
         size(g, K.a);
         fit(gB, K.a, d1);
-        size(tr, d1);
-        fit(tB, d1, d2);
+        size(tr, K.tb);
+        fit(tB, K.tb, d2);
         idle = '';
       },
       update(ar: DOMRect, sr: DOMRect) {
@@ -1300,14 +1301,18 @@ function start() {
         const k = clamp((vh - sr.top) / vh); // Servicios entrando en pantalla
         const q = clamp((clamp(-sr.top / sv.len) - 0.04) / 0.9);
         const { a } = K;
-        // Esquina de espera: abajo a la izquierda, justo encima de donde aterrizará en Servicios
-        const wx = d1.x + d1.w / 2;
-        const wy = vh * 0.82;
+        // Viaja a casi la mitad de su tamaño (M) y solo encoge del todo al aterrizar en Servicios
+        const M = Math.max(d1.w, a.w * 0.42);
+        const mh = (M * a.h) / a.w;
+        const d1x = d1.x + d1.w / 2;
+        // Esquina de espera: abajo a la izquierda, siempre entera dentro de la pantalla
+        const wx = clamp(d1x, M / 2 + 16, vw - M / 2 - 16);
+        const wy = Math.min(vh * 0.78, vh - mh / 2 - 12);
 
         // 1 · Desde su sitio va directo a la esquina, por DETRÁS del marco trofeo + foto, mientras se encoge
-        //     al tamaño del de Servicios (un solo movimiento continuo durante todo el tramo de «Nosotros»)
+        //     (un solo movimiento continuo durante todo el tramo de «Nosotros»)
         const e1 = smooth(clamp((P - 0.04) / 0.94));
-        const sc = lerp(1, d1.w / a.w, e1);
+        const sc = lerp(1, M / a.w, e1);
         const dx = (wx - (sg.x + a.x + a.w / 2)) * e1;
         const dy = (wy - (sg.y + a.y + a.h / 2)) * e1;
         stAbout.style.transform = e1 > 0 ? `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) scale(${sc.toFixed(4)}) rotate(${(Math.sin(e1 * Math.PI) * -8).toFixed(2)}deg)` : '';
@@ -1318,11 +1323,12 @@ function start() {
         fly(g, flying);
         if (flying) {
           const t = smooth(k);
-          put(g, a, wx, lerp(wy - k * vh, d1.y + d1.h / 2, t), d1.w, 0);
+          put(g, a, lerp(wx, d1x, t), lerp(wy - k * vh, d1.y + d1.h / 2, t), lerp(M, d1.w, t), 0);
           fade(gA, gB, clamp((k - 0.75) / 0.25));
         }
 
-        // 4 · Con Servicios fija, baja por DETRÁS de las tarjetas hasta el bigote de abajo
+        // 4 · Con Servicios fija, baja por el lado izquierdo y cruza por debajo de las tarjetas (en curva) hasta el
+        //     bigote de abajo a la derecha; a mitad de camino crece un poco
         show(stD1, k >= 1 && q <= 0);
         const fly2 = q > 0 && q < 1;
         fly(tr, fly2);
@@ -1332,7 +1338,18 @@ function start() {
           const y1 = d1.y - st.y + d1.h / 2;
           const x2 = d2.x - st.x + d2.w / 2;
           const y2 = d2.y - st.y + d2.h / 2;
-          put(tr, d1, lerp(x1, x2, e), lerp(y1, y2, e) + Math.sin(e * Math.PI) * vh * 0.05, lerp(d1.w, d2.w, e), Math.sin(e * Math.PI) * -10);
+          // Curva por la esquina de abajo a la izquierda, pegada al borde inferior de la pantalla (ahí las tarjetas
+          // ya no lo tapan del todo)
+          // Dos tramos suavizados: baja por el margen izquierdo (libre de tarjetas) y luego cruza por el borde de abajo
+          const cx = Math.max(x1, (d1.w * 0.7) / 2 + 12);
+          const yb = Math.max(y2, st.h - (d1.h * 1.35) / 2 - 6);
+          const leg = 0.45;
+          const f1 = smooth(clamp(e / leg));
+          const f2 = smooth(clamp((e - leg) / (1 - leg)));
+          const x = e < leg ? lerp(x1, cx, f1) : lerp(cx, x2, f2);
+          const y = e < leg ? lerp(y1, yb, f1) : lerp(yb, y2, f2);
+          const bump = 1 + 0.35 * Math.sin(e * Math.PI);
+          put(tr, K.tb, x, y, lerp(d1.w, d2.w, e) * bump, Math.sin(e * Math.PI) * -10);
           fade(tA, tB, clamp((e - 0.8) / 0.2));
         }
         show(stD2, q >= 1);

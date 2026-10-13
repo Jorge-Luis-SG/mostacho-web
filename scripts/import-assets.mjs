@@ -134,6 +134,8 @@ gallery.forEach((src, i) => (images[`galeria-${i + 1}.jpg`] = src));
 // ---------------------------------------------------------------------------
 const videos = {
   'hero.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 1280, crf: 32, fps: 24 },
+  // Versión para móviles y tablets en vertical: recorte central 9:16 y más ligera
+  'hero-movil.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 480, crf: 35, fps: 24, portrait: true },
   'servicio-hora-loca.mp4': { src: 'SERVICIOS/HORA LOCA.mp4', width: 720, crf: 26, poster: 'servicio-hora-loca.jpg' },
   'adicional-cabina-espejada.mp4': { src: 'SERVICIOS ADICIONALES/CABINA ESPEJADA.mp4', width: 720, crf: 26, poster: 'adicional-cabina-espejada.jpg' },
   'adicional-musica-en-vivo.mp4': { src: 'SERVICIOS ADICIONALES/MUSICA EN VIVO(1).mp4', width: 720, crf: 27, poster: 'adicional-musica-en-vivo.jpg' },
@@ -168,7 +170,8 @@ for (const [dst, v] of Object.entries(videos)) {
   const src = SRC + v.src, out = VID + dst;
   if (!fs.existsSync(src)) { console.warn(`⚠  no existe: ${src}`); continue; }
   if (!fresh(out, src)) {
-    execFileSync(ffmpegPath, ['-y', '-loglevel', 'error', '-i', src, '-an', '-vf', `scale='min(${v.width},iw)':-2,fps=${v.fps ?? 30}`,
+    const crop = v.portrait ? 'crop=ih*9/16:ih,' : '';
+    execFileSync(ffmpegPath, ['-y', '-loglevel', 'error', '-i', src, '-an', '-vf', `${crop}scale='min(${v.width},iw)':-2,fps=${v.fps ?? 30}`,
       '-c:v', 'libx264', '-preset', 'slow', '-crf', String(v.crf), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out]);
     done++;
     console.log(`✔ video/${dst} (${(fs.statSync(out).size / 1e6).toFixed(1)} MB)`);

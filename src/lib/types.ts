@@ -38,6 +38,8 @@ export interface HeroSection extends SectionBase {
   image: string;
   /** Video de fondo opcional (src/sites/<sitio>/video/). La imagen hace de póster. */
   video?: string;
+  /** Versión ligera del video para móviles y tablets en vertical (opcional). */
+  videoMobile?: string;
   scrollTo?: string;
   /** Silueta para la animación "mask" (normalmente el bigote). */
   animImage?: string;

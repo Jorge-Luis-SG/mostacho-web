@@ -12,9 +12,12 @@ interface Props {
   class?: string;
   /** Solo en pantallas grandes (en móvil se queda la foto para ahorrar datos). */
   desktopOnly?: boolean;
+  /** Versión ligera para móviles y tablets en vertical (opcional). */
+  srcSmall?: string;
 }
-const { site, src, class: className, desktopOnly = false } = Astro.props;
+const { site, src, class: className, desktopOnly = false, srcSmall } = Astro.props;
 const url = resolveVideo(site, src);
+const urlSmall = resolveVideo(site, srcSmall);
 ---
 
 {
@@ -22,6 +25,7 @@ const url = resolveVideo(site, src);
     <video
       class:list={['bg-video', className]}
       data-src={url}
+      data-src-small={urlSmall}
       data-desktop-only={desktopOnly ? '' : undefined}
       muted
       loop
@@ -38,31 +42,49 @@ const url = resolveVideo(site, src);
     window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
     // @ts-expect-error: API no estándar (Chrome/Android)
     navigator.connection?.saveData === true;
+  // Pantallas en vertical o pequeñas: versión ligera (data-src-small) si la hay
+  const small = window.matchMedia('(max-width: 900px), (max-aspect-ratio: 1/1)').matches;
+
+  // Si el navegador no deja reproducir solo (ahorro de batería, ajustes de reproducción automática…),
+  // se reintenta en cuanto el visitante toca, hace scroll o pulsa una tecla
+  const blocked = new Set<HTMLVideoElement>();
+  const retry = () => blocked.forEach((v) => start(v));
+  ['pointerdown', 'touchstart', 'keydown', 'scroll'].forEach((ev) => window.addEventListener(ev, retry, { passive: true }));
 
   const start = (video: HTMLVideoElement) => {
-    if (!video.src) video.src = video.dataset.src!;
+    if (!video.src) video.src = (small && video.dataset.srcSmall) || video.dataset.src!;
     // Tarjeta apartada en una animación (src/scripts/animations.ts): se carga pero no se reproduce hasta que pase al centro
     if (video.closest('.is-off')) return;
-    video.play().then(() => video.classList.add('is-playing')).catch(() => {});
+    video.muted = true; // imprescindible para que el navegador permita reproducirlo solo
+    video
+      .play()
+      .then(() => {
+        blocked.delete(video);
+        video.classList.add('is-playing');
+      })
+      .catch(() => blocked.add(video));
   };
 
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       const video = e.target as HTMLVideoElement;
       if (e.isIntersecting) start(video);
-      else video.pause();
+      else {
+        blocked.delete(video);
+        video.pause();
+      }
     }
   }, { rootMargin: '200px' });
 
   // Los videos empiezan a descargarse cuando la página ya cargó y el navegador está libre,
-  // para no competir con las fotos y el texto.
+  // para no competir con las fotos y el texto (el del inicio, en cuanto carga la página).
   const init = () => {
     document.querySelectorAll<HTMLVideoElement>('video.bg-video').forEach((video) => {
       if (video.hasAttribute('data-desktop-only') && window.innerWidth < 768) return;
       io.observe(video);
     });
   };
-  const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(init, { timeout: 2000 }) : setTimeout(init, 300));
+  const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(init, { timeout: 800 }) : setTimeout(init, 200));
   if (!quiet) {
     if (document.readyState === 'complete') whenIdle();
     else window.addEventListener('load', whenIdle, { once: true });

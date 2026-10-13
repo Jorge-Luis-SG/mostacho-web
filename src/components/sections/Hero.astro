@@ -37,7 +37,7 @@ const mask =
 <section id={section.id} class="hero" data-u aria-labelledby={`${section.id}-title`} data-anim={section.anim}>
   <div class="hero__media">
     <Img site={ctx.site} src={section.image} alt={text.imageAlt ?? ''} class="hero__bg" priority />
-    <BgVideo site={ctx.site} src={section.video} class="hero__bg" desktopOnly />
+    <BgVideo site={ctx.site} src={section.video} srcSmall={section.videoMobile} class="hero__bg" />
     <div class="hero__overlay" aria-hidden="true"></div>
   </div>
   {mask && <link rel="preload" as="image" href={mask.src} media="(min-width: 900px) and (prefers-reduced-motion: no-preference)" />}

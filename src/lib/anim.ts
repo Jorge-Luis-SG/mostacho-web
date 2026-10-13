@@ -19,16 +19,16 @@ export type AnimMode =
 export function pinLength(mode: AnimMode | undefined, count = 0): number | undefined {
   switch (mode) {
     case 'mask': return 200;
-    case 'guide': return 180;
+    case 'guide': return 240;
     // De un elemento a otro: un tramo corto por elemento (cada uno se queda quieto un momento)
     case 'slide': return 260;
     case 'ring':
     case 'doors':
     case 'spotlight': return 100 + count * 32;
-    // Un tramo por carta (salen de una en una), más uno para la baraja y otro al final
-    case 'deal': return 100 + (count + 2) * 35;
+    // Un tramo por carta (salen de una en una), más uno para la baraja
+    case 'deal': return 100 + (count + 1) * 30;
     case 'pop': return 200;
-    case 'tunnel': return 100 + count * 30;
+    case 'tunnel': return 100 + count * 20;
     default: return undefined;
   }
 }

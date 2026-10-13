@@ -39,6 +39,7 @@
       "image": "hero-fondo.jpg",
       "scrollTo": "nosotros",
       "video": "hero.mp4",
+      "videoMobile": "hero-movil.mp4",
       "anim": "mask",
       "animImage": "bigote-1.png"
     },

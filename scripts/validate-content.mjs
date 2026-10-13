@@ -176,6 +176,7 @@ for (const site of sites) {
     // Imágenes de la sección
     checkImage(site, s.image);
     checkVideo(site, s.video);
+    checkVideo(site, s.videoMobile);
     checkImage(site, s.awardImage);
     checkImage(site, s.teamImage);
     for (const item of s.items ?? []) {
