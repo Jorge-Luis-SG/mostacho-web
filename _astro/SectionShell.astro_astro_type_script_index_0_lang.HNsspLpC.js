@@ -1,0 +1,1 @@
+import{t as e}from"./mustache.Ca3dBcTc.js";matchMedia(`(hover: hover) and (pointer: fine)`).matches&&document.querySelectorAll(`.decor[data-mustache]`).forEach(t=>{let n=t.closest(`section`);n&&e(t,{zone:n,covered:`.card, .xcard, .carousel__arrow, .carousel__dots, a, button, header, h2`})});
