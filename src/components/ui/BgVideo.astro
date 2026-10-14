@@ -204,13 +204,14 @@ const urlSmall = resolveVideo(site, srcSmall);
 
   // Los videos empiezan a descargarse cuando la página ya cargó y el navegador está libre,
   // para no competir con las fotos y el texto (el del inicio, en cuanto carga la página).
+  // Los de las tarjetas responden al ratón o al dedo desde el primer momento (solo su descarga espera a acercarse)
   const init = () => {
-    document.querySelectorAll<HTMLVideoElement>('video.bg-video').forEach((video) => {
+    document.querySelectorAll<HTMLVideoElement>('video.bg-video:not([data-hover])').forEach((video) => {
       if (video.hasAttribute('data-desktop-only') && window.innerWidth < 768) return;
-      if (video.hasAttribute('data-hover')) return hoverVideo(video);
       io.observe(video);
     });
   };
+  if (!quiet) document.querySelectorAll<HTMLVideoElement>('video.bg-video[data-hover]').forEach(hoverVideo);
   const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(init, { timeout: 800 }) : setTimeout(init, 200));
   if (!quiet) {
     if (document.readyState === 'complete') whenIdle();
