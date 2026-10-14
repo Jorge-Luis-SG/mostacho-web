@@ -1,7 +1,8 @@
 /**
  * Bigote que reacciona al cursor: dos posiciones. Al pasar el cursor sobre su parte visible cae a la segunda
  * (más abajo, inclinado hacia la izquierda y algo más grande) con dos rebotes suaves; al quitarlo vuelve a su
- * sitio, también con dos rebotes. Lo usan «Nosotros» y los bigotes decorativos de las secciones (decor[].hover).
+ * sitio, también con dos rebotes. Lo usan «Nosotros» y los bigotes decorativos de las secciones (decor[].hover),
+ * desde src/scripts/hover-init.ts.
  */
 
 // Recorrido con dos rebotes suaves: pasa un poco de largo, vuelve un poco, pasa de largo menos y se asienta
