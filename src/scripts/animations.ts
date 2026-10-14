@@ -33,6 +33,8 @@ type Anim = {
   each?: (r: DOMRect, len: number) => void;
   /** Si devuelve un número, no se deja bajar el scroll más allá de esa posición (la sección aún no terminó) */
   hold?: () => number | null;
+  /** El visitante insiste en bajar contra el bloqueo: la sección termina ya (sin esperar a sus efectos) */
+  skip?: () => void;
   /** Al acercarse la sección (una vez): adelanta la carga de sus fotos. urgent: ya está en pantalla */
   warm?: (urgent?: boolean) => void;
   live?: boolean;
@@ -513,6 +515,8 @@ function start() {
     fxQueue.push({ run, done });
     nextFx();
   };
+  /** Descarta los efectos que aún no empezaron (el que está en marcha termina de desvanecerse) */
+  const clearFx = () => (fxQueue.length = 0);
 
   // Silueta del bigote (la del inicio o, si no hay, la de «Nosotros») para el dorso de las tarjetas
   const stache = document.querySelector<HTMLImageElement>('.hero__stache')?.src || srcOf(document.querySelector('.about__decor'));
@@ -874,7 +878,8 @@ function start() {
         if (!pending) advance();
         request(); // por si hay que soltar el bloqueo del scroll
       };
-      const put = (f: HTMLElement, i: number, st: State, delay: number | null) => {
+      // quiet: la carta se mueve sin soltar su efecto (al subir, o al pasar deprisa por la sección)
+      const put = (f: HTMLElement, i: number, st: State, delay: number | null, quiet = false) => {
         const my = ++tok[i];
         const j = i % m.visible;
         const cnt = Math.min(m.visible, n - batchOf(i) * m.visible);
@@ -891,8 +896,8 @@ function start() {
         f.style.zIndex = String(n - rank(j, cnt)); // encima de la baraja, la siguiente que va a salir
         f.inert = st !== 'dealt';
         f.classList.toggle('is-lift', st === 'dealt' && delay !== null);
-        if (st === 'dealt' && delay !== null) {
-          f.style.animationDelay = `${delay}ms`;
+        if (st === 'dealt' && delay !== null) f.style.animationDelay = `${delay}ms`;
+        if (st === 'dealt' && delay !== null && !quiet) {
           // Al caer la carta suelta chispas y su efecto llena la pantalla (humo, neblina, fuegos…), en cola tras el anterior
           pending++;
           setTimeout(() => {
@@ -919,13 +924,20 @@ function start() {
       // Al subir, o si la sección ya no está en pantalla, se va directo.
       let goal = 0;
       let away = false;
+      // rush: se está pasando deprisa (scroll muy rápido o insistiendo contra el bloqueo): las cartas siguen al scroll
+      // al momento, sin esperar a los efectos, y la sección no frena
+      let rush = false;
       const advance = () => {
         if (goal === stage) return;
-        if (goal < stage || away || stage < 0) return show(goal);
+        if (goal < stage || away || rush || stage < 0) {
+          clearFx();
+          pending = 0;
+          return show(goal, true);
+        }
         if (!pending) show(stage + 1);
       };
       let prevStage = -1;
-      const show = (st: number) => {
+      const show = (st: number, quiet = false) => {
         if (st === stage) return;
         if (st < stage) pending = 0;
         prevStage = stage;
@@ -946,7 +958,7 @@ function start() {
           if (w === cur[i]) return;
           const j = i % m.visible;
           if (w === 'hidden' && cur[i] === 'dealt') w = 'goneR'; // al subir, la tanda se retira hacia la derecha
-          if (w === 'dealt') put(f, i, w, forward ? (leaving ? 380 : 60) : 0);
+          if (w === 'dealt') put(f, i, w, forward ? (leaving ? 380 : 60) : 0, quiet);
           else if (w === 'goneL' || w === 'goneR') put(f, i, w, j * 70);
           else if (w === 'deck') put(f, i, w, 0);
           else put(f, i, w, null);
@@ -957,6 +969,9 @@ function start() {
       // Mientras no haya salido la última carta y terminado su efecto, no se puede bajar más allá de la sección
       let endY = 0;
       let inside = false;
+      let lastY = 0;
+      let lastT = 0;
+      let speed = 0; // px/s, suavizada
       return {
         warm: (urgent) => preload(flips, urgent),
         measure() {
@@ -974,9 +989,20 @@ function start() {
           away = top < -len - vh * 0.8; // la sección ya se fue por arriba
           endY = scrollY + top + len;
           inside = top <= vh * 0.3 && -top <= len + 2;
+          const now = performance.now();
+          if (now - lastT < 200) speed = speed * 0.6 + ((Math.abs(scrollY - lastY) / Math.max(1, now - lastT)) * 1000) * 0.4;
+          else speed = 0;
+          lastY = scrollY;
+          lastT = now;
+          if (!inside) rush = false;
+          else if (speed > vh * 2.5 && goal - stage >= 2) rush = true;
           advance();
         },
-        hold: () => (inside && !(stage === n && !pending) ? endY : null),
+        hold: () => (inside && !rush && !(stage === n && !pending) ? endY : null),
+        skip() {
+          rush = true;
+          advance();
+        },
         at: (i) => Math.min(0.95, ((i * m.visible + 1) / n) * 0.9),
       };
     },
@@ -1358,7 +1384,10 @@ function start() {
     // Si se arrastró la barra de scroll (o la inercia del dedo) más allá del bloqueo, se vuelve al final de la sección
     guard(anims.some((a) => a.hold && a.live));
     const lock = limit();
-    if (lock != null && scrollY > lock + 1) scrollTo({ top: lock, behavior: 'instant' });
+    if (lock != null && scrollY > lock + 1) {
+      scrollTo({ top: lock, behavior: 'instant' });
+      pushed(14); // la inercia del dedo sigue empujando: también cuenta como insistir
+    }
     const rects = anims.map((a) => a.pin.getBoundingClientRect());
     const reads = extras.map((x) => x.read());
     if (guide) guide.update(rects[abIdx], rects[svIdx]);
@@ -1427,11 +1456,24 @@ function start() {
     }
     return null;
   };
+  // Si el visitante sigue empujando contra el bloqueo (un segundo de rueda o de dedo), la sección se da por
+  // terminada y se le deja pasar: el bloqueo solo frena un momento, nunca atrapa
+  let pushes = 0;
+  let lastPush = 0;
+  const pushed = (enough: number) => {
+    const now = performance.now();
+    pushes = now - lastPush > 700 ? 1 : pushes + 1;
+    lastPush = now;
+    if (pushes < enough) return;
+    pushes = 0;
+    anims.forEach((a) => a.hold?.() != null && a.skip?.());
+  };
   const onWheel = (e: WheelEvent) => {
     const y = limit();
     if (y == null || e.deltaY <= 0 || scrollY + e.deltaY <= y) return;
     e.preventDefault();
     if (scrollY < y) scrollTo({ top: y, behavior: 'instant' });
+    pushed(10);
   };
   let touchY = 0;
   const onTouchStart = (e: TouchEvent) => (touchY = e.touches[0]?.clientY ?? 0);
@@ -1440,12 +1482,14 @@ function start() {
     const dy = touchY - (e.touches[0]?.clientY ?? touchY); // > 0: el dedo sube = la página baja
     if (y == null || dy <= 0 || scrollY < y - 2) return;
     if (e.cancelable) e.preventDefault();
+    pushed(18);
   };
   const onKey = (e: KeyboardEvent) => {
     if (!['ArrowDown', 'PageDown', 'End', ' ', 'Spacebar'].includes(e.key) || (e.target as Element | null)?.closest?.('input, textarea, select, [contenteditable]')) return;
     const y = limit();
     if (y == null || scrollY < y - 2) return;
     e.preventDefault();
+    pushed(3);
   };
   // Estos escuchadores frenan el scroll del navegador (tiene que esperar a ver si se cancela): solo se ponen
   // mientras la sección que bloquea está en pantalla, para no restar fluidez al resto de la página

@@ -290,7 +290,8 @@ const popBg = (pop: ShowcasePop) =>
   @media (max-width: 700px) {
     .showcase__pops { display: none; }
     .showcase__slides { --pop-room: calc(var(--slide-h) * 0.2); }
-    .showcase__slides :global(.carousel__track) { padding-top: var(--pop-room); margin-top: calc(-1 * var(--pop-room)); }
+    /* overflow-y: hidden: el carrusel solo se desliza en horizontal (el personaje fuera de su sitio no lo hace desplazable en vertical) */
+    .showcase__slides :global(.carousel__track) { padding-top: var(--pop-room); margin-top: calc(-1 * var(--pop-room)); overflow-y: hidden; }
     .showcase__slides :global(.carousel__viewport) { display: flow-root; } /* que ese margen no arrastre el slider hacia arriba */
     .showcase__slides .slide { overflow: visible; clip-path: inset(calc(-1 * var(--pop-room)) 0 0 0); }
     /* Lo demás no se sale por arriba: fotos (y su desenfoque) recortadas a su caja */

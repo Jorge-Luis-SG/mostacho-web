@@ -3,7 +3,8 @@
  * Video de fondo (en bucle) que se pone encima de su imagen.
  * La imagen sigue debajo como póster: si el video no carga, no está o el visitante
  * prefiere menos movimiento / ahorro de datos, se ve la foto.
- * Normalmente va sin sonido; con hover + sound, el sonido entra poco a poco al pasar el ratón.
+ * Normalmente va sin sonido; con hover + sound, el sonido entra poco a poco al pasar el ratón
+ * (en pantallas táctiles, al tocar la tarjeta: lleva un botón de «play» para que se note).
  */
 import { resolveVideo } from '../../lib/images';
 
@@ -43,6 +44,7 @@ const urlSmall = resolveVideo(site, srcSmall);
     />
   )
 }
+{url && hover && <span class="bg-video__tap" aria-hidden="true" />}
 
 <script>
   const quiet =
@@ -120,7 +122,7 @@ const urlSmall = resolveVideo(site, srcSmall);
   // Al pasar el ratón por el contenedor (la tarjeta) se reproduce; al salir se funde de vuelta a la foto.
   // Cuando la tarjeta se acerca a la pantalla solo se pide el comienzo del video; se descarga entero cuando el
   // ratón entra en el carrusel (antes de llegar a la tarjeta), así empieza al instante sin gastar datos de más.
-  // Sin ratón (pantallas táctiles) se queda la foto.
+  // Sin ratón (pantallas táctiles), ver tapVideo.
   const near = new IntersectionObserver((entries) => {
     for (const e of entries) {
       if (!e.isIntersecting) continue;
@@ -136,8 +138,9 @@ const urlSmall = resolveVideo(site, srcSmall);
   });
   const hoverVideo = (video: HTMLVideoElement) => {
     const zone = video.parentElement;
-    if (!zone || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (!zone) return;
     near.observe(video);
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return tapVideo(video, zone);
     const area = zone.closest('[data-carousel]') ?? zone;
     area.addEventListener('pointerenter', () => warmUp(area), { once: true });
     zone.addEventListener('pointerenter', () => {
@@ -154,6 +157,47 @@ const urlSmall = resolveVideo(site, srcSmall);
       fadeVolume(video, 0, 900, () => {
         video.pause();
         video.muted = true;
+      });
+    });
+  };
+
+  // Pantallas táctiles: al tocar la tarjeta (fuera de su botón) se reproduce con el sonido entrando poco a poco;
+  // al volver a tocarla, al tocar otra o al salir de la pantalla, se funde de vuelta a la foto
+  let active: HTMLVideoElement | null = null;
+  const stop = (video: HTMLVideoElement) => {
+    if (active === video) active = null;
+    video.classList.remove('is-playing');
+    fadeVolume(video, 0, 700, () => {
+      video.pause();
+      video.muted = true;
+    });
+  };
+  const offscreen = new IntersectionObserver((entries) => {
+    for (const e of entries) if (!e.isIntersecting && active === e.target) stop(e.target as HTMLVideoElement);
+  });
+  const tapVideo = (video: HTMLVideoElement, zone: HTMLElement) => {
+    offscreen.observe(video);
+    zone.addEventListener('click', (e) => {
+      if ((e.target as Element).closest('a, button')) return;
+      if (active === video) return stop(video);
+      if (active) stop(active);
+      active = video;
+      if (!video.src) video.src = video.dataset.src!;
+      video.preload = 'auto';
+      cancelAnimationFrame(ramps.get(video) ?? 0);
+      // play() va dentro del toque: así el navegador deja que suene
+      const sound = video.hasAttribute('data-sound');
+      video.muted = !sound;
+      video.volume = 0;
+      const shown = () => {
+        if (active !== video) return;
+        video.classList.add('is-playing');
+        if (sound && !video.muted) fadeVolume(video, 1, 2200);
+      };
+      video.play().then(shown, () => {
+        // Si no deja con sonido, al menos se ve
+        video.muted = true;
+        video.play().then(shown, () => {});
       });
     });
   };
@@ -184,4 +228,33 @@ const urlSmall = resolveVideo(site, srcSmall);
   .bg-video:global(.is-playing) { opacity: 1; }
   /* Videos de «pasar el ratón» (tarjetas): fundido más lento y suave entre la foto y el video */
   .bg-video[data-hover] { transition: opacity 0.9s cubic-bezier(0.45, 0, 0.25, 1); }
+  /* Botón de «play» de las tarjetas con video, solo en pantallas táctiles; se va mientras el video se ve */
+  .bg-video__tap { display: none; }
+  @media not ((hover: hover) and (pointer: fine)) {
+    .bg-video__tap {
+      display: grid;
+      place-items: center;
+      position: absolute;
+      top: 1.4rem;
+      right: 1.4rem;
+      z-index: 1;
+      width: 4.4rem;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: rgb(0 0 0 / 0.45);
+      border: 1px solid rgb(255 255 255 / 0.5);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .bg-video__tap::before {
+      content: '';
+      margin-left: 0.3rem;
+      border-style: solid;
+      border-width: 0.8rem 0 0.8rem 1.3rem;
+      border-color: transparent transparent transparent #fff;
+    }
+    .bg-video:global(.is-playing) + .bg-video__tap { opacity: 0; transform: scale(0.8); }
+  }
 </style>
