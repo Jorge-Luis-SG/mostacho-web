@@ -62,6 +62,15 @@ const popBg = (pop: ShowcasePop) =>
               {slide.pop?.glow && (
                 <div class="slide__popglow" aria-hidden="true" style={`--pop-glow:radial-gradient(ellipse ${slide.pop.glowSize ?? '40% 85%'} at ${slide.pop.glowAt ?? '80% 50%'}, ${slide.pop.glow}, transparent)`} />
               )}
+              {
+                /* Personaje en el móvil: dentro de la diapositiva, por detrás del título y el botón (en escritorio va en
+                   la capa de encima, ver .showcase__pops) */
+                slide.pop && (
+                  <div class:list={['slide__mpop', slide.inside && 'slide__mpop--still']} aria-hidden="true">
+                    <Img site={ctx.site} src={slide.pop.image} alt="" sizes="(max-width: 1400px) 60vw, 1100px" maxWidth={1600} optional />
+                  </div>
+                )
+              }
               <div class="slide__content">
                 {s.kicker && <p class="slide__kicker">{s.kicker}</p>}
                 {slide.titleImage ? (
@@ -105,9 +114,10 @@ const popBg = (pop: ShowcasePop) =>
 </SectionShell>
 
 <script>
-  // Al pasar el ratón por el carrusel, el personaje de la diapositiva que se ve entra desde la derecha;
-  // si cambia la diapositiva, el anterior sale y entra el nuevo; al quitar el ratón, se va por la derecha.
-  const canHover = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 701px)');
+  // El personaje de la diapositiva que se ve entra desde la esquina de abajo a la derecha: en escritorio al pasar
+  // el ratón por el carrusel; en pantallas táctiles, en cuanto el carrusel está a la vista. Si cambia la
+  // diapositiva, el anterior se va con la suya y entra el nuevo; al salir (ratón o pantalla), se va por la esquina.
+  const touch = !matchMedia('(hover: hover) and (pointer: fine)').matches;
   document.querySelectorAll<HTMLElement>('[data-pops]').forEach((layer) => {
     const zone = layer.parentElement!;
     const track = zone.querySelector<HTMLElement>('[data-track]');
@@ -116,8 +126,12 @@ const popBg = (pop: ShowcasePop) =>
     const strip = layer.querySelector<HTMLElement>('[data-strip]')!;
     const pops = Array.from(strip.children) as HTMLElement[];
     const slides = Array.from(track.children) as HTMLElement[];
+    // En el móvil el personaje va dentro de la diapositiva; en el resto, en la capa de encima
+    const mobile = matchMedia('(max-width: 700px)');
+    const imgOf = (i: number) => (mobile.matches ? slides[i]?.querySelector('.slide__mpop img') : pops[i]?.querySelector('img')) ?? null;
     let shown = -1;
     let over = false;
+    let tok = 0;
     const current = () => Math.round(track.scrollLeft / Math.max(1, slides[0]?.offsetWidth ?? 1));
     // Personaje (en la capa de encima) y su fondo (dentro de la diapositiva) se encienden y apagan juntos
     const toggle = (i: number, on: boolean) => {
@@ -125,29 +139,58 @@ const popBg = (pop: ShowcasePop) =>
       slides[i]?.classList.toggle('is-pop', on);
     };
     const show = () => {
-      const next = over && canHover.matches && pops[current()]?.classList.contains('showcase__pop') ? current() : -1;
+      const i = current();
+      const next = over && pops[i]?.classList.contains('showcase__pop') ? i : -1;
       if (next === shown) return;
       toggle(shown, false);
       shown = next;
-      toggle(shown, true);
+      if (next < 0) return;
+      // Entra cuando su imagen ya está lista para pintarse: así también la primera vez se ve la animación entera
+      const my = ++tok;
+      const img = imgOf(next);
+      const go = () => my === tok && shown === next && toggle(next, true);
+      if (!img || (img.complete && img.naturalWidth)) go();
+      else img.decode().then(go, go);
     };
     // La tira de personajes sigue al carrusel (también mientras se desliza entre diapositivas)
     const follow = () => {
       strip.style.transform = `translate3d(${-track.scrollLeft}px, 0, 0)`;
       show();
     };
-    zone.addEventListener('pointerenter', () => { over = true; follow(); });
-    zone.addEventListener('pointerleave', () => { over = false; show(); });
     let frame = 0;
     track.addEventListener('scroll', () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(follow);
     }, { passive: true });
-    // Si la página se mueve bajo el cursor quieto (rueda), se comprueba que siga encima
-    addEventListener('scroll', () => {
-      if (over && !zone.matches(':hover')) { over = false; show(); }
-    }, { passive: true });
     new ResizeObserver(follow).observe(track);
+
+    // Cuando el carrusel se acerca a la pantalla se descargan todos sus personajes (están fuera de la vista y,
+    // si no, el navegador los dejaría para el último momento)
+    new IntersectionObserver((entries, io) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      pops.forEach((_, i) => {
+        const img = imgOf(i);
+        if (!img) return;
+        img.fetchPriority = 'high'; // por delante de los videos, que se descargan a la vez
+        img.loading = 'eager';
+      });
+    }, { rootMargin: '300% 0px' }).observe(zone);
+
+    if (touch) {
+      // Táctil: el personaje entra cuando la mayor parte del carrusel está en pantalla y se va al salir
+      new IntersectionObserver(([e]) => {
+        over = e.intersectionRatio >= 0.6;
+        follow();
+      }, { threshold: [0, 0.6] }).observe(zone);
+    } else {
+      zone.addEventListener('pointerenter', () => { over = true; follow(); });
+      zone.addEventListener('pointerleave', () => { over = false; show(); });
+      // Si la página se mueve bajo el cursor quieto (rueda), se comprueba que siga encima
+      addEventListener('scroll', () => {
+        if (over && !zone.matches(':hover')) { over = false; show(); }
+      }, { passive: true });
+    }
   });
 </script>
 
@@ -210,6 +253,8 @@ const popBg = (pop: ShowcasePop) =>
     clip-path: inset(-60% 0 0 0);
   }
   .showcase__strip { position: absolute; inset: 0; will-change: transform; }
+  /* Entra desde la esquina de abajo a la derecha (asoma por el borde, que lo recorta) con un leve giro, y frena
+     suave al llegar; al irse vuelve hacia la esquina, más rápido */
   .showcase__pop {
     position: absolute;
     top: 0;
@@ -217,14 +262,15 @@ const popBg = (pop: ShowcasePop) =>
     width: 100%;
     container-type: size;
     opacity: 0;
-    transform: translateX(14%);
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.45s ease;
+    transform: translate(26%, 20%) rotate(5deg);
+    transform-origin: 100% 100%;
+    transition: transform 0.6s cubic-bezier(0.5, 0, 0.75, 0.3), opacity 0.5s ease 0.1s;
     will-change: transform, opacity;
   }
   .showcase__pop.is-on {
     opacity: 1;
     transform: none;
-    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease;
+    transition: transform 1.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
   }
   .showcase__pop :global(img) {
     position: absolute;
@@ -237,17 +283,59 @@ const popBg = (pop: ShowcasePop) =>
     max-width: none;
     height: auto;
   }
-  /* Sin ratón (táctil) o en el móvil no hay efecto: ni se descargan las imágenes */
-  @media not ((hover: hover) and (pointer: fine)), (max-width: 700px) {
+  /* Móvil: la diapositiva ocupa todo el ancho y el texto va abajo a la izquierda. El personaje va dentro de la
+     diapositiva, por detrás del texto, apoyado abajo a la derecha y un poco más alto que ella: asoma por arriba
+     (la diapositiva se recorta solo por los lados y por abajo, y el carrusel deja sitio encima) */
+  .slide__mpop { display: none; }
+  @media (max-width: 700px) {
     .showcase__pops { display: none; }
+    .showcase__slides { --pop-room: calc(var(--slide-h) * 0.2); }
+    .showcase__slides :global(.carousel__track) { padding-top: var(--pop-room); margin-top: calc(-1 * var(--pop-room)); }
+    .showcase__slides :global(.carousel__viewport) { display: flow-root; } /* que ese margen no arrastre el slider hacia arriba */
+    .showcase__slides .slide { overflow: visible; clip-path: inset(calc(-1 * var(--pop-room)) 0 0 0); }
+    /* Lo demás no se sale por arriba: fotos (y su desenfoque) recortadas a su caja */
+    .slide :global(.slide__img) { clip-path: inset(0); }
+    .slide:global(.is-pop) :global(.slide__img) { scale: none; }
+    .slide :global(.slide__backdrop) { clip-path: inset(6.6%); }
+    .slide__content { text-shadow: 0 0.2rem 1.2rem rgb(0 0 0 / 0.45); }
+    .slide__mpop {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      container-type: size;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(26%, 20%) rotate(5deg);
+      transform-origin: 100% 100%;
+      transition: transform 0.6s cubic-bezier(0.5, 0, 0.75, 0.3), opacity 0.5s ease 0.1s;
+    }
+    .slide:global(.is-pop) .slide__mpop {
+      opacity: 1;
+      transform: none;
+      transition: transform 1.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+    }
+    .slide__mpop--still, .slide:global(.is-pop) .slide__mpop--still { transform: none; transition: opacity 0.5s ease; }
+    .slide__mpop :global(img), .slide__inside :global(img) {
+      position: absolute;
+      left: auto;
+      right: -4%;
+      top: -16cqh;
+      width: auto;
+      height: 116cqh;
+      max-width: 66%;
+      object-fit: contain;
+      object-position: 100% 100%;
+      translate: none;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .showcase__pop { transform: none; }
+    .showcase__pop, .slide__mpop { transform: none; }
   }
   /* Fondo que acompaña al personaje (resplandor, tinte o capa oscura): sobre la foto, por debajo del degradado y el texto */
   /* Diapositiva sin foto: en reposo, el mismo personaje con el mismo tamaño y sitio, recortado dentro de la
      diapositiva; al pasar el ratón se enciende encima el de la capa de personajes (quieto) y asoma por arriba */
-  .slide__inside { position: absolute; inset: 0; z-index: -2; container-type: size; }
+  .slide__inside { position: absolute; inset: 0; z-index: -2; container-type: size; overflow: hidden; }
   .slide__inside :global(img) {
     position: absolute;
     left: calc(var(--pop-cx) * 1%);
@@ -258,9 +346,6 @@ const popBg = (pop: ShowcasePop) =>
     translate: -50% 0;
   }
   .showcase__pop--still, .showcase__pop--still.is-on { transform: none; transition: opacity 0.5s ease; }
-  @media (max-width: 700px) {
-    .slide__inside :global(img) { left: 50%; top: 4%; width: auto; height: 96%; }
-  }
   .slide__popbg {
     position: absolute;
     top: 0;
