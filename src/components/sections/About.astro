@@ -55,6 +55,17 @@ const titleId = `${section.id}-title`;
   :global(section.shell.about) > :global(.shell__inner) { width: min(100% - 2 * var(--layout-gutter), var(--layout-container)); }
   .about__media { position: relative; isolation: isolate; container-type: inline-size; }
   .about__decor { position: absolute; z-index: -1; pointer-events: none; transform-origin: 50% 60%; will-change: transform; }
+  .about__decor :global(img) { width: 100%; height: auto; }
+  .about__frame, figcaption { position: relative; }
+  /* El texto siempre por delante del bigote (en tablet y móvil el bigote sube por detrás del párrafo) */
+  .about__copy { position: relative; z-index: 1; }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 63.5fr) minmax(0, 87fr);
+    gap: clamp(2rem, calc(7.1 * var(--u)), 13.7rem);
+    align-items: start;
+  }
   h2 { font-size: var(--size-display); line-height: 0.973; }
   @media (min-width: 901px) { h2 { white-space: pre; } }
   .about__copy p {
