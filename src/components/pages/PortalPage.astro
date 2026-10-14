@@ -35,10 +35,12 @@ const { ui } = t;
       {
         config.countries.map((c) => (
           <li>
-            <a href={pathFor(lang, routeOf(c.site))} class="portal__country" aria-label={t.countries[c.site]}>
+            <a href={pathFor(lang, routeOf(c.site))} class="portal__country">
               <span class="portal__flag">
                 <Img site={site} src={c.flag} alt="" sizes="160px" />
               </span>
+              {/* Nombre del país: aparece al pasar el ratón (la píldora se alarga hacia la derecha) */}
+              <span class="portal__name">{t.countries[c.site]}</span>
             </a>
           </li>
         ))
@@ -86,18 +88,55 @@ const { ui } = t;
     line-height: 1;
   }
 
-  .portal__countries { display: flex; gap: clamp(2.4rem, calc(2.6 * var(--u)), 5rem); margin-top: clamp(3rem, calc(3.77 * var(--u)), 7.24rem); }
-  .portal__country { display: block; border-radius: 50%; }
+  .portal__countries {
+    --flag: clamp(10rem, calc(7.8 * var(--u)), 15rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(2.4rem, calc(2.6 * var(--u)), 5rem);
+    margin-top: clamp(3rem, calc(3.77 * var(--u)), 7.24rem);
+  }
+  /* Píldora de cristal: en reposo es solo el círculo de la bandera; al pasar el ratón se alarga y muestra el país */
+  .portal__country {
+    display: flex;
+    align-items: center;
+    padding: clamp(0.8rem, calc(0.62 * var(--u)), 1.2rem);
+    border-radius: 999px;
+    background: var(--color-flag-ring);
+    border: 2px solid var(--color-pill-border);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
   .portal__flag {
     display: grid;
     place-items: center;
-    width: clamp(10rem, calc(7.8 * var(--u)), 15rem);
+    flex: none;
+    width: calc(var(--flag) - 2 * clamp(0.8rem, calc(0.62 * var(--u)), 1.2rem) - 4px);
     aspect-ratio: 1;
-    padding: clamp(0.8rem, calc(0.62 * var(--u)), 1.2rem);
     border-radius: 50%;
-    background: var(--color-flag-ring);
-    border: 2px solid var(--color-pill-border);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .portal__name {
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    padding-inline: 0;
+    font-family: var(--font-heading);
+    font-weight: var(--heading-weight);
+    text-transform: var(--heading-transform);
+    letter-spacing: var(--heading-letter-spacing);
+    font-size: calc(var(--flag) * 0.3);
+    line-height: 1;
+    color: var(--color-text);
+    transition: max-width 0.4s cubic-bezier(0.2, 0.8, 0.25, 1), padding 0.4s cubic-bezier(0.2, 0.8, 0.25, 1), opacity 0.25s ease;
+  }
+  .portal__country:hover, .portal__country:focus-visible { background: rgb(255 255 255 / 0.2); box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.6); }
+  .portal__country:hover .portal__name, .portal__country:focus-visible .portal__name {
+    max-width: 12em;
+    padding-inline: 0.55em 0.75em;
+    opacity: 1;
+    transition-delay: 0s, 0s, 0.1s;
   }
   .portal__flag :global(img), .portal__flag :global(.img-missing) {
     width: 100%;
@@ -106,10 +145,6 @@ const { ui } = t;
     object-fit: cover;
   }
   .portal__flag :global(.img-missing) { font-size: 0.9rem; padding: 0.4rem; }
-  .portal__country:hover .portal__flag, .portal__country:focus-visible .portal__flag {
-    transform: scale(1.06);
-    box-shadow: 0 0 0 4px var(--color-text);
-  }
 
   .portal :global(.portal__social) { margin-top: clamp(4rem, calc(3.25 * var(--u)), 6.25rem); gap: 2.4rem; }
 </style>
