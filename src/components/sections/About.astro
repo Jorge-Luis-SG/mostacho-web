@@ -54,7 +54,19 @@ const titleId = `${section.id}-title`;
   }
   :global(section.shell.about) > :global(.shell__inner) { width: min(100% - 2 * var(--layout-gutter), var(--layout-container)); }
   .about__media { position: relative; isolation: isolate; container-type: inline-size; }
-  .about__decor { position: absolute; z-index: -1; pointer-events: none; }
+  .about__decor { position: absolute; z-index: -1; pointer-events: none; transform-origin: 50% 70%; }
+  /* Al pasar el cursor por el bigote: cae inclinándose a un lado, rebota al otro y repite (dos rebotes) */
+  .about__decor :global(img) { pointer-events: auto; }
+  .about__decor.is-bouncing { animation: stache-bounce 1.5s cubic-bezier(0.3, 0.6, 0.3, 1); }
+  @keyframes stache-bounce {
+    0% { transform: none; }
+    14% { transform: translateY(4%) rotate(-7deg) scale(1.04); }
+    30% { transform: translateY(-3%) rotate(5deg) scale(1.02); }
+    46% { transform: translateY(2.5%) rotate(-4deg) scale(1.02); }
+    62% { transform: translateY(-1.5%) rotate(2.5deg); }
+    78% { transform: translateY(0.8%) rotate(-1deg); }
+    100% { transform: none; }
+  }
   .about__decor :global(img) { width: 100%; height: auto; }
   .about__frame, figcaption { position: relative; }
 
@@ -118,3 +130,11 @@ const titleId = `${section.id}-title`;
     figcaption { padding-left: 0; }
   }
 </style>
+
+<script>
+  // El rebote del bigote se completa siempre, aunque el cursor salga antes de que termine
+  document.querySelectorAll<HTMLElement>('.about__decor').forEach((el) => {
+    el.addEventListener('pointerenter', () => el.classList.add('is-bouncing'));
+    el.addEventListener('animationend', () => el.classList.remove('is-bouncing'));
+  });
+</script>

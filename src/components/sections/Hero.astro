@@ -120,30 +120,43 @@ const mask =
     background: var(--color-glass);
     border: 1px solid var(--color-pill-border);
   }
-  /* Botón del inicio: al pasar el ratón se vuelve blanco y «Contactar» deja paso a «Agendar una fiesta».
-     Las dos columnas de la rejilla se reparten el ancho (1fr 0fr → 0fr 1fr), así el botón crece al ritmo del texto. */
+  /* Botón del inicio: al pasar el ratón se rellena de blanco (de izquierda a derecha) y «Contactar» deja paso
+     a «Agendar una fiesta». El botón mide siempre lo que el texto más largo (los dos textos ocupan la misma celda),
+     así nada cambia de tamaño: todo lo mueve la tarjeta gráfica (transform/opacity) y va fluido en cualquier equipo. */
   .hero__tagline :global(.hero__cta) {
-    transition: background 0.35s ease, color 0.35s ease, box-shadow 0.35s ease, transform 0.15s ease;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-inline: 2em;
+    transition: transform 0.15s ease;
+  }
+  .hero__tagline :global(.hero__cta)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: #fff;
+    border-radius: inherit;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+    will-change: transform;
   }
   .hero__cta-swap {
     display: inline-grid;
-    grid-template-columns: 1fr 0fr;
-    transition: grid-template-columns 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
+    justify-items: center;
+    white-space: nowrap;
   }
   .hero__cta-a, .hero__cta-b {
-    min-width: 0;
-    overflow: hidden;
+    grid-area: 1 / 1;
     white-space: nowrap;
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.25, 1), opacity 0.3s ease;
+    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+    will-change: transform, opacity;
   }
-  .hero__cta-b { transform: translateY(110%); opacity: 0; }
-  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible)) {
-    background: #fff;
-    color: #111;
-    box-shadow: 0 12px 30px -12px rgb(255 255 255 / 0.45);
-  }
-  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible)) .hero__cta-swap { grid-template-columns: 0fr 1fr; }
-  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible)) .hero__cta-a { transform: translateY(-110%); opacity: 0; }
+  .hero__cta-b { color: #111; transform: translateY(140%); opacity: 0; }
+  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible)) { filter: none; }
+  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible))::before { transform: scaleX(1); }
+  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible)) .hero__cta-a { transform: translateY(-140%); opacity: 0; }
   .hero__tagline :global(.hero__cta:is(:hover, :focus-visible)) .hero__cta-b { transform: none; opacity: 1; }
 
   .hero__tagline p {
@@ -181,3 +194,4 @@ const mask =
     .hero__tagline p { padding-inline: 0.6rem; white-space: normal; }
   }
 </style>
+
