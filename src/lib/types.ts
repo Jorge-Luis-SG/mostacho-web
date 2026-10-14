@@ -60,6 +60,8 @@ export interface CardItem {
   titleSize?: number;
   /** Video opcional: con la imagen como miniatura, se reproduce (con sonido) al pasar el ratón. */
   video?: string;
+  /** Encuadre de la foto en la parte visible de la tarjeta (CSS object-position), p. ej. "50% 30%". */
+  imagePos?: string;
   /** Si se indica, el botón lleva a ese ancla/URL en vez de a WhatsApp. */
   href?: string;
   /** Efecto a pantalla completa al aparecer la tarjeta (animación "deal"): smoke | fog | fireworks | confetti | fog-sparks */

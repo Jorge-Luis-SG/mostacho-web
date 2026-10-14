@@ -224,7 +224,7 @@ const popBg = (pop: ShowcasePop) =>
   .showcase__slides :global(.carousel__track > *) { flex: 0 0 95.94%; }
   .showcase__slides :global(.carousel__track)::after { content: ''; flex: 0 0 4.06%; }
   .showcase__slides :global(.carousel__dots--overlay) { bottom: clamp(3rem, calc(3.3 * var(--u)), 6.3rem); gap: clamp(1.4rem, calc(1.35 * var(--u)), 2.6rem); }
-  .showcase__slides :global(.carousel__dot) { width: calc(clamp(1.2rem, calc(0.94 * var(--u)), 1.8rem) - 0.2rem); }
+  .showcase__slides :global(.carousel__dots) { --dot: calc(clamp(1.2rem, calc(0.94 * var(--u)), 1.8rem) - 0.4rem); }
   .showcase__slides :global(.carousel__dots--overlay) { right: var(--carousel-dots-left); flex-wrap: wrap; }
   /* Franja derecha: la diapositiva siguiente asoma desenfocada, como en el diseño */
   @media (min-width: 701px) {
@@ -243,7 +243,7 @@ const popBg = (pop: ShowcasePop) =>
   }
   @media (max-width: 700px) {
     .showcase__slides :global(.carousel__dots--overlay) { gap: 1rem; bottom: 2.4rem; }
-    .showcase__slides :global(.carousel__dot) { width: 0.8rem; }
+    .showcase__slides :global(.carousel__dots) { --dot: 0.6rem; }
   }
   @media (max-width: 700px) {
     .showcase__slides :global(.carousel__track > *) { flex-basis: 100%; }

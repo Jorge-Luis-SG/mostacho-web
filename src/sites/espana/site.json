@@ -413,11 +413,13 @@
         {
           "id": "dj",
           "image": "adicional-dj.jpg",
+          "imagePos": "50% 6%",
           "titleSize": 52
         },
         {
           "id": "maestros",
           "image": "adicional-maestro-ceremonia.jpg",
+          "imagePos": "50% 6%",
           "titleSize": 38
         },
         {

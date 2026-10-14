@@ -231,9 +231,12 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
     bottom: 7rem;
     z-index: 2;
   }
+  /* Círculo perfecto: mismo ancho y alto fijos (--dot), sin estirarse ni encogerse dentro de la fila */
   .carousel__dots :global(.carousel__dot) {
-    width: 1.4rem;
-    aspect-ratio: 1;
+    flex: none;
+    width: var(--dot, 1.2rem);
+    height: var(--dot, 1.2rem);
+    padding: 0;
     border-radius: 50%;
     background: var(--color-dot);
     transition: background 0.2s ease, transform 0.2s ease;

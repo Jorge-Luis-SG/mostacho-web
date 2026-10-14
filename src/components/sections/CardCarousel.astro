@@ -30,7 +30,7 @@ const titleId = `${section.id}-title`;
         section.items.map((item) => {
           const card = text.items[item.id];
           return (
-            <article class:list={['card', section.showText && 'card--text']} data-fx={item.fx}>
+            <article class:list={['card', section.showText && 'card--text']} data-fx={item.fx} style={item.imagePos ? `--img-pos:${item.imagePos}` : undefined}>
               <Img site={ctx.site} src={item.image} alt={card.alt ?? ''} class="card__img" sizes="(max-width: 700px) 85vw, 420px" maxWidth={960} />
               <BgVideo site={ctx.site} src={item.video} class="card__img" hover sound />
               <div class="card__spacer" />
@@ -94,6 +94,14 @@ const titleId = `${section.id}-title`;
     height: 100%;
     object-fit: cover;
     object-position: center top;
+  }
+  /* La foto llena solo la parte que se ve, por encima del bloque de texto (y un poco por debajo, que queda tras el
+     desenfoque): así no se tapan las caras. Cada tarjeta puede ajustar su encuadre (site.json → imagePos).
+     El video, al pasar el ratón, sí ocupa toda la tarjeta. */
+  .card :global(img.card__img) {
+    bottom: auto;
+    height: calc(100cqw * 679 / 419 * (1 - var(--body)) + 3rem);
+    object-position: var(--img-pos, 50% 30%);
   }
   .card__spacer { flex: 1 1 0; }
   /* Alto fijo del bloque de texto (diseño: 300 px sin descripción, 365 px con descripción) */
