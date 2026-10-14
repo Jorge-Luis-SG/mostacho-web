@@ -75,7 +75,6 @@ html.anim .pin:not(.live) .hero__led canvas { animation-play-state: paused; }
 @keyframes anim-led { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
 /* ---------- Bigote guía: viaja de «Nosotros» a Servicios ---------- */
-html.anim .about__decor { will-change: transform; transform-origin: 50% 50%; }
 /* En su camino a la esquina pasa por detrás del marco y también del texto */
 html.anim [data-pin='guide'] .about__copy { position: relative; z-index: 1; }
 .anim-guide, .anim-traveler { left: 0; top: 0; pointer-events: none; visibility: hidden; will-change: transform; }
