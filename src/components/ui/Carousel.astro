@@ -11,15 +11,18 @@ interface Props {
   dots?: 'top' | 'overlay' | 'none';
   arrows?: 'sides' | 'edge' | 'none';
   ui: { prev: string; next: string; page: string };
+  /** Sin fin: tras la última página, la flecha vuelve a la primera (y desde la primera, la de atrás va a la última). */
+  loop?: boolean;
 }
 
-const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
+const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = Astro.props;
 ---
 
 <div
   class:list={['carousel', `carousel--${variant}`, `carousel--arrows-${arrows}`]}
   data-carousel
   data-page-label={ui.page}
+  data-loop={loop ? '' : undefined}
   role="region"
   aria-roledescription="carousel"
   aria-label={label}
@@ -59,6 +62,7 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
     const prev = root.querySelector<HTMLButtonElement>('[data-prev]');
     const next = root.querySelector<HTMLButtonElement>('[data-next]');
     const pageLabel = root.dataset.pageLabel ?? '{n}';
+    const loop = root.hasAttribute('data-loop');
     const items = () => Array.from(track.children) as HTMLElement[];
 
     // Modo "dirigido": cuando una animación con el scroll mueve el carrusel (src/scripts/animations.ts),
@@ -108,8 +112,8 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
       const { step, pages } = metrics();
       const max = track.scrollWidth - track.clientWidth;
       const current = track.scrollLeft >= max - 2 ? pages - 1 : Math.round(track.scrollLeft / step);
-      if (prev) prev.disabled = track.scrollLeft <= 2;
-      if (next) next.disabled = track.scrollLeft >= max - 2;
+      if (prev) prev.disabled = !loop && track.scrollLeft <= 2;
+      if (next) next.disabled = !loop && track.scrollLeft >= max - 2;
       dots?.querySelectorAll('button').forEach((dot, i) => dot.setAttribute('aria-current', String(i === current)));
       warm(current);
     };
@@ -133,8 +137,15 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
       update();
     };
 
-    prev?.addEventListener('click', () => (driven ? go(active - 1) : track.scrollBy({ left: -metrics().step, behavior: 'smooth' })));
-    next?.addEventListener('click', () => (driven ? go(active + 1) : track.scrollBy({ left: metrics().step, behavior: 'smooth' })));
+    // Sin fin: en un extremo, la flecha salta al otro
+    const max = () => track.scrollWidth - track.clientWidth;
+    const step = (dir: 1 | -1) => {
+      if (loop && dir > 0 && track.scrollLeft >= max() - 2) track.scrollTo({ left: 0, behavior: 'smooth' });
+      else if (loop && dir < 0 && track.scrollLeft <= 2) track.scrollTo({ left: max(), behavior: 'smooth' });
+      else track.scrollBy({ left: dir * metrics().step, behavior: 'smooth' });
+    };
+    prev?.addEventListener('click', () => (driven ? go(active - 1) : step(-1)));
+    next?.addEventListener('click', () => (driven ? go(active + 1) : step(1)));
     root.addEventListener('driven:on', (e) => {
       driven = (e as CustomEvent<{ count: number }>).detail.count;
       renderDots();
@@ -224,5 +235,8 @@ const { label, variant, dots = 'none', arrows = 'sides', ui } = Astro.props;
     transition: background 0.2s ease, transform 0.2s ease;
   }
   .carousel__dots :global(.carousel__dot[aria-current='true']) { background: var(--color-dot-active); }
+  /* Zona táctil más grande que el punto (cómodo para el dedo) sin cambiar cómo se ve */
+  .carousel__dots :global(.carousel__dot) { position: relative; }
+  .carousel__dots :global(.carousel__dot)::after { content: ''; position: absolute; inset: -1.4rem -0.5rem; }
   .carousel__dots :global(.carousel__dot:hover) { transform: scale(1.2); }
 </style>

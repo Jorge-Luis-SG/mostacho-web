@@ -443,12 +443,12 @@ function start() {
   };
   // Efectos de pantalla completa: cada carta de Efectos especiales hace lo que anuncia (site.json → items[].fx).
   // Cada uno devuelve cuánto dura; se encolan para que no se pisen (el siguiente empieza cuando termina el anterior).
-  const fog = (ms = 1100) => {
+  const fog = (ms = 900) => {
     emit(ms, 0.7, () => {
       const fromLeft = Math.random() < 0.5;
       puffs.push({ x: fromLeft ? rnd(-150, innerWidth * 0.5) : rnd(innerWidth * 0.5, innerWidth + 150), y: innerHeight + rnd(-50, 70), vx: (fromLeft ? 1 : -1) * rnd(0.6, 2.2), vy: -rnd(0.15, 0.5), s: rnd(240, 380), grow: rnd(0.8, 1.6), drag: 0.997, g: 0, a: 0.2, life: 1, decay: rnd(0.0075, 0.009), spr: puffOf(pick(['#f2f2f6', '#dcdce4', '#ffffff'])) });
     });
-    return ms + 1600; // emisión + la mayor parte del desvanecido
+    return ms + 1300; // emisión + la mayor parte del desvanecido
   };
   const FX: Record<string, (r: DOMRect) => number> = {
     // Bazooka: un chorro de humo de colores sale de la esquina superior derecha de la carta y se abre por la pantalla
@@ -460,35 +460,35 @@ function start() {
         const v = rnd(18, 30);
         puffs.push({ x: x0, y: y0, vx: Math.cos(ang) * v * 1.3, vy: Math.sin(ang) * v, s: rnd(90, 150), grow: rnd(7, 12), drag: 0.966, g: -0.005, a: 0.5, life: 1, decay: rnd(0.012, 0.015), spr: puffOf(pick(['#ff3fb4', '#ff7ad9', '#d14cff', '#ff5fa0', '#ff9be3'])) });
       });
-      return 500 + 1400;
+      return 500 + 1100;
     },
     // Neblina baja: entra por abajo y cubre el suelo de la pantalla (ligera)
     fog: () => fog(),
     // Fuegos artificiales: muchos cohetes que suben y estallan por toda la pantalla (algunos en varias explosiones)
     fireworks() {
       let n = 0;
-      const ms = 2600;
-      emit(ms, 0.17, () => {
+      const ms = 1800;
+      emit(ms, 0.24, () => {
         n++;
         bits.push({ x: innerWidth * rnd(0.08, 0.92), y: innerHeight + 10, vx: rnd(-1.4, 1.4), vy: -rnd(12.5, 17.5) * Math.sqrt(innerHeight / 900), r: 0, vr: 0, w: 3, h: 9, c: '#fff1c9', life: 1, g: 0.24, decay: 0, spark: true, drag: 0.995, rocket: FIRE[n % FIRE.length] });
       });
-      return ms + 2300;
+      return ms + 1700;
     },
     // Confeti: lluvia de confeti por toda la pantalla
     confetti() {
-      emit(1600, 4, () =>
+      emit(1200, 5, () =>
         bits.push({ x: rnd(-20, innerWidth + 20), y: rnd(-60, -10), vx: rnd(-1.5, 1.5), vy: rnd(2, 5), r: rnd(0, 3), vr: rnd(-0.2, 0.2), w: rnd(7, 13), h: rnd(4, 7), c: pick(COLORS), life: 1, g: 0.04, decay: rnd(0.0045, 0.0065), drag: 0.995 }),
       );
-      return 1600 + 2600;
+      return 1200 + 2000;
     },
     // Neblina y pirotecnia fría: neblina ligera por abajo y fuentes de chispas frías
     'fog-sparks'() {
-      const ms = fog(1600);
+      const ms = fog(1200);
       for (const fx of [0.18, 0.5, 0.82])
-        emit(1700, 2.6, () =>
+        emit(1300, 2.6, () =>
           bits.push({ x: innerWidth * fx + rnd(-8, 8), y: innerHeight + 4, vx: rnd(-1.4, 1.4), vy: -rnd(9, 15) * Math.sqrt(innerHeight / 900), r: 0, vr: 0, w: rnd(1.8, 3), h: rnd(1.8, 3), c: pick(SPARKS), life: 1, g: 0.2, decay: rnd(0.016, 0.024), spark: true }),
         );
-      return Math.max(ms, 2900);
+      return Math.max(ms, 2300);
     },
   };
   const fxQueue: { run: () => number; done?: () => void }[] = [];
@@ -498,13 +498,13 @@ function start() {
       const { run, done } = fxQueue.shift()!;
       const ms = run();
       if (ms > 0) {
-        // Se avisa de que terminó cuando va por el 85 % (lo que queda es solo el desvanecido final);
-        // el siguiente efecto sí espera al final para no pisarse
-        window.setTimeout(() => done?.(), ms * 0.85);
+        // Se avisa de que terminó cuando va algo más de la mitad (sale la carta siguiente mientras se desvanece);
+        // el efecto siguiente empieza al 70 %, cuando este ya se está apagando
+        window.setTimeout(() => done?.(), ms * 0.55);
         fxBusy = window.setTimeout(() => {
           fxBusy = 0;
           nextFx();
-        }, ms);
+        }, ms * 0.7);
       } else done?.();
     }
   };
@@ -906,7 +906,7 @@ function start() {
               const q = f.getBoundingClientRect();
               return my === tok[i] && q.bottom > 0 && q.top < innerHeight ? fx(q) : 0;
             }, settle);
-          }, delay + 620);
+          }, delay + 480);
         }
       };
       // Coloca todo al instante según el paso actual (al cargar o al cambiar el tamaño)
@@ -1026,7 +1026,7 @@ function start() {
               el.classList.toggle('is-off', (off[i] = o));
               el.querySelectorAll('video').forEach((v) => {
                 if (o) v.pause();
-                else if (v.src) v.play().catch(() => {});
+                else if (v.src && !v.hasAttribute('data-hover')) v.play().catch(() => {});
               });
             }
           });

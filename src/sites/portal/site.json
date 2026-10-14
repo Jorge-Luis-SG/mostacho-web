@@ -3,6 +3,8 @@
   "route": "",
   "logo": "logo.png",
   "background": "fondo.jpg",
+  "video": "principal.mp4",
+  "videoMobile": "principal-movil.mp4",
   "social": {
     "youtube": "https://www.youtube.com/@mostachoproducciones",
     "facebook": "https://www.facebook.com/mostachoproducciones",

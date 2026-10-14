@@ -70,6 +70,7 @@
       "titleStyle": "plain",
       "background": "services",
       "showText": true,
+      "loop": true,
       "items": [
         {
           "id": "hora-loca",
@@ -80,24 +81,27 @@
         {
           "id": "recibe",
           "image": "servicio-recibe.jpg",
-          "titleSize": 40
+          "titleSize": 40,
+          "video": "servicio-recibe.mp4"
         },
         {
           "id": "efectos",
           "image": "servicio-efectos.jpg",
-          "titleSize": 40
-        },
-        {
-          "id": "infantiles",
-          "image": "servicio-infantiles.jpg",
           "titleSize": 40,
-          "href": "#infantiles"
+          "video": "servicio-efectos.mp4"
         },
         {
           "id": "adicionales",
           "image": "servicio-adicionales.jpg",
           "titleSize": 40,
           "href": "#adicionales"
+        },
+        {
+          "id": "infantiles",
+          "image": "servicio-infantiles.jpg",
+          "titleSize": 40,
+          "href": "#infantiles",
+          "video": "servicio-infantiles.mp4"
         }
       ],
       "decor": [
@@ -124,20 +128,44 @@
         "inner": 50
       },
       "background": "red-glow",
+      "loop": true,
       "slides": [
         {
           "id": "robots-led",
           "image": "hora-loca-robots-led.jpg",
+          "pop": {
+            "image": "hora-loca-robots-led-pop.png",
+            "left": 41.2,
+            "width": 63.5,
+            "top": -12.9,
+            "glow": "rgba(166, 70, 255, 0.85)",
+            "glowAt": "89% 45%",
+            "glowSize": "38% 85%"
+          },
           "accent": "#4500b7"
         },
         {
           "id": "show-mirror",
           "image": "hora-loca-show-mirror.jpg",
+          "pop": {
+            "image": "hora-loca-show-mirror-pop.png",
+            "left": 50.7,
+            "width": 52.3,
+            "top": -4.7,
+            "shade": 0.35
+          },
           "accent": "#000000"
         },
         {
           "id": "funky-animals",
           "image": "hora-loca-funky-animals.jpg",
+          "pop": {
+            "image": "hora-loca-funky-animals-pop.png",
+            "left": 41,
+            "width": 59.9,
+            "top": -22.3,
+            "tint": "rgba(150, 40, 255, 0.4)"
+          },
           "accent": "#4b0035",
           "glow": "rgba(190, 35, 121, 0.9)",
           "glowAt": "36% 35%"
@@ -145,6 +173,13 @@
         {
           "id": "arlequines",
           "image": "hora-loca-arlequines.jpg",
+          "pop": {
+            "image": "hora-loca-arlequines-pop.png",
+            "left": 61.7,
+            "width": 40,
+            "top": -7.2,
+            "tint": "rgba(255, 175, 40, 0.35)"
+          },
           "accent": "#210d00",
           "glow": "rgba(140, 65, 5, 0.85)",
           "glowAt": "42% 60%"
@@ -152,6 +187,13 @@
         {
           "id": "monster-glitter",
           "image": "hora-loca-monster-glitter.jpg",
+          "pop": {
+            "image": "hora-loca-monster-glitter-pop.png",
+            "left": 63.2,
+            "width": 30.7,
+            "top": -17.4,
+            "shade": 0.3
+          },
           "accent": "#1e1e1e",
           "glow": "rgba(175, 175, 175, 0.8)",
           "glowAt": "3% 30%"
@@ -159,6 +201,13 @@
         {
           "id": "galacticos",
           "image": "hora-loca-galacticos.jpg",
+          "pop": {
+            "image": "hora-loca-galacticos-pop.png",
+            "left": 44,
+            "width": 69.2,
+            "top": -13.5,
+            "tint": "rgba(170, 60, 255, 0.35)"
+          },
           "accent": "#1b002e",
           "glow": "rgba(90, 0, 155, 0.9)",
           "glowAt": "34% 25%"
@@ -166,100 +215,15 @@
         {
           "id": "white-wings",
           "image": "hora-loca-white-wings.jpg",
+          "pop": {
+            "image": "hora-loca-white-wings-pop.png",
+            "left": 51.9,
+            "width": 36.3,
+            "top": -16.1
+          },
           "accent": "#060606",
           "glow": "rgba(120, 110, 110, 0.5)",
           "glowAt": "40% 40%"
-        },
-        {
-          "id": "robots-mirror",
-          "image": "hora-loca-robots-mirror.jpg",
-          "accent": "#030303",
-          "glow": "rgba(8, 8, 8, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "alicia",
-          "image": "hora-loca-alicia.jpg",
-          "accent": "#170303",
-          "glow": "rgba(72, 8, 8, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "artistas",
-          "image": "hora-loca-artistas.jpg",
-          "accent": "#030308",
-          "glow": "rgba(8, 8, 24, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "batucada-led",
-          "image": "hora-loca-batucada-led.jpg",
-          "accent": "#080308",
-          "glow": "rgba(24, 8, 24, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "charleston",
-          "image": "hora-loca-charleston.jpg",
-          "accent": "#1c0d03",
-          "glow": "rgba(88, 40, 8, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "folklore",
-          "image": "hora-loca-folklore.jpg",
-          "accent": "#31211c",
-          "glow": "rgba(152, 104, 88, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "garotas",
-          "image": "hora-loca-garotas.jpg",
-          "accent": "#080808",
-          "glow": "rgba(24, 24, 24, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "futbolista",
-          "image": "hora-loca-futbolista.jpg",
-          "accent": "#030308",
-          "glow": "rgba(8, 8, 24, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "casa-de-papel",
-          "image": "hora-loca-casa-de-papel.jpg",
-          "accent": "#030308",
-          "glow": "rgba(8, 8, 24, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "la-mascara",
-          "image": "hora-loca-la-mascara.jpg",
-          "accent": "#4f4f4f",
-          "glow": "rgba(248, 248, 248, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "neon",
-          "image": "hora-loca-neon.jpg",
-          "accent": "#030303",
-          "glow": "rgba(8, 8, 8, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "rabbit-girls",
-          "image": "hora-loca-rabbit-girls.jpg",
-          "accent": "#030303",
-          "glow": "rgba(8, 8, 8, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "rumberas",
-          "image": "hora-loca-rumberas.jpg",
-          "accent": "#08080d",
-          "glow": "rgba(24, 24, 40, 0.75)",
-          "glowAt": "30% 30%"
         }
       ]
     },
@@ -272,10 +236,20 @@
         "inner": 50
       },
       "background": "dark-red",
+      "loop": true,
+      "popGrow": 20,
       "slides": [
         {
           "id": "rosas-doradas",
           "image": "recibe-rosas-doradas.jpg",
+          "pop": {
+            "image": "recibe-rosas-doradas-pop.png",
+            "left": 48.6,
+            "width": 47.1,
+            "top": -11.1,
+            "tint": "rgba(255, 165, 0, 0.18)",
+            "tintRight": "rgba(255, 200, 0, 0.65)"
+          },
           "accent": "#0e0e0d",
           "glow": "rgba(176, 106, 0, 0.85)",
           "glowAt": "31% 22%"
@@ -283,6 +257,16 @@
         {
           "id": "rosas-rojas",
           "image": "recibe-rosas-rojas.jpg",
+          "pop": {
+            "image": "recibe-rosas-rojas-pop.png",
+            "left": 58.7,
+            "width": 28.2,
+            "top": -17.9,
+            "tint": "rgba(235, 20, 50, 0.35)",
+            "glow": "rgba(255, 0, 0, 0.9)",
+            "glowAt": "13% 20%",
+            "glowSize": "45% 80%"
+          },
           "accent": "#320000",
           "glow": "rgba(200, 0, 0, 0.9)",
           "glowAt": "38% 55%"
@@ -290,11 +274,34 @@
         {
           "id": "rosas-blancas",
           "image": "recibe-rosas-blancas.jpg",
-          "accent": "#000000"
+          "pop": {
+            "image": "recibe-rosas-blancas-pop.png",
+            "left": 54.8,
+            "width": 31.8,
+            "top": -24.3,
+            "glow": "rgba(255, 255, 255, 0.4)",
+            "glowAt": "72% 0%",
+            "glowSize": "32% 60%"
+          },
+          "inside": true,
+          "accent": "#000000",
+          "bg": "radial-gradient(ellipse 75% 130% at 100% 45%, #ececec 0%, #a8a8a8 22%, #4a4a4a 52%, #000 85%)"
         },
         {
           "id": "personajes-golden",
           "image": "recibe-personajes-golden.jpg",
+          "imagePos": "0% 22%",
+          "pop": {
+            "image": "recibe-personajes-golden-pop.png",
+            "left": 62.1,
+            "width": 30.2,
+            "top": -11.2,
+            "tint": "rgba(255, 150, 0, 0.2)",
+            "tintRight": "rgba(255, 190, 0, 0.55)",
+            "glow": "rgba(255, 150, 0, 0.85)",
+            "glowAt": "9% 18%",
+            "glowSize": "50% 80%"
+          },
           "accent": "#2e0500",
           "glow": "rgba(150, 80, 0, 0.85)",
           "glowAt": "40% 60%"
@@ -302,6 +309,18 @@
         {
           "id": "personajes-silver",
           "image": "recibe-personajes-silver.jpg",
+          "imagePos": "0% 26%",
+          "pop": {
+            "image": "recibe-personajes-silver-pop.png",
+            "left": 59,
+            "width": 36.1,
+            "top": -9.7,
+            "tint": "rgba(255, 255, 255, 0.25)",
+            "tintRight": "rgba(255, 255, 255, 0.5)",
+            "glow": "rgba(235, 235, 235, 0.9)",
+            "glowAt": "6% 15%",
+            "glowSize": "45% 75%"
+          },
           "accent": "#2e2e2e",
           "glow": "rgba(190, 190, 190, 0.8)",
           "glowAt": "4% 25%"
@@ -309,51 +328,20 @@
         {
           "id": "afrodita",
           "image": "recibe-afrodita.jpg",
+          "imagePos": "0% 0%",
+          "pop": {
+            "image": "recibe-afrodita-pop.png",
+            "left": 54.9,
+            "width": 46.8,
+            "top": -13.5,
+            "tint": "rgba(230, 0, 30, 0.3)",
+            "glow": "rgba(240, 0, 0, 0.9)",
+            "glowAt": "39% 50%",
+            "glowSize": "45% 80%"
+          },
           "accent": "#640000",
           "glow": "rgba(210, 0, 0, 0.95)",
           "glowAt": "5% 20%"
-        },
-        {
-          "id": "arlequines",
-          "image": "recibe-arlequines.jpg",
-          "accent": "#0d0d08",
-          "glow": "rgba(40, 40, 24, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "black-and-white",
-          "image": "recibe-black-and-white.jpg",
-          "accent": "#030303",
-          "glow": "rgba(8, 8, 8, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "combinados",
-          "image": "recibe-combinados.jpg",
-          "accent": "#030303",
-          "glow": "rgba(8, 8, 8, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "elementos",
-          "image": "recibe-elementos.jpg",
-          "accent": "#030303",
-          "glow": "rgba(8, 8, 8, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "isis",
-          "image": "recibe-isis.jpg",
-          "accent": "#4f4f4f",
-          "glow": "rgba(248, 248, 248, 0.75)",
-          "glowAt": "30% 30%"
-        },
-        {
-          "id": "mimos",
-          "image": "recibe-mimos.jpg",
-          "accent": "#030303",
-          "glow": "rgba(8, 8, 8, 0.75)",
-          "glowAt": "30% 30%"
         }
       ]
     },
@@ -402,7 +390,8 @@
           "image": "bigote-4.png",
           "x": 1314,
           "y": 0,
-          "w": 995
+          "w": 995,
+          "hover": true
         }
       ],
       "anim": "deal"
@@ -432,8 +421,23 @@
           "titleSize": 38
         },
         {
-          "id": "barra-cocteles",
-          "image": "adicional-barra-cocteles.jpg",
+          "id": "montaje-bailes",
+          "image": "adicional-montaje-bailes.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "pantallas-carpas",
+          "image": "adicional-pantallas-carpas.jpg",
+          "titleSize": 38
+        },
+        {
+          "id": "zanqueros",
+          "image": "adicional-zanqueros.jpg",
+          "titleSize": 52
+        },
+        {
+          "id": "totems-led",
+          "image": "adicional-totems-led.jpg",
           "titleSize": 52
         },
         {
@@ -448,35 +452,15 @@
           "video": "adicional-cabina-espejada.mp4"
         },
         {
-          "id": "montaje-bailes",
-          "image": "adicional-montaje-bailes.jpg",
-          "titleSize": 38
+          "id": "barra-cocteles",
+          "image": "adicional-barra-cocteles.jpg",
+          "titleSize": 52
         },
         {
           "id": "musica-en-vivo",
           "image": "adicional-musica-en-vivo.jpg",
           "titleSize": 52,
           "video": "adicional-musica-en-vivo.mp4"
-        },
-        {
-          "id": "pantallas-carpas",
-          "image": "adicional-pantallas-carpas.jpg",
-          "titleSize": 38
-        },
-        {
-          "id": "totems-led",
-          "image": "adicional-totems-led.jpg",
-          "titleSize": 52
-        },
-        {
-          "id": "zanqueros",
-          "image": "adicional-zanqueros.jpg",
-          "titleSize": 52
-        },
-        {
-          "id": "party-shot",
-          "image": "adicional-party-shot.jpg",
-          "titleSize": 52
         }
       ],
       "decor": [
@@ -484,7 +468,8 @@
           "image": "bigote-5.png",
           "x": -630,
           "y": 304,
-          "w": 1381
+          "w": 1381,
+          "hover": true
         }
       ]
     },
@@ -497,10 +482,20 @@
         "inner": 50
       },
       "background": "kids",
+      "loop": true,
       "slides": [
         {
           "id": "kpop",
           "image": "infantil-kpop.jpg",
+          "pop": {
+            "image": "infantil-kpop-pop.png",
+            "left": 39,
+            "width": 70,
+            "top": -12.5,
+            "glow": "rgba(170, 60, 255, 0.6)",
+            "glowAt": "74% 40%",
+            "glowSize": "35% 80%"
+          },
           "accent": "#1a002e",
           "glow": "rgba(100, 0, 170, 0.85)",
           "glowAt": "30% 15%",
@@ -509,6 +504,15 @@
         {
           "id": "world-tour",
           "image": "infantil-world-tour.jpg",
+          "pop": {
+            "image": "infantil-world-tour-pop.png",
+            "left": 56,
+            "width": 24,
+            "top": -12,
+            "glow": "rgba(120, 190, 255, 0.55)",
+            "glowAt": "68% 40%",
+            "glowSize": "30% 80%"
+          },
           "accent": "#00202e",
           "glow": "rgba(0, 150, 50, 0.9)",
           "glowAt": "30% 10%"
@@ -526,7 +530,8 @@
       "items": [
         {
           "id": "foto-1",
-          "image": "galeria-1.jpg"
+          "image": "galeria-1.jpg",
+          "pos": "50% 40%"
         },
         {
           "id": "foto-3",

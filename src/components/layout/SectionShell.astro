@@ -45,7 +45,7 @@ const style =
     decor.length > 0 && (
       <div class="decor-canvas" aria-hidden="true">
         {decor.map((d) => (
-          <div class="decor" style={`left:calc(${(d.x / 19.2).toFixed(3)} * var(--u));top:calc(${(d.y / 19.2).toFixed(3)} * var(--u));width:calc(${(d.w / 19.2).toFixed(3)} * var(--u))`}>
+          <div class="decor" data-mustache={d.hover ? '' : undefined} style={`left:calc(${(d.x / 19.2).toFixed(3)} * var(--u));top:calc(${(d.y / 19.2).toFixed(3)} * var(--u));width:calc(${(d.w / 19.2).toFixed(3)} * var(--u))`}>
             <Img site={site} src={d.image} alt="" optional sizes="60vw" maxWidth={1440} />
           </div>
         ))}
@@ -55,6 +55,16 @@ const style =
   {contained ? <div class="container shell__inner"><slot /></div> : <div class="shell__inner"><slot /></div>}
 </section>
 </Wrap>
+
+<script>
+  // Bigotes decorativos con «hover»: caen con dos rebotes al pasar el cursor (src/scripts/mustache.ts)
+  import { mustacheHover } from '../../scripts/mustache';
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches)
+    document.querySelectorAll<HTMLElement>('.decor[data-mustache]').forEach((el) => {
+      const zone = el.closest('section');
+      if (zone) mustacheHover(el, { zone, covered: '.card, .xcard, .carousel__arrow, .carousel__dots, a, button, header, h2' });
+    });
+</script>
 
 <style>
   .shell {

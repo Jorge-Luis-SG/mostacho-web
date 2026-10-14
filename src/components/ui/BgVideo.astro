@@ -1,8 +1,9 @@
 ---
 /**
- * Video de fondo (sin sonido, en bucle) que se pone encima de su imagen.
+ * Video de fondo (en bucle) que se pone encima de su imagen.
  * La imagen sigue debajo como póster: si el video no carga, no está o el visitante
  * prefiere menos movimiento / ahorro de datos, se ve la foto.
+ * Normalmente va sin sonido; con hover + sound, el sonido entra poco a poco al pasar el ratón.
  */
 import { resolveVideo } from '../../lib/images';
 
@@ -14,8 +15,12 @@ interface Props {
   desktopOnly?: boolean;
   /** Versión ligera para móviles y tablets en vertical (opcional). */
   srcSmall?: string;
+  /** Solo se reproduce mientras el ratón está sobre su contenedor; en reposo (y en pantallas táctiles) se ve la foto. */
+  hover?: boolean;
+  /** Con hover: se escucha mientras el ratón está encima (el volumen sube poco a poco y baja al salir). */
+  sound?: boolean;
 }
-const { site, src, class: className, desktopOnly = false, srcSmall } = Astro.props;
+const { site, src, class: className, desktopOnly = false, srcSmall, hover = false, sound = false } = Astro.props;
 const url = resolveVideo(site, src);
 const urlSmall = resolveVideo(site, srcSmall);
 ---
@@ -27,6 +32,8 @@ const urlSmall = resolveVideo(site, srcSmall);
       data-src={url}
       data-src-small={urlSmall}
       data-desktop-only={desktopOnly ? '' : undefined}
+      data-hover={hover ? '' : undefined}
+      data-sound={hover && sound ? '' : undefined}
       muted
       loop
       playsinline
@@ -55,7 +62,11 @@ const urlSmall = resolveVideo(site, srcSmall);
     if (!video.src) video.src = (small && video.dataset.srcSmall) || video.dataset.src!;
     // Tarjeta apartada en una animación (src/scripts/animations.ts): se carga pero no se reproduce hasta que pase al centro
     if (video.closest('.is-off')) return;
-    video.muted = true; // imprescindible para que el navegador permita reproducirlo solo
+    // Video de «pasar el ratón»: solo mientras el cursor siga encima
+    if (video.hasAttribute('data-hover') && !video.parentElement?.matches(':hover')) return;
+    // Sin sonido: imprescindible para que el navegador permita reproducirlo solo (los que suenan solo se activan
+    // si el navegador ya lo permite; ver soundOn)
+    if (!video.hasAttribute('data-sound')) video.muted = true;
     video
       .play()
       .then(() => {
@@ -76,11 +87,83 @@ const urlSmall = resolveVideo(site, srcSmall);
     }
   }, { rootMargin: '200px' });
 
+  // Volumen que sube o baja poco a poco (sin golpes de sonido)
+  const ramps = new WeakMap<HTMLVideoElement, number>();
+  const fadeVolume = (video: HTMLVideoElement, to: number, ms: number, done?: () => void) => {
+    cancelAnimationFrame(ramps.get(video) ?? 0);
+    const from = video.volume;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const k = Math.min(1, (now - t0) / ms);
+      // Al subir empieza muy bajito y acelera; al bajar, al revés
+      video.volume = Math.min(1, Math.max(0, from + (to - from) * (to > from ? k * k : 1 - (1 - k) * (1 - k))));
+      if (k < 1) ramps.set(video, requestAnimationFrame(tick));
+      else done?.();
+    };
+    ramps.set(video, requestAnimationFrame(tick));
+  };
+
+  // El navegador solo deja que suene un video si el visitante ya tocó la página (clic, tecla…):
+  // hasta entonces se ve en silencio, y si hace clic con el ratón encima, el sonido entra en ese momento
+  const canSound = () => (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation?.hasBeenActive ?? true;
+  let hovered: HTMLVideoElement | null = null;
+  const soundOn = (video: HTMLVideoElement) => {
+    if (!video.hasAttribute('data-sound') || !canSound()) return;
+    if (video.muted) {
+      video.volume = 0;
+      video.muted = false;
+    }
+    fadeVolume(video, 1, 2200);
+  };
+  ['pointerdown', 'keydown'].forEach((ev) => window.addEventListener(ev, () => hovered && requestAnimationFrame(() => hovered && soundOn(hovered)), { passive: true }));
+
+  // Al pasar el ratón por el contenedor (la tarjeta) se reproduce; al salir se funde de vuelta a la foto.
+  // Cuando la tarjeta se acerca a la pantalla solo se pide el comienzo del video; se descarga entero cuando el
+  // ratón entra en el carrusel (antes de llegar a la tarjeta), así empieza al instante sin gastar datos de más.
+  // Sin ratón (pantallas táctiles) se queda la foto.
+  const near = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const video = e.target as HTMLVideoElement;
+      near.unobserve(video);
+      video.preload = 'metadata';
+      if (!video.src) video.src = video.dataset.src!;
+    }
+  }, { rootMargin: '400px' });
+  const warmUp = (area: Element) => area.querySelectorAll<HTMLVideoElement>('video[data-hover]').forEach((v) => {
+    if (!v.src) v.src = v.dataset.src!;
+    v.preload = 'auto';
+  });
+  const hoverVideo = (video: HTMLVideoElement) => {
+    const zone = video.parentElement;
+    if (!zone || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    near.observe(video);
+    const area = zone.closest('[data-carousel]') ?? zone;
+    area.addEventListener('pointerenter', () => warmUp(area), { once: true });
+    zone.addEventListener('pointerenter', () => {
+      hovered = video;
+      cancelAnimationFrame(ramps.get(video) ?? 0); // si se estaba yendo, se queda
+      start(video);
+      soundOn(video);
+    });
+    // Al salir, el video sigue moviéndose mientras se desvanece (y su sonido baja); se pausa al terminar
+    zone.addEventListener('pointerleave', () => {
+      if (hovered === video) hovered = null;
+      blocked.delete(video);
+      video.classList.remove('is-playing');
+      fadeVolume(video, 0, 900, () => {
+        video.pause();
+        video.muted = true;
+      });
+    });
+  };
+
   // Los videos empiezan a descargarse cuando la página ya cargó y el navegador está libre,
   // para no competir con las fotos y el texto (el del inicio, en cuanto carga la página).
   const init = () => {
     document.querySelectorAll<HTMLVideoElement>('video.bg-video').forEach((video) => {
       if (video.hasAttribute('data-desktop-only') && window.innerWidth < 768) return;
+      if (video.hasAttribute('data-hover')) return hoverVideo(video);
       io.observe(video);
     });
   };
@@ -99,4 +182,6 @@ const urlSmall = resolveVideo(site, srcSmall);
     pointer-events: none;
   }
   .bg-video:global(.is-playing) { opacity: 1; }
+  /* Videos de «pasar el ratón» (tarjetas): fundido más lento y suave entre la foto y el video */
+  .bg-video[data-hover] { transition: opacity 0.9s cubic-bezier(0.45, 0, 0.25, 1); }
 </style>

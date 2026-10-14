@@ -31,12 +31,6 @@ npm run validate
 |---|---|---|
 | `recibe-rosas-blancas.jpg` | 3684 × 1706 | Ya se usa `ROSAS GLAM BLANCAS.png`, pero mide solo 158 × 284 px y se ve borrosa: hace falta una versión grande. |
 
-### Portada → `src/sites/portal/img/`
-
-| Archivo | Tamaño (2x) | Qué es |
-|---|---|---|
-| `fondo.jpg` | 3840 × 2160 | Fondo de franjas rojas, sin logo ni textos (opcional: mientras falte, se ve un degradado rojo). |
-
 ### España → `src/sites/espana/`
 
 Usa los mismos nombres que Ecuador. Por ahora solo tiene `logo.png`; el resto muestra "Faltan assets".

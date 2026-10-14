@@ -12,6 +12,7 @@
     "skipToContent": "Saltar al contenido",
     "language": "Idioma",
     "contact": "Contactar",
+    "contactHover": "Agendar una fiesta",
     "want": "Lo quiero",
     "scrollDown": "Ir a la siguiente sección",
     "rating": "{n} de 5 estrellas",
@@ -59,7 +60,7 @@
       "items": {
         "hora-loca": {
           "title": "Hora loca",
-          "text": "1 hora de experiencia llena de diversión: show performance, accesorios para los invitados, karaoke y dinámicas épicas",
+          "text": "1 hora de experiencia llena de diversión: show performance, accesorios para los invitados, karaoke y dinámicas épicas con más de 30 temáticas disponibles.",
           "alt": "Fiesta con show de hora loca"
         },
         "recibe": {
@@ -79,7 +80,7 @@
         },
         "adicionales": {
           "title": "Servicios\nadicionales",
-          "text": "Add ons para que tu celebración tenga el plus que necesitas: glitter bar, party shot, disco móvil, barra de cócteles y mucho más.",
+          "text": "Add ons para que tu celebración tenga el plus que necesitas: glitter bar, party shot, disco móvil, barra de cócteles y ¡mucho más!",
           "alt": "Cabina de DJ con el logo de Mostacho"
         }
       }
@@ -278,7 +279,7 @@
           "alt": "Cabina de fotos con espejos"
         },
         "montaje-bailes": {
-          "title": "Montaje de bailes\nnovios y 15 años",
+          "title": "Montaje\npara bailes",
           "alt": "Ensayo de baile de novios"
         },
         "musica-en-vivo": {
@@ -286,7 +287,7 @@
           "alt": "Músicos tocando en vivo"
         },
         "pantallas-carpas": {
-          "title": "Pantallas,\nmobiliario y carpas",
+          "title": "Pantallas\nmobiliarios\ncarpas",
           "alt": "Carpa con pantallas LED y mobiliario"
         },
         "totems-led": {

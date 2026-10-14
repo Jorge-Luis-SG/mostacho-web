@@ -6,6 +6,7 @@ import Carousel from '../ui/Carousel.astro';
 import Img from '../ui/Img.astro';
 import BgVideo from '../ui/BgVideo.astro';
 import Button from '../ui/Button.astro';
+import ContactButton from '../ui/ContactButton.astro';
 import type { CardsSection } from '../../lib/types';
 import { fluid } from '../../lib/scale';
 import type { LandingContext } from '../../lib/context';
@@ -24,21 +25,25 @@ const titleId = `${section.id}-title`;
 <SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} labelledby={titleId} anim={section.anim} count={section.items.length}>
   <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
   <div class="cards">
-    <Carousel label={text.title} variant="cards" dots="top" ui={ui.carousel}>
+    <Carousel label={text.title} variant="cards" dots="top" ui={ui.carousel} loop={section.loop}>
       {
         section.items.map((item) => {
           const card = text.items[item.id];
           return (
             <article class:list={['card', section.showText && 'card--text']} data-fx={item.fx}>
               <Img site={ctx.site} src={item.image} alt={card.alt ?? ''} class="card__img" sizes="(max-width: 700px) 85vw, 420px" maxWidth={960} />
-              <BgVideo site={ctx.site} src={item.video} class="card__img" />
+              <BgVideo site={ctx.site} src={item.video} class="card__img" hover sound />
               <div class="card__spacer" />
               <div class="card__body">
                 {/* Copia desenfocada (pregenerada por npm run assets): mismo efecto que backdrop-filter, sin coste al hacer scroll */}
                 <Img site={ctx.site} src={`blur/${item.image}`} alt="" class="card__blur" sizes="160px" maxWidth={160} optional />
                 <h3 style={item.titleSize ? `font-size: calc(${fluid(item.titleSize, 0.55)} - 0.5rem)` : undefined}>{card.title}</h3>
                 {section.showText && card.text && <p>{card.text}</p>}
-                <Button href={item.href ?? ctx.whatsappFor(card.title)}>{card.cta ?? ui.contact}</Button>
+                {(card.cta ?? ui.contact) === ui.contact ? (
+                  <ContactButton href={item.href ?? ctx.whatsappFor(card.title)} ctx={ctx} />
+                ) : (
+                  <Button href={item.href ?? ctx.whatsappFor(card.title)}>{card.cta}</Button>
+                )}
               </div>
             </article>
           );

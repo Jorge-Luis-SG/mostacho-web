@@ -22,12 +22,15 @@ ul[role='list'], ol[role='list'] { list-style: none; padding: 0; }
 /* ---------- Escala ----------
  * Todas las medidas del diseño (en px a 1920) se expresan como "N / 19.2 × --u".
  *   --scale: tamaño general de la web (1 = idéntico al diseño en una pantalla de 1920).
- *   --u:     1 % del ancho del lienzo escalado.
+ *   --u:     1 % del ancho del lienzo escalado. El lienzo no pasa de 1920 px: en pantallas más anchas la web
+ *            se queda al tamaño del diseño, centrada (los fondos sí siguen a sangre).
+ *   --vw:    1 % del ancho de la pantalla, sin pasar de 19,2 px (para lo que va a sangre pero no debe crecer más).
  *   --edge:  margen lateral que queda a cada lado del lienzo (para alinear lo que va a sangre).
  */
 :root {
   --scale: 0.85;
-  --u: calc(var(--scale) * 1vw);
+  --vw: min(1vw, 19.2px);
+  --u: calc(var(--scale) * var(--vw));
   --edge: calc((100vw - 100 * var(--u)) / 2);
   --u-root: var(--u); /* copia que no cambia aunque una sección redefina --u */
   /* Botón Contactar de la cabecera: distancia al borde derecho y ancho (230 px en el diseño) */

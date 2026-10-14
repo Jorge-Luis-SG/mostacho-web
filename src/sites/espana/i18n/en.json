@@ -12,6 +12,7 @@
     "skipToContent": "Skip to content",
     "language": "Language",
     "contact": "Contact",
+    "contactHover": "Book a party",
     "want": "I want it",
     "scrollDown": "Go to next section",
     "rating": "{n} out of 5 stars",
@@ -59,7 +60,7 @@
       "items": {
         "hora-loca": {
           "title": "Hora loca",
-          "text": "One hour packed with fun: live show performance, props for your guests, karaoke and epic games",
+          "text": "One hour packed with fun: live show performance, props for your guests, karaoke and epic games, with more than 30 themes available.",
           "alt": "Party with a hora loca show"
         },
         "recibe": {

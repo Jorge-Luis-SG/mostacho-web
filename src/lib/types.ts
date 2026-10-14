@@ -16,6 +16,8 @@ export interface Decor {
   x: number;
   y: number;
   w: number;
+  /** Bigote que cae con dos rebotes al pasar el cursor (como el de «Nosotros»). */
+  hover?: boolean;
 }
 
 export interface SectionBase {
@@ -56,7 +58,7 @@ export interface CardItem {
   image: string;
   /** Tamaño del título en px del diseño a 1920 (opcional). */
   titleSize?: number;
-  /** Video de fondo opcional; la imagen hace de póster. */
+  /** Video opcional: con la imagen como miniatura, se reproduce (con sonido) al pasar el ratón. */
   video?: string;
   /** Si se indica, el botón lleva a ese ancla/URL en vez de a WhatsApp. */
   href?: string;
@@ -68,6 +70,8 @@ export interface CardsSection extends SectionBase {
   type: 'cards';
   items: CardItem[];
   showText?: boolean;
+  /** Carrusel sin fin: tras la última página, la flecha vuelve a la primera (y al revés). */
+  loop?: boolean;
 }
 
 export interface ShowcaseSlide {
@@ -81,16 +85,52 @@ export interface ShowcaseSlide {
   glowAt?: string;
   /** Imagen opcional para el título (por ejemplo, un logo). */
   titleImage?: string;
+  /** Personaje recortado (PNG transparente) que entra por la derecha al pasar el ratón y sobresale por arriba. */
+  pop?: ShowcasePop;
+  /** Sin foto de fondo: en reposo se ve el mismo personaje dentro de la diapositiva (al pasar el ratón sale por arriba). */
+  inside?: boolean;
+  /** Encuadre vertical de la foto (CSS object-position, p. ej. "0% 0%" = pegada arriba, para que se vean las caras). */
+  imagePos?: string;
+  /** Fondo propio de la diapositiva (CSS), p. ej. una luz degradada cuando no hay foto. */
+  bg?: string;
+}
+
+/** Personaje de una diapositiva. Medidas en % de la diapositiva (ancho sin la franja desenfocada de la derecha). */
+export interface ShowcasePop {
+  image: string;
+  /** Borde izquierdo del personaje (% del ancho). */
+  left?: number;
+  /** Ancho del personaje (% del ancho); el alto sale de la proporción de la imagen. Lo que pase del borde de abajo se recorta. */
+  width?: number;
+  /** Borde de arriba (% del alto); negativo = sobresale por encima de la diapositiva. */
+  top?: number;
+  /** Color del resplandor suave que se enciende detrás del personaje. */
+  glow?: string;
+  /** Posición del centro del resplandor en la diapositiva entera, p. ej. "80% 45%". Va por encima del degradado lateral. */
+  glowAt?: string;
+  /** Tamaño del resplandor (radios horizontal y vertical), p. ej. "40% 85%". */
+  glowSize?: string;
+  /** Capa oscura sobre la foto mientras se ve el personaje (0 a 1). */
+  shade?: number;
+  /** Color que tiñe la foto mientras se ve el personaje (con transparencia, p. ej. "rgba(150, 40, 255, 0.4)"). */
+  tint?: string;
+  /** Si se indica, el tinte pasa de «tint» (izquierda) a este color (derecha). */
+  tintRight?: string;
 }
 
 export interface ShowcaseSection extends SectionBase {
   type: 'showcase';
   slides: ShowcaseSlide[];
+  /** Carrusel sin fin: tras la última diapositiva, la flecha vuelve a la primera. */
+  loop?: boolean;
+  /** Px que se agrandan los personajes de esta sección (sobre su tamaño medido en el diseño). */
+  popGrow?: number;
 }
 
 export interface GallerySection extends SectionBase {
   type: 'gallery';
-  items: { id: string; image: string }[];
+  /** pos: encuadre de la foto en su tarjeta (CSS object-position), si el general no centra bien a las personas. */
+  items: { id: string; image: string; pos?: string }[];
 }
 
 export type TestimonialItem =
@@ -147,6 +187,10 @@ export interface PortalConfig {
   route?: string;
   logo: string;
   background: string;
+  /** Video de fondo en bucle (src/sites/portal/video/); la imagen de fondo hace de póster. */
+  video?: string;
+  /** Versión ligera del video para móviles y tablets en vertical (opcional). */
+  videoMobile?: string;
   social: Partial<Record<Network, string>>;
   socialOrder: Network[];
   countries: { site: string; flag: string }[];

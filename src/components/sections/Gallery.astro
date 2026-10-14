@@ -4,7 +4,6 @@ import SectionTitle from '../ui/SectionTitle.astro';
 import Carousel from '../ui/Carousel.astro';
 import Img from '../ui/Img.astro';
 import type { GallerySection } from '../../lib/types';
-import { lowRes } from '../../lib/images';
 import type { LandingContext } from '../../lib/context';
 
 interface Props {
@@ -25,11 +24,10 @@ const titleId = `${section.id}-title`;
     <Carousel label={text.title} variant="gallery" arrows="sides" ui={ctx.ui.carousel}>
       {
         section.items.map((item) => {
-          // Foto de la galería a 1920 de pantalla: hasta 1376 × 699 px (la animación la muestra grande)
-          const small = lowRes(ctx.site, item.image, [1376, 699]);
+          // Cada foto llena su tarjeta (aunque sea vertical): se recorta centrada un poco por encima de la mitad,
+          // donde suelen estar las caras
           return (
-            <figure class:list={['gallery__item', small && 'gallery__item--lowres']}>
-              {small && <Img site={ctx.site} src={item.image} alt="" class="gallery__backdrop" sizes="480px" maxWidth={480} />}
+            <figure class="gallery__item" style={item.pos ? `--pos:${item.pos}` : undefined}>
               <Img site={ctx.site} src={item.image} alt={text.items[item.id]?.alt ?? ''} sizes="(max-width: 700px) 88vw, 60vw" maxWidth={1920} />
             </figure>
           );
@@ -39,14 +37,90 @@ const titleId = `${section.id}-title`;
   </div>
 </SectionShell>
 
+<script>
+  // Al llegar a la galería, el carrusel recorre solo todas las fotos hasta el final y vuelve al principio.
+  // Se repite cada vez que la sección vuelve a entrar en pantalla; si el visitante toca el carrusel, se detiene.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
+    document.querySelectorAll<HTMLElement>('.gallery').forEach((gallery) => {
+      const track = gallery.querySelector<HTMLElement>('[data-track]');
+      if (!track || gallery.closest('[data-anim]')) return;
+      let frame = 0;
+      let played = false;
+      // Lleva el carrusel de donde esté a «to» a velocidad constante («speed» px/s), arrancando y frenando
+      // suavemente en «ramp» s: nunca va más rápido que «speed» (sin el ajuste a cada foto mientras se mueve)
+      const glide = (to: number, speed: number, ramp = 1) =>
+        new Promise<boolean>((done) => {
+          const from = track.scrollLeft;
+          const d = Math.abs(to - from);
+          const dir = Math.sign(to - from);
+          const tr = Math.min(ramp, d / speed); // trayecto corto: no llega a la velocidad máxima
+          const v = tr < ramp ? d / tr : speed;
+          const total = tr + Math.max(0, (d - v * tr) / v) + tr;
+          const at = (t: number) =>
+            t < tr ? (0.5 * v * t * t) / tr : t > total - tr ? d - (0.5 * v * (total - t) ** 2) / tr : (v * tr) / 2 + v * (t - tr);
+          const t0 = performance.now();
+          const tick = (now: number) => {
+            const t = Math.min(total, (now - t0) / 1000);
+            track.scrollLeft = from + dir * at(t);
+            if (t < total) frame = requestAnimationFrame(tick);
+            else done(true);
+          };
+          frame = requestAnimationFrame(tick);
+        });
+      const stop = () => {
+        cancelAnimationFrame(frame);
+        frame = 0;
+        track.style.scrollSnapType = '';
+      };
+      const play = async () => {
+        played = true;
+        // Que las fotos ya estén cargadas cuando pasen
+        track.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => (img.loading = 'eager'));
+        const max = track.scrollWidth - track.clientWidth;
+        if (max < 10) return;
+        track.style.scrollSnapType = 'none';
+        // Ida a 800 px/s como mucho (se ven bien las fotos); pausa; vuelta algo más rápida (1600 px/s como mucho)
+        const going = await glide(max, 800);
+        if (!going || !frame) return;
+        await new Promise((r) => setTimeout(r, 700));
+        if (!frame) return;
+        await glide(0, 1600, 1.2);
+        stop();
+      };
+      // Si el visitante mueve el carrusel (clic, dedo, teclado o rueda en horizontal), el recorrido se detiene.
+      // La rueda normal (bajar la página con el cursor encima) no lo detiene.
+      ['pointerdown', 'touchstart', 'keydown'].forEach((ev) => track.addEventListener(ev, stop, { passive: true }));
+      track.addEventListener('wheel', (e) => Math.abs(e.deltaX) > Math.abs(e.deltaY) && stop(), { passive: true });
+      new IntersectionObserver(
+        ([e]) => {
+          if (e.intersectionRatio >= 0.55 && !played) play();
+          // Si la galería sale de la pantalla (aunque sea a medias), el recorrido se corta y vuelve a la primera foto;
+          // al volver, empieza de nuevo
+          if (e.intersectionRatio < 0.2 && played) {
+            stop();
+            track.scrollLeft = 0;
+            played = false;
+          }
+        },
+        { threshold: [0, 0.2, 0.6] },
+      ).observe(gallery);
+    });
+</script>
+
 <style>
   .gallery {
     position: relative;
     margin-top: clamp(2.4rem, calc(2.6 * var(--u)), 5rem);
-    padding-left: calc(var(--edge) + clamp(1.6rem, calc(5.63 * var(--u)), 10.8rem));
+    /* Margen izquierdo del diseño, por dentro del carrusel: al desplazarse, las fotos salen hasta el borde de la
+       pantalla en vez de cortarse a la altura del margen */
+    --gallery-left: calc(var(--edge) + clamp(1.6rem, calc(5.63 * var(--u)), 10.8rem));
     --carousel-gap: clamp(1.2rem, calc(2.34 * var(--u)), 4.5rem);
   }
-  .gallery :global(.carousel__track) { grid-auto-columns: min(calc(59.7 * var(--u)), 114.6rem); }
+  .gallery :global(.carousel__track) {
+    grid-auto-columns: min(calc(59.7 * var(--u)), 114.6rem);
+    padding-left: var(--gallery-left);
+    scroll-padding-left: var(--gallery-left);
+  }
   @media (max-width: 700px) {
     .gallery :global(.carousel__track) { grid-auto-columns: calc(86 * var(--u)); }
   }
@@ -56,25 +130,12 @@ const titleId = `${section.id}-title`;
   .gallery:focus-within :global(.carousel__arrow:not(:disabled)) { opacity: 1; }
   .gallery :global(.carousel__arrow--prev) { left: 1.5rem; }
   .gallery :global(.carousel__arrow--next) { right: 1.5rem; }
-  /* Foto vertical o pequeña: entera, sobre un fondo desenfocado de sí misma (sin ampliarla hasta pixelarla) */
-  .gallery__item--lowres { position: relative; isolation: isolate; overflow: hidden; border-radius: var(--radius-lg); aspect-ratio: 1146 / 582; }
-  .gallery__item--lowres :global(.gallery__backdrop) {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: blur(24px) brightness(0.55) saturate(1.2);
-    transform: scale(1.15);
-    border-radius: 0;
-  }
-  .gallery__item--lowres :global(img:not(.gallery__backdrop)) { position: absolute; inset: 0; object-fit: contain; border-radius: 0; }
   .gallery__item :global(img), .gallery__item :global(.img-missing) {
     width: 100%;
     height: auto;
     aspect-ratio: 1146 / 582;
     object-fit: cover;
+    object-position: var(--pos, 50% 30%);
     border-radius: var(--radius-lg);
   }
 </style>

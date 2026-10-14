@@ -94,14 +94,11 @@ const titleId = `${section.id}-title`;
     object-fit: contain;
   }
   .about__award-cell :global(.img-missing.about__award) { aspect-ratio: 220 / 460; }
-  /* Trofeo: al pasar el cursor sube un poco (con una leve inclinación) y se asienta con un rebote suave;
-     al quitarlo vuelve también con rebote. Solo transform: lo mueve la tarjeta gráfica. */
+  /* Trofeo: lo anima el script de abajo (sube con dos rebotes al pasar el cursor). Solo transform: lo mueve la tarjeta gráfica. */
   .about__award-cell :global(.about__award) {
     transform-origin: 50% 100%;
-    transition: transform 0.7s cubic-bezier(0.34, 1.6, 0.5, 1);
     will-change: transform;
   }
-  .about__award-cell :global(.about__award:hover) { transform: translateY(-5%) rotate(2.5deg); }
   .about__frame :global(.about__team) {
     width: 100%;
     aspect-ratio: 560 / 260;
@@ -124,144 +121,48 @@ const titleId = `${section.id}-title`;
 
   @media (max-width: 900px) {
     .about__grid { grid-template-columns: 1fr; }
-    .about__media { margin-top: 18rem; }
+    /* El bigote sube por encima de la foto: se deja sitio para que no quede detrás del párrafo */
+    .about__media { margin-top: max(18rem, 58vw); }
     figcaption { padding-left: 0; }
   }
 </style>
 
 <script>
-  // Bigote de «Nosotros»: dos posiciones. Al pasar el cursor cae a la segunda (más abajo, inclinado hacia la
-  // izquierda y algo más grande) con dos rebotes; al quitarlo vuelve a su sitio, también con dos rebotes.
-  const DOWN = 'translate(-3%, 7%) rotate(-12deg) scale(1.1)';
-  // Recorrido con dos rebotes: pasa de largo, vuelve un poco, pasa de largo menos y se asienta
-  const path = (from: string, to: string, over: string[]) => [
-    { transform: from, easing: 'cubic-bezier(0.45, 0, 0.7, 0.4)' },
-    { transform: over[0], offset: 0.42, easing: 'cubic-bezier(0.3, 0.6, 0.5, 1)' },
-    { transform: over[1], offset: 0.62, easing: 'cubic-bezier(0.5, 0, 0.7, 0.5)' },
-    { transform: over[2], offset: 0.8, easing: 'cubic-bezier(0.3, 0.6, 0.5, 1)' },
-    { transform: over[3], offset: 0.91, easing: 'ease-in-out' },
-    { transform: to },
-  ];
-  const fall = (from: string) =>
-    path(from, DOWN, [
-      'translate(-3%, 9.5%) rotate(-14deg) scale(1.11)',
-      'translate(-3%, 5%) rotate(-10.5deg) scale(1.095)',
-      'translate(-3%, 8%) rotate(-12.8deg) scale(1.1)',
-      'translate(-3%, 6.4%) rotate(-11.6deg) scale(1.1)',
-    ]);
-  const rise = (from: string) =>
-    path(from, 'none', [
-      'translate(0.4%, -2.4%) rotate(2deg) scale(0.99)',
-      'translate(-0.3%, 1.2%) rotate(-1.2deg) scale(1)',
-      'translate(0.1%, -0.7%) rotate(0.6deg)',
-      'translate(0, 0.3%) rotate(-0.2deg)',
-    ]);
+  import { bouncePath as path, mustacheHover } from '../../scripts/mustache';
+
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!calm) document.querySelectorAll<HTMLElement>('.about__decor').forEach((el) => {
-    const img = el.querySelector('img');
-    const zone = el.closest('figure');
-    if (!img || !zone) return;
+
+  // Trofeo: al pasar el cursor sube un poco (con una leve inclinación) y se asienta con dos rebotes;
+  // al quitarlo vuelve a su sitio, también con dos rebotes.
+  const UP = 'translateY(-5%) rotate(2.5deg)';
+  const lift = (from: string) =>
+    path(from, UP, [
+      'translateY(-6.1%) rotate(3deg)',
+      'translateY(-4.3%) rotate(2.15deg)',
+      'translateY(-5.45%) rotate(2.7deg)',
+      'translateY(-4.85%) rotate(2.42deg)',
+    ]);
+  const drop = (from: string) =>
+    path(from, 'none', [
+      'translateY(0.8%) rotate(-0.4deg)',
+      'translateY(-0.45%) rotate(0.22deg)',
+      'translateY(0.22%) rotate(-0.1deg)',
+      'translateY(-0.07%) rotate(0.03deg)',
+    ]);
+  if (!calm) document.querySelectorAll<HTMLElement>('.about__award').forEach((el) => {
     let anim: Animation | null = null;
-    let down = false;
-    const go = (toDown: boolean) => {
-      if (toDown === down) return;
-      down = toDown;
-      // Empieza desde donde esté ahora (aunque la animación anterior no hubiera terminado)
-      const from = getComputedStyle(el).transform;
+    const go = (up: boolean) => {
+      const from = getComputedStyle(el).transform; // desde donde esté ahora
       anim?.cancel();
-      anim = el.animate(toDown ? fall(from) : rise(from), { duration: toDown ? 1300 : 1100, fill: 'forwards' });
+      anim = el.animate(up ? lift(from) : drop(from), { duration: up ? 1100 : 1000, fill: 'forwards' });
     };
+    el.addEventListener('pointerenter', () => go(true));
+    el.addEventListener('pointerleave', () => go(false));
+  });
 
-    // La imagen del bigote es una caja grande con mucha parte transparente que llega hasta el botón del inicio:
-    // no recibe el cursor (pointer-events: none) y aquí se mira si el cursor está sobre su parte visible,
-    // con un mapa de transparencia de la imagen en pequeño
-    let mask: Uint8Array | null = null;
-    let mw = 0;
-    let mh = 0;
-    const makeMask = () => {
-      try {
-        mw = 80;
-        mh = Math.max(1, Math.round((mw * img.naturalHeight) / img.naturalWidth));
-        const c = document.createElement('canvas');
-        c.width = mw;
-        c.height = mh;
-        const g = c.getContext('2d', { willReadFrequently: true })!;
-        g.drawImage(img, 0, 0, mw, mh);
-        const px = g.getImageData(0, 0, mw, mh).data;
-        // Visible = no transparente; se engorda un píxel para que el borde no sea tan exigente
-        const solid = new Uint8Array(mw * mh);
-        for (let i = 0; i < solid.length; i++) solid[i] = px[i * 4 + 3] > 40 ? 1 : 0;
-        mask = new Uint8Array(mw * mh);
-        for (let y = 0; y < mh; y++)
-          for (let x = 0; x < mw; x++)
-            for (let dy = -1; dy <= 1; dy++)
-              for (let dx = -1; dx <= 1; dx++) if (solid[Math.min(mh - 1, Math.max(0, y + dy)) * mw + Math.min(mw - 1, Math.max(0, x + dx))]) mask[y * mw + x] = 1;
-      } catch {
-        mask = null; // sin mapa: cuenta toda la caja del bigote
-      }
-    };
-    if (img.complete && img.naturalWidth) makeMask();
-    else img.addEventListener('load', makeMask, { once: true });
-
-    // ¿El punto (x, y) de la pantalla cae sobre el bigote visible, tal como está ahora (quieto, cayendo o abajo)?
-    const onMustache = (x: number, y: number) => {
-      const f = zone.getBoundingClientRect();
-      const dx = f.left + el.offsetLeft;
-      const dy = f.top + el.offsetTop;
-      const ox = dx + el.offsetWidth * 0.5; // transform-origin: 50% 60%
-      const oy = dy + el.offsetHeight * 0.6;
-      const t = getComputedStyle(el).transform;
-      const p = t && t !== 'none' ? new DOMMatrix(t).inverse().transformPoint(new DOMPoint(x - ox, y - oy)) : { x: x - ox, y: y - oy };
-      const u = (p.x + ox - dx - img.offsetLeft) / img.offsetWidth;
-      const v = (p.y + oy - dy - img.offsetTop) / img.offsetHeight;
-      if (!(u >= 0 && u < 1 && v >= 0 && v < 1)) return false;
-      return !mask || mask[Math.floor(v * mh) * mw + Math.floor(u * mw)] === 1;
-    };
-    // Lo que tapa al bigote (el marco con el trofeo y la foto, enlaces, botones, la cabecera) no lo activa
-    const covered = (x: number, y: number) => !!document.elementFromPoint(x, y)?.closest('.about__frame, a, button, header');
-    const inZone = (x: number, y: number) => {
-      const f = zone.getBoundingClientRect();
-      return x >= f.left && x <= f.right && y >= f.top && y <= f.bottom;
-    };
-    const check = (x: number, y: number) => {
-      const over = onMustache(x, y) && !covered(x, y);
-      // Abajo se queda mientras el cursor siga sobre el bigote o el marco (así no parpadea al moverse)
-      go(down ? over || inZone(x, y) : over);
-    };
-
-    // Solo se escucha el cursor mientras la sección está cerca de la pantalla
-    let px = -1;
-    let py = -1;
-    let mouse = false;
-    let frame = 0;
-    const schedule = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        if (px >= 0) check(px, py);
-      });
-    };
-    const onMove = (e: PointerEvent) => {
-      px = e.clientX;
-      py = e.clientY;
-      mouse = e.pointerType === 'mouse';
-      schedule();
-    };
-    const onScroll = () => mouse && schedule(); // el bigote se mueve bajo el cursor quieto
-    const onOut = () => {
-      px = -1;
-      go(false);
-    };
-    new IntersectionObserver(
-      ([e]) => {
-        const on = e.isIntersecting ? addEventListener : removeEventListener;
-        on('pointermove', onMove as EventListener, { passive: true });
-        on('pointerdown', onMove as EventListener, { passive: true });
-        on('scroll', onScroll, { passive: true });
-        document.documentElement[e.isIntersecting ? 'addEventListener' : 'removeEventListener']('pointerleave', onOut);
-        if (!e.isIntersecting) onOut();
-      },
-      { rootMargin: '50% 0px' },
-    ).observe(zone);
+  // Bigote de «Nosotros»: cae con dos rebotes al pasar el cursor (src/scripts/mustache.ts)
+  document.querySelectorAll<HTMLElement>('.about__decor').forEach((el) => {
+    const zone = el.closest('figure');
+    if (zone) mustacheHover(el, { zone, covered: '.about__frame, a, button, header', stayInZone: true });
   });
 </script>

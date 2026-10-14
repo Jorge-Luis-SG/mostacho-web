@@ -2,7 +2,7 @@
 import Img from '../ui/Img.astro';
 import BgVideo from '../ui/BgVideo.astro';
 import Icon from '../ui/Icon.astro';
-import Button from '../ui/Button.astro';
+import ContactButton from '../ui/ContactButton.astro';
 import LangSwitch from '../ui/LangSwitch.astro';
 import SocialLinks from '../ui/SocialLinks.astro';
 import type { HeroSection } from '../../lib/types';
@@ -49,19 +49,7 @@ const mask =
     <h1 id={`${section.id}-title`} class="hero__title">{text.title}</h1>
     <div class="hero__tagline">
       <p>{text.tagline}</p>
-      <Button href={ctx.whatsapp} class="hero__cta">
-        {
-          text.ctaHover ? (
-            /* Al pasar el ratón: el botón se vuelve blanco y el texto cambia (sube uno, entra el otro) */
-            <span class="hero__cta-swap">
-              <span class="hero__cta-a">{text.cta}</span>
-              <span class="hero__cta-b" aria-hidden="true">{text.ctaHover}</span>
-            </span>
-          ) : (
-            text.cta
-          )
-        }
-      </Button>
+      <ContactButton href={ctx.whatsapp} ctx={ctx} label={text.cta} hover={text.ctaHover} class="hero__cta" />
     </div>
   </div>
 
@@ -81,10 +69,10 @@ const mask =
   .hero {
     /* En pantallas bajas (portátiles) el hero se escala por el alto para que todo quepa */
     /* Los tamaños se adaptan también al alto; la posición horizontal sigue al resto de la página (--edge, --u-root). */
-    --u: calc(var(--scale) * min(1vw, 1.7778svh));
+    --u: calc(var(--scale) * min(1vw, 1.7778svh, 19.2px));
     position: relative;
     isolation: isolate;
-    min-height: clamp(48rem, 100svh, 108rem);
+    min-height: max(48rem, 100svh);
     display: grid;
     align-items: end;
     padding-block: 18rem calc(clamp(6rem, calc(5.7 * var(--u)), 11rem) + 2rem);
@@ -120,44 +108,6 @@ const mask =
     background: var(--color-glass);
     border: 1px solid var(--color-pill-border);
   }
-  /* Botón del inicio: al pasar el ratón se rellena de blanco (de izquierda a derecha) y «Contactar» deja paso
-     a «Agendar una fiesta». El botón mide siempre lo que el texto más largo (los dos textos ocupan la misma celda),
-     así nada cambia de tamaño: todo lo mueve la tarjeta gráfica (transform/opacity) y va fluido en cualquier equipo. */
-  .hero__tagline :global(.hero__cta) {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    padding-inline: 2em;
-    transition: transform 0.15s ease;
-  }
-  .hero__tagline :global(.hero__cta)::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: #fff;
-    border-radius: inherit;
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
-    will-change: transform;
-  }
-  .hero__cta-swap {
-    display: inline-grid;
-    justify-items: center;
-    white-space: nowrap;
-  }
-  .hero__cta-a, .hero__cta-b {
-    grid-area: 1 / 1;
-    white-space: nowrap;
-    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
-    will-change: transform, opacity;
-  }
-  .hero__cta-b { color: #111; transform: translateY(140%); opacity: 0; }
-  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible)) { filter: none; }
-  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible))::before { transform: scaleX(1); }
-  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible)) .hero__cta-a { transform: translateY(-140%); opacity: 0; }
-  .hero__tagline :global(.hero__cta:is(:hover, :focus-visible)) .hero__cta-b { transform: none; opacity: 1; }
 
   .hero__tagline p {
     font-family: var(--font-heading);

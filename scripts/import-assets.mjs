@@ -5,7 +5,8 @@
  *
  * - Fotos: convierte HEIC/HEIF a JPG y reduce las enormes a un máximo de 2560 px (sin recortar).
  *   Astro las vuelve a optimizar (AVIF/WebP y varios tamaños) en cada build.
- * - Videos: los pasa a MP4 H.264 sin audio, listos para la web, y saca un fotograma como imagen de carga.
+ * - Videos: los pasa a MP4 H.264 listos para la web (sin audio, salvo los que se escuchan al pasar el ratón)
+ *   y, si se indica, saca un fotograma como imagen de carga.
  * - Tarjetas: genera la versión desenfocada de cada foto (img/blur/) para el fondo del texto.
  * - Fuentes: convierte Neue Montreal (.otf) a .woff2 en public/fonts/.
  *
@@ -57,6 +58,22 @@ const images = {
   'hora-loca-neon.jpg': 'HORA LOCA/NEÓN.png',
   'hora-loca-rabbit-girls.jpg': 'HORA LOCA/RABBIT GIRLS(1).jpg',
   'hora-loca-rumberas.jpg': 'HORA LOCA/RUMBERAS(2).JPG',
+  // Personajes recortados (PNG transparente) que asoman por la derecha al pasar el ratón por la diapositiva
+  'hora-loca-robots-led-pop.png': '../Nueva carpeta/show-robots-led-effect.png',
+  'hora-loca-show-mirror-pop.png': '../Nueva carpeta/show-mirror-effect.png',
+  'hora-loca-funky-animals-pop.png': '../Nueva carpeta/funky-animals-effect.png',
+  'hora-loca-arlequines-pop.png': '../Nueva carpeta/show-alequines-effect.png',
+  'hora-loca-monster-glitter-pop.png': '../Nueva carpeta/monster-glitter-effect.png',
+  'hora-loca-galacticos-pop.png': '../Nueva carpeta/show-galacticos-effect.png',
+  'hora-loca-white-wings-pop.png': '../Nueva carpeta/withe-wings-effects.png',
+  'recibe-rosas-doradas-pop.png': '../Nueva carpeta/rosas-glam-effect.png',
+  'recibe-rosas-rojas-pop.png': '../Nueva carpeta/rosas-glam-rojas-effect.png',
+  'recibe-rosas-blancas-pop.png': '../Nueva carpeta/rosas-glan-blancas-effect.png',
+  'recibe-personajes-golden-pop.png': '../Nueva carpeta/personajes-golden-effect.png',
+  'recibe-personajes-silver-pop.png': '../Nueva carpeta/personajes-silver-effect.png',
+  'recibe-afrodita-pop.png': '../Nueva carpeta/afrodita-effects.png',
+  'infantil-kpop-pop.png': '../k-pop-effect.png',
+  'infantil-world-tour-pop.png': '../messi-effect.png',
 
   'recibe-rosas-doradas.jpg': 'RECIBIMIENTO DE INVITADOS/ROSAS GLAM DORADAS.jpg',
   // Rosas glam rojas: la de "ROSAS GLAM ROJAS.jpg" lleva textos de Instagram encima; se usa la de COMBINADOS con las rosas rojas
@@ -73,8 +90,7 @@ const images = {
   'recibe-isis.jpg': 'RECIBIMIENTO DE INVITADOS/ISIS.jpg',
   'recibe-mimos.jpg': 'RECIBIMIENTO DE INVITADOS/MIMOS.heif',
 
-  'efecto-bazooka.jpg': 'EFECTOS ESPECIALES/BAZOOKA CO2.jpg',
-  'efecto-neblina-baja.jpg': 'EFECTOS ESPECIALES/NEBLINA BAJA.png',
+  'efecto-bazooka.jpg': 'EFECTOS ESPECIALES/BAZOOKA CO2(1).jpg', // novios con bazookas (la de BAZOOKA CO2.jpg es la quinceañera)
   'efecto-fuegos-artificiales.jpg': 'EFECTOS ESPECIALES/FUEGOS ARTIFICIALES.jpg',
   'efecto-confeti.jpg': 'EFECTOS ESPECIALES/CONFETI.jpg',
   'efecto-neblina-pirotecnia.jpg': 'EFECTOS ESPECIALES/NEBLINA BAJA Y PIROTECNIA FRIA.jpg',
@@ -87,8 +103,7 @@ const images = {
   'adicional-montaje-bailes.jpg': 'SERVICIOS ADICIONALES/MONTAJE PARA BAILES DE NOVIOS Y 15 AÑOS.jpg',
   'adicional-pantallas-carpas.jpg': 'SERVICIOS ADICIONALES/PANTALLAS MOBILIARIO CARPAS.jpg',
   'adicional-totems-led.jpg': 'SERVICIOS ADICIONALES/TOTEMS LED.jpg',
-  'adicional-zanqueros.jpg': 'SERVICIOS ADICIONALES/ZANQUEROS(2).jpg',
-  'adicional-party-shot.jpg': 'SERVICIOS/SERVICIO ADICIONAL PARTY SHOT.HEIF',
+  'adicional-zanqueros.jpg': 'SERVICIOS ADICIONALES/ZANQUEROS.JPG', // zanqueros azules (CRISFE)
 
   'infantil-kpop.jpg': 'SERVICIOS/MOSTACHO INFANTILES 1.jpg',
   'infantil-world-tour.jpg': 'SERVICIOS/MOSTACHO INFANTILES.jpg',
@@ -130,15 +145,31 @@ const gallery = [
 gallery.forEach((src, i) => (images[`galeria-${i + 1}.jpg`] = src));
 
 // ---------------------------------------------------------------------------
-// Videos: destino (en src/sites/ecuador/video/) ← origen. El póster va a img/ con el nombre indicado.
+// Videos: destino (en src/sites/ecuador/video/, o en el sitio indicado con site) ← origen.
+// El póster va a img/ del mismo sitio con el nombre indicado. audio: conserva el sonido (tarjetas que suenan al pasar el ratón).
+// maxrate (kbit/s): tope de calidad para que ninguna escena dispare el peso del archivo.
 // ---------------------------------------------------------------------------
 const videos = {
-  'hero.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 1280, crf: 32, fps: 24 },
+  'hero.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 1280, crf: 32, fps: 24, maxrate: 1400 },
   // Versión para móviles y tablets en vertical: recorte central 9:16 y más ligera
-  'hero-movil.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 480, crf: 35, fps: 24, portrait: true },
-  'servicio-hora-loca.mp4': { src: 'SERVICIOS/HORA LOCA.mp4', width: 720, crf: 26, poster: 'servicio-hora-loca.jpg' },
+  'hero-movil.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 480, crf: 35, fps: 24, portrait: true, maxrate: 550 },
+  // Servicios: la foto de cada tarjeta sigue siendo su miniatura; el video (con sonido) sale al pasar el ratón
+  'servicio-hora-loca.mp4': { src: '../videos/HORA LOCA.mp4', width: 640, crf: 28, audio: true, maxrate: 900 },
+  'servicio-recibe.mp4': { src: '../videos/RECIBE A LOS INVITADOS.mp4', width: 640, crf: 28, fps: 30, audio: true, maxrate: 900 },
+  // «RECIBIMIENTO DE INVITADOS 1» en realidad muestra efectos: confeti, CO2 de colores, neblina y pirotecnia fría
+  'servicio-efectos.mp4': { src: '../videos/RECIBIMIENTO DE INVITADOS 1.mp4', width: 640, crf: 28, portrait: true, audio: true, maxrate: 900 },
+  'servicio-infantiles.mp4': { src: '../videos/INFATILES.mp4', width: 640, crf: 28, portrait: true, audio: true, maxrate: 900 },
+  // Portada (elegir país): franjas rojas en bucle
+  'principal.mp4': { site: 'portal', src: '../videos/principal.mp4', width: 1920, crf: 28, poster: 'fondo.jpg' },
+  'principal-movil.mp4': { site: 'portal', src: '../videos/principal.mp4', width: 720, crf: 30, portrait: true },
   'adicional-cabina-espejada.mp4': { src: 'SERVICIOS ADICIONALES/CABINA ESPEJADA.mp4', width: 720, crf: 26, poster: 'adicional-cabina-espejada.jpg' },
   'adicional-musica-en-vivo.mp4': { src: 'SERVICIOS ADICIONALES/MUSICA EN VIVO(1).mp4', width: 720, crf: 27, poster: 'adicional-musica-en-vivo.jpg' },
+};
+
+// Fotos sacadas de un fotograma de video: destino (en img/) ← { src, at: segundo }
+const frames = {
+  // Neblina baja: la quinceañera y su papá sobre la neblina
+  'efecto-neblina-baja.jpg': { src: '../videos/neblina baja.mp4', at: 1 },
 };
 
 // ---------------------------------------------------------------------------
@@ -167,19 +198,33 @@ for (const [dst, rel] of Object.entries(images)) {
 }
 
 for (const [dst, v] of Object.entries(videos)) {
-  const src = SRC + v.src, out = VID + dst;
+  const dir = v.site ? `src/sites/${v.site}/` : 'src/sites/ecuador/';
+  const src = SRC + v.src, out = dir + 'video/' + dst;
   if (!fs.existsSync(src)) { console.warn(`⚠  no existe: ${src}`); continue; }
+  fs.mkdirSync(dir + 'video/', { recursive: true });
   if (!fresh(out, src)) {
     const crop = v.portrait ? 'crop=ih*9/16:ih,' : '';
-    execFileSync(ffmpegPath, ['-y', '-loglevel', 'error', '-i', src, '-an', '-vf', `${crop}scale='min(${v.width},iw)':-2,fps=${v.fps ?? 30}`,
-      '-c:v', 'libx264', '-preset', 'slow', '-crf', String(v.crf), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out]);
+    const audio = v.audio ? ['-c:a', 'aac', '-b:a', '96k', '-ac', '2'] : ['-an'];
+    const cap = v.maxrate ? ['-maxrate', `${v.maxrate}k`, '-bufsize', `${v.maxrate * 2}k`] : [];
+    execFileSync(ffmpegPath, ['-y', '-loglevel', 'error', '-i', src, ...audio, '-vf', `${crop}scale='min(${v.width},iw)':-2,fps=${v.fps ?? 30}`,
+      '-c:v', 'libx264', '-preset', 'slow', '-crf', String(v.crf), ...cap, '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out]);
     done++;
-    console.log(`✔ video/${dst} (${(fs.statSync(out).size / 1e6).toFixed(1)} MB)`);
+    console.log(`✔ ${out} (${(fs.statSync(out).size / 1e6).toFixed(1)} MB)`);
   } else skipped++;
-  if (v.poster && !fresh(IMG + v.poster, src)) {
-    execFileSync(ffmpegPath, ['-y', '-loglevel', 'error', '-ss', '1', '-i', out, '-frames:v', '1', '-q:v', '3', IMG + v.poster]);
+  const poster = v.poster && dir + 'img/' + v.poster;
+  if (poster && !fresh(poster, src)) {
+    execFileSync(ffmpegPath, ['-y', '-loglevel', 'error', '-ss', String(v.posterAt ?? 1), '-i', out, '-frames:v', '1', '-q:v', '3', poster]);
     console.log(`✔ ${v.poster} (fotograma del video)`);
   }
+}
+
+for (const [dst, f] of Object.entries(frames)) {
+  const src = SRC + f.src, out = IMG + dst;
+  if (!fs.existsSync(src)) { console.warn(`⚠  no existe: ${src}`); continue; }
+  if (fresh(out, src)) { skipped++; continue; }
+  execFileSync(ffmpegPath, ['-y', '-loglevel', 'error', '-ss', String(f.at), '-i', src, '-frames:v', '1', '-vf', "scale='min(1440,iw)':-2", '-threads', '1', '-q:v', '2', out]);
+  done++;
+  console.log(`✔ ${dst} (fotograma del video)`);
 }
 
 // ---------------------------------------------------------------------------

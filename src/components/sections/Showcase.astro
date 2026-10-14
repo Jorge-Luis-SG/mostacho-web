@@ -5,7 +5,8 @@ import SectionTitle from '../ui/SectionTitle.astro';
 import Carousel from '../ui/Carousel.astro';
 import Img from '../ui/Img.astro';
 import Button from '../ui/Button.astro';
-import type { ShowcaseSection } from '../../lib/types';
+import ContactButton from '../ui/ContactButton.astro';
+import type { ShowcasePop, ShowcaseSection } from '../../lib/types';
 import { fluid } from '../../lib/scale';
 import { lowRes } from '../../lib/images';
 import type { LandingContext } from '../../lib/context';
@@ -19,27 +20,48 @@ interface Props {
 const { section, text, ctx } = Astro.props;
 const { ui } = ctx;
 const titleId = `${section.id}-title`;
+const pops = section.slides.some((slide) => slide.pop);
+// Capas que acompañan al personaje: tinte de color y/o capa oscura sobre la foto, y un resplandor (luz) que puede
+// pasar también sobre el degradado de la izquierda
+const popBg = (pop: ShowcasePop) =>
+  [
+    pop.tint && `linear-gradient(90deg, ${pop.tint}, ${pop.tintRight ?? pop.tint})`,
+    pop.shade && `linear-gradient(rgb(0 0 0 / ${pop.shade}), rgb(0 0 0 / ${pop.shade}))`,
+  ]
+    .filter(Boolean)
+    .join(', ');
 ---
 
 <SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} contained={false} labelledby={titleId} flushBottom anim={section.anim} count={section.slides.length}>
   <div class="container">
     <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
   </div>
-  <div class="showcase__slides" style={section.space?.inner !== undefined ? `margin-top: ${fluid(section.space.inner)}` : undefined}>
-    <Carousel label={text.title} variant="showcase" dots="overlay" arrows="edge" ui={ui.carousel}>
+  <div class="showcase__slides" style={[section.space?.inner !== undefined && `margin-top: ${fluid(section.space.inner)}`, section.popGrow && `--pop-grow:${section.popGrow}px`].filter(Boolean).join(';') || undefined}>
+    <Carousel label={text.title} variant="showcase" dots="overlay" arrows="edge" ui={ui.carousel} loop={section.loop}>
       {
         section.slides.map((slide, i) => {
           const s = text.slides[slide.id];
           // Foto en la parte derecha de la diapositiva: 1564 × 777 px a 1920 de pantalla
-          const small = lowRes(ctx.site, slide.image, [1564, 777]);
+          const inside = slide.inside && slide.pop;
+          const small = !inside && lowRes(ctx.site, slide.image, [1564, 777]);
           return (
             <article
-              class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres']}
-              style={[slide.accent && `--accent:${slide.accent}`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
+              class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside']}
+              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
-              <Img site={ctx.site} src={slide.image} alt={s.alt ?? ''} class="slide__img" sizes="(max-width: 700px) 100vw, 82vw" />
+              {inside ? (
+                <div class="slide__inside" style={`--pop-cx:${(slide.pop!.left ?? 50) + (slide.pop!.width ?? 40) / 2};--pop-width:${slide.pop!.width ?? 40};--pop-top:${slide.pop!.top ?? -12}`}>
+                  <Img site={ctx.site} src={slide.pop!.image} alt={s.alt ?? ''} sizes="(max-width: 700px) 60vw, 520px" maxWidth={1040} />
+                </div>
+              ) : (
+                <Img site={ctx.site} src={slide.image} alt={s.alt ?? ''} class="slide__img" sizes="(max-width: 700px) 100vw, 82vw" />
+              )}
+              {slide.pop && popBg(slide.pop) && <div class="slide__popbg" aria-hidden="true" style={`--pop-bg:${popBg(slide.pop)}`} />}
               <div class="slide__shade" aria-hidden="true" />
+              {slide.pop?.glow && (
+                <div class="slide__popglow" aria-hidden="true" style={`--pop-glow:radial-gradient(ellipse ${slide.pop.glowSize ?? '40% 85%'} at ${slide.pop.glowAt ?? '80% 50%'}, ${slide.pop.glow}, transparent)`} />
+              )}
               <div class="slide__content">
                 {s.kicker && <p class="slide__kicker">{s.kicker}</p>}
                 {slide.titleImage ? (
@@ -49,27 +71,104 @@ const titleId = `${section.id}-title`;
                 ) : (
                   <h3 class="slide__title">{s.title}</h3>
                 )}
-                <Button href={ctx.whatsappFor(s.title)}>{s.cta ?? ui.want}</Button>
+                {s.cta === ui.contact ? (
+                  <ContactButton href={ctx.whatsappFor(s.title)} ctx={ctx} />
+                ) : (
+                  <Button href={ctx.whatsappFor(s.title)}>{s.cta ?? ui.want}</Button>
+                )}
               </div>
             </article>
           );
         })
       }
     </Carousel>
+    {
+      /* Personajes recortados: van fuera de las diapositivas (que recortan lo que se sale) para poder asomar por arriba */
+      pops && (
+        <div class="showcase__pops" aria-hidden="true" data-pops>
+          {/* Tira con un hueco por diapositiva: se desplaza a la vez que el carrusel, así cada personaje va con la suya */}
+          <div class="showcase__strip" data-strip>
+            {section.slides.map((slide, i) =>
+              slide.pop ? (
+                <div class:list={['showcase__pop', slide.inside && 'showcase__pop--still']} style={`left:${i * 100}%;--pop-cx:${(slide.pop.left ?? 50) + (slide.pop.width ?? 40) / 2};--pop-width:${slide.pop.width ?? 40};--pop-top:${slide.pop.top ?? -12}`}>
+                  <Img site={ctx.site} src={slide.pop.image} alt="" sizes="(max-width: 1400px) 60vw, 1100px" maxWidth={1600} optional />
+                </div>
+              ) : (
+                <span hidden />
+              ),
+            )}
+          </div>
+        </div>
+      )
+    }
   </div>
 </SectionShell>
 
+<script>
+  // Al pasar el ratón por el carrusel, el personaje de la diapositiva que se ve entra desde la derecha;
+  // si cambia la diapositiva, el anterior sale y entra el nuevo; al quitar el ratón, se va por la derecha.
+  const canHover = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 701px)');
+  document.querySelectorAll<HTMLElement>('[data-pops]').forEach((layer) => {
+    const zone = layer.parentElement!;
+    const track = zone.querySelector<HTMLElement>('[data-track]');
+    // Las secciones con animación de scroll mueven el carrusel por su cuenta: ahí no se usa
+    if (!track || zone.closest('[data-anim]')) return;
+    const strip = layer.querySelector<HTMLElement>('[data-strip]')!;
+    const pops = Array.from(strip.children) as HTMLElement[];
+    const slides = Array.from(track.children) as HTMLElement[];
+    let shown = -1;
+    let over = false;
+    const current = () => Math.round(track.scrollLeft / Math.max(1, slides[0]?.offsetWidth ?? 1));
+    // Personaje (en la capa de encima) y su fondo (dentro de la diapositiva) se encienden y apagan juntos
+    const toggle = (i: number, on: boolean) => {
+      pops[i]?.classList.toggle('is-on', on);
+      slides[i]?.classList.toggle('is-pop', on);
+    };
+    const show = () => {
+      const next = over && canHover.matches && pops[current()]?.classList.contains('showcase__pop') ? current() : -1;
+      if (next === shown) return;
+      toggle(shown, false);
+      shown = next;
+      toggle(shown, true);
+    };
+    // La tira de personajes sigue al carrusel (también mientras se desliza entre diapositivas)
+    const follow = () => {
+      strip.style.transform = `translate3d(${-track.scrollLeft}px, 0, 0)`;
+      show();
+    };
+    zone.addEventListener('pointerenter', () => { over = true; follow(); });
+    zone.addEventListener('pointerleave', () => { over = false; show(); });
+    let frame = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(follow);
+    }, { passive: true });
+    // Si la página se mueve bajo el cursor quieto (rueda), se comprueba que siga encima
+    addEventListener('scroll', () => {
+      if (over && !zone.matches(':hover')) { over = false; show(); }
+    }, { passive: true });
+    new ResizeObserver(follow).observe(track);
+  });
+</script>
+
 <style>
+  /* El título de la sección queda por delante de los personajes que asoman por arriba */
+  .container { position: relative; z-index: 2; }
   .showcase__slides {
+    position: relative;
     margin-top: clamp(2.4rem, calc(2.6 * var(--u)), 5rem);
     --carousel-gap: 0px;
     /* Margen del texto, el botón y los puntos: 228 px de 1920 en el diseño (la diapositiva va a sangre, así que
        se mide sobre el ancho de la pantalla, no sobre el lienzo escalado) */
-    --carousel-dots-left: max(2rem, 11.9vw);
+    --carousel-dots-left: max(2rem, calc(11.9 * var(--vw) + max(0px, (100vw - 1920px) / 2)));
     /* Alto de la diapositiva: proporción del diseño (1842 × 853), sin pasar del 72 % del alto de la pantalla */
-    --slide-h: clamp(34rem, min(44.4vw, 72svh), 85.3rem);
+    --slide-h: clamp(34rem, min(44.4 * var(--vw), 72svh), 85.3rem);
   }
-  .showcase__slides :global(.carousel__track) { grid-auto-columns: 95.94%; }
+  /* Hueco al final del tamaño de la franja de la derecha: así la última diapositiva también queda alineada
+     a la izquierda (si no, se corre a la derecha y asoma la anterior por el borde izquierdo) */
+  .showcase__slides :global(.carousel__track) { display: flex; }
+  .showcase__slides :global(.carousel__track > *) { flex: 0 0 95.94%; }
+  .showcase__slides :global(.carousel__track)::after { content: ''; flex: 0 0 4.06%; }
   .showcase__slides :global(.carousel__dots--overlay) { bottom: clamp(3rem, calc(3.3 * var(--u)), 6.3rem); gap: clamp(1.4rem, calc(1.35 * var(--u)), 2.6rem); }
   .showcase__slides :global(.carousel__dot) { width: calc(clamp(1.2rem, calc(0.94 * var(--u)), 1.8rem) - 0.2rem); }
   .showcase__slides :global(.carousel__dots--overlay) { right: var(--carousel-dots-left); flex-wrap: wrap; }
@@ -93,8 +192,102 @@ const titleId = `${section.id}-title`;
     .showcase__slides :global(.carousel__dot) { width: 0.8rem; }
   }
   @media (max-width: 700px) {
-    .showcase__slides :global(.carousel__track) { grid-auto-columns: 100%; }
+    .showcase__slides :global(.carousel__track > *) { flex-basis: 100%; }
+    .showcase__slides :global(.carousel__track)::after { display: none; }
   }
+
+  /* Capa de los personajes: cubre la diapositiva visible (sin la franja desenfocada de la derecha).
+     Cada personaje se coloca con su posición y ancho del diseño: sobresale por arriba y lo que pasa del borde
+     de abajo (o del derecho) se recorta. */
+  .showcase__pops {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 95.94%;
+    z-index: 1;
+    pointer-events: none;
+    clip-path: inset(-60% 0 0 0);
+  }
+  .showcase__strip { position: absolute; inset: 0; will-change: transform; }
+  .showcase__pop {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    container-type: size;
+    opacity: 0;
+    transform: translateX(14%);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.45s ease;
+    will-change: transform, opacity;
+  }
+  .showcase__pop.is-on {
+    opacity: 1;
+    transform: none;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease;
+  }
+  .showcase__pop :global(img) {
+    position: absolute;
+    /* Medidas del diseño (diapositiva de 1842 × 853): el tamaño va con el ALTO de la diapositiva (así no se
+       agranda en pantallas panorámicas) y el centro, con su ANCHO (como la foto de fondo) */
+    left: calc(var(--pop-cx) * 1%);
+    top: calc(var(--pop-top) * 1cqh);
+    width: calc(var(--pop-width) * 2.1594cqh + var(--pop-grow, 0px));
+    translate: -50% 0;
+    max-width: none;
+    height: auto;
+  }
+  /* Sin ratón (táctil) o en el móvil no hay efecto: ni se descargan las imágenes */
+  @media not ((hover: hover) and (pointer: fine)), (max-width: 700px) {
+    .showcase__pops { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .showcase__pop { transform: none; }
+  }
+  /* Fondo que acompaña al personaje (resplandor, tinte o capa oscura): sobre la foto, por debajo del degradado y el texto */
+  /* Diapositiva sin foto: en reposo, el mismo personaje con el mismo tamaño y sitio, recortado dentro de la
+     diapositiva; al pasar el ratón se enciende encima el de la capa de personajes (quieto) y asoma por arriba */
+  .slide__inside { position: absolute; inset: 0; z-index: -2; container-type: size; }
+  .slide__inside :global(img) {
+    position: absolute;
+    left: calc(var(--pop-cx) * 1%);
+    top: calc(var(--pop-top) * 1cqh);
+    width: calc(var(--pop-width) * 2.1594cqh + var(--pop-grow, 0px));
+    max-width: none;
+    height: auto;
+    translate: -50% 0;
+  }
+  .showcase__pop--still, .showcase__pop--still.is-on { transform: none; transition: opacity 0.5s ease; }
+  @media (max-width: 700px) {
+    .slide__inside :global(img) { left: 50%; top: 4%; width: auto; height: 96%; }
+  }
+  .slide__popbg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 29.6%;
+    width: 84.9%;
+    z-index: -2;
+    background: var(--pop-bg);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .slide__popglow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--pop-glow);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .slide:global(.is-pop) :is(.slide__popbg, .slide__popglow) { opacity: 1; transition-duration: 0.8s; }
+  /* Mientras se ve el personaje, la foto de fondo se desenfoca un poco (y se amplía apenas para que el borde
+     desenfocado no se note) */
+  .slide :global(:is(.slide__img, .slide__backdrop)) { transition: filter 0.6s ease, scale 0.6s ease; }
+  .slide:global(.is-pop) :global(.slide__img) { filter: blur(5px); scale: 1.02; }
 
   .slide {
     position: relative;
@@ -118,7 +311,7 @@ const titleId = `${section.id}-title`;
     width: 84.9%; /* como en el diseño, la foto sigue un poco más allá del borde derecho (queda recortada) */
     height: 100%;
     object-fit: cover;
-    object-position: 0% 50%;
+    object-position: var(--img-pos, 0% 50%);
     /* Su borde izquierdo se funde con el degradado (sin línea visible) */
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
     mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
@@ -161,6 +354,14 @@ const titleId = `${section.id}-title`;
     background:
       radial-gradient(ellipse 30% 45% at var(--glow-at, 31% 22%), var(--glow) 0%, transparent 100%),
       linear-gradient(90deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 88%, transparent) 30%, color-mix(in srgb, var(--accent) 35%, transparent) 50%, transparent 62%);
+  }
+  /* En escritorio, el título y el botón van centrados en vertical (por encima de los puntos): con títulos
+     cortos no quedan pegados abajo con mucho espacio vacío encima */
+  /* El espacio libre se reparte 4 a 1 (más arriba que abajo): el texto queda algo por debajo del centro y, si es
+     alto (p. ej. un logo), sube solo hasta donde haga falta para no pisar los puntos */
+  @media (min-width: 701px) {
+    .slide { display: grid; grid-template-rows: minmax(0, 4fr) auto minmax(0, 1fr); align-items: start; }
+    .slide__content { grid-row: 2; }
   }
   .slide__content { display: grid; justify-items: start; gap: clamp(2.4rem, calc(2.6 * var(--u)), 5rem); max-width: 80rem; }
   .slide__kicker {

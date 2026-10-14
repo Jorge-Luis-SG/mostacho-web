@@ -1,0 +1,74 @@
+---
+/**
+ * Botón «Contactar»: al pasar el ratón se rellena de blanco (de izquierda a derecha) y «Contactar» deja paso
+ * a «Agendar una fiesta». El botón mide siempre lo que el texto más largo (los dos textos ocupan la misma celda),
+ * así nada cambia de tamaño: todo lo mueve la tarjeta gráfica (transform/opacity) y va fluido en cualquier equipo.
+ * Si el texto no es «Contactar» (p. ej. un cta propio), solo se rellena de blanco.
+ */
+import Button from './Button.astro';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  href: string;
+  ctx: LandingContext;
+  /** Texto del botón (por defecto, «Contactar»). */
+  label?: string;
+  /** Texto al pasar el ratón (por defecto, «Agendar una fiesta» si el botón dice «Contactar»). */
+  hover?: string;
+  class?: string;
+}
+const { href, ctx, label = ctx.ui.contact, class: className } = Astro.props;
+const hover = Astro.props.hover ?? (label === ctx.ui.contact ? ctx.ui.contactHover : undefined);
+---
+
+<Button href={href} class={['btn-contact', className].filter(Boolean).join(' ')}>
+  {
+    hover ? (
+      <span class="btn-contact__swap">
+        <span class="btn-contact__a">{label}</span>
+        <span class="btn-contact__b" aria-hidden="true">{hover}</span>
+      </span>
+    ) : (
+      <span class="btn-contact__a btn-contact__only">{label}</span>
+    )
+  }
+</Button>
+
+<style>
+  :global(.btn-contact) {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-inline: 2em;
+    transition: transform 0.15s ease;
+  }
+  :global(.btn-contact)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: #fff;
+    border-radius: inherit;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+    will-change: transform;
+  }
+  .btn-contact__swap {
+    display: inline-grid;
+    justify-items: center;
+    white-space: nowrap;
+  }
+  .btn-contact__a, .btn-contact__b {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, color 0.3s ease;
+    will-change: transform, opacity;
+  }
+  .btn-contact__b { color: #111; transform: translateY(140%); opacity: 0; }
+  :global(.btn-contact:is(:hover, :focus-visible)) { filter: none; }
+  :global(.btn-contact:is(:hover, :focus-visible))::before { transform: scaleX(1); }
+  :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__a:not(.btn-contact__only) { transform: translateY(-140%); opacity: 0; }
+  :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__b { transform: none; opacity: 1; }
+  :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__only { color: #111; }
+</style>
