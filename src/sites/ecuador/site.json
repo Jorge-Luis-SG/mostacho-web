@@ -180,9 +180,8 @@
             "top": -7.2,
             "tint": "rgba(255, 175, 40, 0.35)"
           },
-          "accent": "#210d00",
-          "glow": "rgba(140, 65, 5, 0.85)",
-          "glowAt": "42% 60%"
+          "accent": "#210D00",
+          "bg": "radial-gradient(ellipse 55% 75% at 28% 50%, #AA4E00 0%, #210D00 100%)"
         },
         {
           "id": "monster-glitter",
@@ -202,6 +201,7 @@
           "id": "galacticos",
           "image": "hora-loca-galacticos.jpg",
           "imagePos": "0% 62%",
+          "imageMaxWidth": 800,
           "pop": {
             "image": "hora-loca-galacticos-pop.png",
             "left": 44,
