@@ -31,10 +31,8 @@ type Anim = {
   at?: (i: number) => number;
   /** Se llama en cada fotograma aunque la sección no esté en pantalla */
   each?: (r: DOMRect, len: number) => void;
-  /** Si devuelve un número, no se deja bajar el scroll más allá de esa posición (la sección aún no terminó) */
-  hold?: () => number | null;
-  /** El visitante insiste en bajar contra el bloqueo: la sección termina ya (sin esperar a sus efectos) */
-  skip?: () => void;
+  /** Los puntos y las flechas del carrusel llevan a la página i sin mover el scroll (en vez de usar at) */
+  go?: (i: number) => void;
   /** Al acercarse la sección (una vez): adelanta la carga de sus fotos. urgent: ya está en pantalla */
   warm?: (urgent?: boolean) => void;
   live?: boolean;
@@ -922,14 +920,13 @@ function start() {
         });
       // El scroll marca a qué paso hay que llegar (goal); se avanza de uno en uno y solo cuando terminó el efecto anterior.
       // Al subir, o si la sección ya no está en pantalla, se va directo.
+      // El reparto no depende del scroll: la primera tanda sale al llegar a la sección y las siguientes con las
+      // flechas o los puntos del carrusel. Al avanzar, las cartas salen de una en una, cada una tras su efecto;
+      // al volver a una tanda anterior, aparece al momento.
       let goal = 0;
-      let away = false;
-      // rush: se está pasando deprisa (scroll muy rápido o insistiendo contra el bloqueo): las cartas siguen al scroll
-      // al momento, sin esperar a los efectos, y la sección no frena
-      let rush = false;
       const advance = () => {
         if (goal === stage) return;
-        if (goal < stage || away || rush || stage < 0) {
+        if (goal < stage || stage < 0) {
           clearFx();
           pending = 0;
           return show(goal, true);
@@ -966,12 +963,32 @@ function start() {
         });
         d.active(batchAt(st));
       };
-      // Mientras no haya salido la última carta y terminado su efecto, no se puede bajar más allá de la sección
-      let endY = 0;
-      let inside = false;
-      let lastY = 0;
-      let lastT = 0;
-      let speed = 0; // px/s, suavizada
+      // Al tocar una carta ya repartida, su efecto se repite (no al tocar su botón)
+      flips.forEach((f, i) => {
+        f.addEventListener('click', (e) => {
+          if (cur[i] !== 'dealt' || (e.target as Element).closest('a, button')) return;
+          const fx = FX[f.querySelector<HTMLElement>('[data-fx]')?.dataset.fx ?? ''];
+          const r = f.getBoundingClientRect();
+          burst(r.left + r.width / 2, r.top + r.height * 0.15, 'sparks');
+          if (fx) playFx(() => fx(f.getBoundingClientRect()));
+        });
+      });
+      let started = false;
+      const goTo = (i: number) => {
+        started = true;
+        goal = Math.min(n, (clamp(i, 0, B - 1) + 1) * m.visible);
+        advance();
+      };
+      // Deslizar con el dedo (o arrastrar) sobre las cartas pasa a la tanda siguiente o a la anterior
+      let sx = 0;
+      let sy = 0;
+      view.addEventListener('pointerdown', (e) => ((sx = e.clientX), (sy = e.clientY)), { passive: true });
+      view.addEventListener('pointerup', (e) => {
+        const dx = e.clientX - sx;
+        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(e.clientY - sy) * 1.2) return;
+        goTo(batchAt(goal) + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+      view.style.touchAction = 'pan-y'; // el deslizamiento horizontal lo lleva la animación; el vertical, la página
       return {
         warm: (urgent) => preload(flips, urgent),
         measure() {
@@ -982,28 +999,14 @@ function start() {
           d.count(B);
           snapAll();
         },
-        run(p, len, top) {
-          // Baraja cerrada hasta que la sección está casi entera en pantalla; luego, una carta por cada tramo de scroll.
-          // La última sale al 90 % del recorrido: al terminar su efecto apenas queda scroll y se sigue bajando enseguida.
-          goal = top > vh * 0.3 ? 0 : p >= 0.9 ? n : Math.floor((clamp(p) / 0.9) * n);
-          away = top < -len - vh * 0.8; // la sección ya se fue por arriba
-          endY = scrollY + top + len;
-          inside = top <= vh * 0.3 && -top <= len + 2;
-          const now = performance.now();
-          if (now - lastT < 200) speed = speed * 0.6 + ((Math.abs(scrollY - lastY) / Math.max(1, now - lastT)) * 1000) * 0.4;
-          else speed = 0;
-          lastY = scrollY;
-          lastT = now;
-          if (!inside) rush = false;
-          else if (speed > vh * 2.5 && goal - stage >= 2) rush = true;
+        run(_p, _len, top) {
+          // La primera tanda se reparte cuando la sección está casi entera en pantalla
+          if (started || top > vh * 0.35) return;
+          started = true;
+          goal = Math.min(n, m.visible);
           advance();
         },
-        hold: () => (inside && !rush && !(stage === n && !pending) ? endY : null),
-        skip() {
-          rush = true;
-          advance();
-        },
-        at: (i) => Math.min(0.95, ((i * m.visible + 1) / n) * 0.9),
+        go: goTo,
       };
     },
 
@@ -1381,13 +1384,6 @@ function start() {
   let ringLive = false;
   function frame() {
     ticking = false;
-    // Si se arrastró la barra de scroll (o la inercia del dedo) más allá del bloqueo, se vuelve al final de la sección
-    guard(anims.some((a) => a.hold && a.live));
-    const lock = limit();
-    if (lock != null && scrollY > lock + 1) {
-      scrollTo({ top: lock, behavior: 'instant' });
-      pushed(14); // la inercia del dedo sigue empujando: también cuenta como insistir
-    }
     const rects = anims.map((a) => a.pin.getBoundingClientRect());
     const reads = extras.map((x) => x.read());
     if (guide) guide.update(rects[abIdx], rects[svIdx]);
@@ -1445,71 +1441,6 @@ function start() {
 
   addEventListener('scroll', request, { passive: true });
 
-  // Secciones que no dejan bajar hasta terminar (Efectos especiales: hasta que sale el efecto de la última carta).
-  // Los saltos del menú, de la flecha o de los puntos lo atraviesan (bypass).
-  let bypass = 0;
-  const limit = () => {
-    if (performance.now() < bypass) return null;
-    for (const a of anims) {
-      const y = a.hold?.();
-      if (y != null) return y;
-    }
-    return null;
-  };
-  // Si el visitante sigue empujando contra el bloqueo (un segundo de rueda o de dedo), la sección se da por
-  // terminada y se le deja pasar: el bloqueo solo frena un momento, nunca atrapa
-  let pushes = 0;
-  let lastPush = 0;
-  const pushed = (enough: number) => {
-    const now = performance.now();
-    pushes = now - lastPush > 700 ? 1 : pushes + 1;
-    lastPush = now;
-    if (pushes < enough) return;
-    pushes = 0;
-    anims.forEach((a) => a.hold?.() != null && a.skip?.());
-  };
-  const onWheel = (e: WheelEvent) => {
-    const y = limit();
-    if (y == null || e.deltaY <= 0 || scrollY + e.deltaY <= y) return;
-    e.preventDefault();
-    if (scrollY < y) scrollTo({ top: y, behavior: 'instant' });
-    pushed(10);
-  };
-  let touchY = 0;
-  const onTouchStart = (e: TouchEvent) => (touchY = e.touches[0]?.clientY ?? 0);
-  const onTouchMove = (e: TouchEvent) => {
-    const y = limit();
-    const dy = touchY - (e.touches[0]?.clientY ?? touchY); // > 0: el dedo sube = la página baja
-    if (y == null || dy <= 0 || scrollY < y - 2) return;
-    if (e.cancelable) e.preventDefault();
-    pushed(18);
-  };
-  const onKey = (e: KeyboardEvent) => {
-    if (!['ArrowDown', 'PageDown', 'End', ' ', 'Spacebar'].includes(e.key) || (e.target as Element | null)?.closest?.('input, textarea, select, [contenteditable]')) return;
-    const y = limit();
-    if (y == null || scrollY < y - 2) return;
-    e.preventDefault();
-    pushed(3);
-  };
-  // Estos escuchadores frenan el scroll del navegador (tiene que esperar a ver si se cancela): solo se ponen
-  // mientras la sección que bloquea está en pantalla, para no restar fluidez al resto de la página
-  let guarding = false;
-  const guard = (on: boolean) => {
-    if (on === guarding) return;
-    guarding = on;
-    const opts = { passive: false } as AddEventListenerOptions;
-    if (on) {
-      addEventListener('wheel', onWheel, opts);
-      addEventListener('touchstart', onTouchStart, { passive: true });
-      addEventListener('touchmove', onTouchMove, opts);
-      addEventListener('keydown', onKey);
-    } else {
-      removeEventListener('wheel', onWheel, opts);
-      removeEventListener('touchstart', onTouchStart);
-      removeEventListener('touchmove', onTouchMove, opts);
-      removeEventListener('keydown', onKey);
-    }
-  };
   // En el móvil, la barra de direcciones cambia el alto de la ventana al hacer scroll: eso no es un cambio de tamaño
   let lastW = innerWidth;
   let resizing = 0;
@@ -1533,9 +1464,9 @@ function start() {
   document.addEventListener('driven:go', (e) => {
     const a = anims.find((x) => x.pin.contains(e.target as Node));
     if (a) build(a);
-    if (!a?.at) return;
     const i = (e as CustomEvent<{ index: number }>).detail.index;
-    bypass = performance.now() + 1800;
+    if (a?.go) return a.go(i);
+    if (!a?.at) return;
     scrollTo({ top: a.pin.getBoundingClientRect().top + scrollY + a.at(i) * a.len, behavior: 'smooth' });
   });
 
@@ -1543,7 +1474,6 @@ function start() {
   document.addEventListener('click', (e) => {
     const link = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[href^="#"]');
     if (!link || e.defaultPrevented || link.hash.length < 2) return;
-    bypass = performance.now() + 2500; // un salto del menú atraviesa las secciones que bloquean
     const pin = document.getElementById(decodeURIComponent(link.hash.slice(1)))?.closest<HTMLElement>('.pin');
     if (!pin) return;
     e.preventDefault();

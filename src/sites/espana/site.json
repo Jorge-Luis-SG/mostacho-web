@@ -147,6 +147,7 @@
         {
           "id": "show-mirror",
           "image": "hora-loca-show-mirror.jpg",
+          "imagePos": "50% 62%",
           "pop": {
             "image": "hora-loca-show-mirror-pop.png",
             "left": 50.7,
@@ -201,6 +202,7 @@
         {
           "id": "galacticos",
           "image": "hora-loca-galacticos.jpg",
+          "imagePos": "50% 62%",
           "pop": {
             "image": "hora-loca-galacticos-pop.png",
             "left": 44,
@@ -357,30 +359,35 @@
         {
           "id": "bazooka",
           "image": "efecto-bazooka.jpg",
+          "imagePos": "35% 80%",
           "titleSize": 52,
           "fx": "smoke"
         },
         {
           "id": "neblina",
           "image": "efecto-neblina-baja.jpg",
+          "imagePos": "50% 26%",
           "titleSize": 52,
           "fx": "fog"
         },
         {
           "id": "fuegos",
           "image": "efecto-fuegos-artificiales.jpg",
+          "imagePos": "50% 55%",
           "titleSize": 52,
           "fx": "fireworks"
         },
         {
           "id": "confeti",
           "image": "efecto-confeti.jpg",
+          "imagePos": "50% 50%",
           "titleSize": 52,
           "fx": "confetti"
         },
         {
           "id": "neblina-pirotecnia",
           "image": "efecto-neblina-pirotecnia.jpg",
+          "imagePos": "58% 50%",
           "titleSize": 38,
           "fx": "fog-sparks"
         }
@@ -508,12 +515,12 @@
           "image": "infantil-world-tour.jpg",
           "pop": {
             "image": "infantil-world-tour-pop.png",
-            "left": 56,
-            "width": 24,
+            "left": 59.5,
+            "width": 31,
             "top": -12,
             "glow": "rgba(120, 190, 255, 0.55)",
-            "glowAt": "68% 40%",
-            "glowSize": "30% 80%"
+            "glowAt": "75% 40%",
+            "glowSize": "34% 85%"
           },
           "accent": "#00202e",
           "glow": "rgba(0, 150, 50, 0.9)",

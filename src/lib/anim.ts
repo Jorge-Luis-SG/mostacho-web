@@ -9,7 +9,7 @@ export type AnimMode =
   | 'slide' // Tarjetas que avanzan con el scroll (el bigote guía baja por detrás)
   | 'ring' // Banners a pantalla completa: el que se va se retira al fondo y el siguiente entra por encima
   | 'doors' // Cada diapositiva se abre como una puerta doble
-  | 'deal' // Las tarjetas se reparten volteándose
+  | 'deal' // Las tarjetas se reparten volteándose (con las flechas o los puntos; al tocar una, repite su efecto)
   | 'spotlight' // Una fila que se recorre entera; la del centro se ilumina
   | 'pop' // Letras que rebotan y la siguiente diapositiva se abre en círculo
   | 'tunnel' // Cada foto viene hacia ti y sigue de largo
@@ -25,8 +25,8 @@ export function pinLength(mode: AnimMode | undefined, count = 0): number | undef
     case 'ring':
     case 'doors':
     case 'spotlight': return 100 + count * 32;
-    // Un tramo por carta (salen de una en una), más uno para la baraja
-    case 'deal': return 100 + (count + 1) * 30;
+    // Sin recorrido extra: la sección se ve como una más y el reparto lo llevan las flechas y los puntos
+    case 'deal': return 100;
     case 'pop': return 200;
     case 'tunnel': return 100 + count * 20;
     default: return undefined;
