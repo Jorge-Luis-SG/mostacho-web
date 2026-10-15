@@ -46,8 +46,8 @@ const popBg = (pop: ShowcasePop) =>
           const small = !inside && !slide.bg && lowRes(ctx.site, slide.image, [1564, 777]);
           return (
             <article
-              class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg']}
-              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
+              class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg', slide.imageBox && 'slide--box']}
+              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imageBox && `--img-h:${slide.imageBox.height}%;--img-top:${slide.imageBox.top ?? 0}%;--img-right:${slide.imageBox.right ?? 5}%`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
               {inside ? (
@@ -463,6 +463,19 @@ const popBg = (pop: ShowcasePop) =>
   /* Diapositiva con fondo propio (bg): en escritorio se ve tal cual, sin el degradado del color de acento encima */
   @media (min-width: 701px) {
     .slide--bg .slide__shade { display: none; }
+    /* Foto vertical entera a la derecha (imageBox), fundida por su borde izquierdo con el fondo */
+    .slide--box :global(.slide__img) {
+      top: var(--img-top);
+      bottom: auto;
+      left: auto;
+      right: var(--img-right);
+      width: auto;
+      height: var(--img-h);
+      max-width: none;
+      object-fit: contain;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
+    }
   }
   .slide__content { display: grid; justify-items: start; gap: clamp(2.4rem, calc(2.6 * var(--u)), 5rem); max-width: 80rem; }
   .slide__kicker {
