@@ -37,7 +37,9 @@
     "hora-loca": "Hora loca",
     "recibe": "Recibe a tus invitados",
     "efectos": "Efectos especiales",
-    "adicionales": "Servicios adicionales"
+    "adicionales": "Servicios adicionales",
+    "eventos": "Animación de eventos",
+    "galeria": "Galería"
   },
   "promo": {
     "title": "Personajes de recibimiento y show performance",
@@ -60,36 +62,6 @@
       "awardSubtitle": "como la mejor hora loca de Quito",
       "awardAlt": "Trofeo Latin American Wedding & MICE Awards Ecuador",
       "teamAlt": "Equipo de Mostacho Producciones celebrando el premio"
-    },
-    "servicios": {
-      "title": "Servicios",
-      "items": {
-        "hora-loca": {
-          "title": "Hora loca",
-          "text": "1 hora de experiencia llena de diversión: show performance, accesorios para los invitados, karaoke y dinámicas épicas con más de 30 temáticas disponibles.",
-          "alt": "Fiesta con show de hora loca"
-        },
-        "recibe": {
-          "title": "Recibe a los\ninvitados",
-          "text": "Bríndale a tus invitados una experiencia icónica al recibirlos en tus celebraciones con nuestros personajes únicos para cada ocasión.",
-          "alt": "Novios junto a personajes de rosas doradas"
-        },
-        "efectos": {
-          "title": "Efectos\nespeciales",
-          "text": "Eleva tus momentos al siguiente nivel con efectos especiales: pirotecnia, neblina baja, confeti y todo lo que puedas imaginar.",
-          "alt": "Novios disparando bazookas de CO2"
-        },
-        "infantiles": {
-          "title": "Animación\nde eventos",
-          "text": "Animación de todo tipo de eventos: cumpleaños, bautizos, corporativos, 15 años y bodas.",
-          "alt": "Invitados bailando en una fiesta"
-        },
-        "adicionales": {
-          "title": "Servicios\nadicionales",
-          "text": "Add ons para que tu celebración tenga el plus que necesitas: glitter bar, party shot, disco móvil, barra de cócteles y ¡mucho más!",
-          "alt": "Cabina de DJ con el logo de Mostacho"
-        }
-      }
     },
     "hora-loca": {
       "title": "Hora loca",
@@ -187,7 +159,7 @@
           "alt": "Personajes con cabeza de rosas doradas junto a letras LOVE"
         },
         "rosas-rojas": {
-          "title": "Rosas glam\nrojo y blanco",
+          "title": "Rosas glam\nrojas",
           "alt": "Personajes de rosas rojas recibiendo invitados"
         },
         "rosas-blancas": {
@@ -207,8 +179,8 @@
           "alt": "Personajes de Afrodita posando con invitados"
         },
         "arlequines": {
-          "title": "Arlequines",
-          "alt": "Arlequín dorado recibiendo a una invitada"
+          "title": "Show de\narlequines",
+          "alt": "Arlequines animando a los invitados"
         },
         "black-and-white": {
           "title": "Black\nand white",
@@ -233,94 +205,6 @@
         "epoca": {
           "title": "Personajes\nde época",
           "alt": "Personajes de época recibiendo a los invitados"
-        }
-      }
-    },
-    "efectos": {
-      "title": "Efectos especiales",
-      "items": {
-        "bazooka": {
-          "title": "Bazooka",
-          "alt": "Quinceañera con bazooka de humo de colores"
-        },
-        "neblina": {
-          "title": "Neblina\nbaja",
-          "alt": "Baile de novios sobre neblina baja"
-        },
-        "fuegos": {
-          "title": "Fuegos\nartificiales",
-          "alt": "Humo de colores en una boda al aire libre"
-        },
-        "confeti": {
-          "title": "Confeti",
-          "alt": "Quinceañera bajo una lluvia de confeti"
-        },
-        "neblina-pirotecnia": {
-          "title": "Neblina y\npirotecnia fría",
-          "alt": "Baile de novios con neblina baja y chispas frías"
-        }
-      }
-    },
-    "adicionales": {
-      "title": "Servicios adicionales",
-      "items": {
-        "glitter-bar": {
-          "title": "Glitter\nbar móvil",
-          "alt": "Maquilladora aplicando brillos"
-        },
-        "dj": {
-          "title": "DJ disco\nmóvil",
-          "alt": "DJ mezclando música en un evento"
-        },
-        "maestros": {
-          "title": "Maestros\nde ceremonia",
-          "alt": "Maestro de ceremonia sonriendo"
-        },
-        "barra-cocteles": {
-          "title": "Barra de\ncócteles",
-          "alt": "Bartenders preparando cócteles al aire libre"
-        },
-        "batucada": {
-          "title": "Batucada",
-          "alt": "Músicos de batucada con tambores"
-        },
-        "cabina-espejada": {
-          "title": "Cabina\nespejada",
-          "alt": "Cabina de fotos con espejos"
-        },
-        "montaje-bailes": {
-          "title": "Montaje\npara bailes",
-          "alt": "Ensayo de baile de novios"
-        },
-        "musica-en-vivo": {
-          "title": "Música\nen vivo",
-          "alt": "Músicos tocando en vivo"
-        },
-        "pantallas-carpas": {
-          "title": "Pantallas\nmobiliarios\ncarpas",
-          "alt": "Carpa con pantallas LED y mobiliario"
-        },
-        "totems-led": {
-          "title": "Tótems\nLED",
-          "alt": "Tótems LED con el logo de Mostacho"
-        },
-        "zanqueros": {
-          "title": "Zanqueros",
-          "alt": "Zanquero con sombrero de copa"
-        },
-        "party-shot": {
-          "title": "Party\nshot",
-          "alt": "Robot LED sirviendo shots"
-        }
-      }
-    },
-    "infantiles": {
-      "title": "Animación de eventos",
-      "slides": {
-        "eventos": {
-          "kicker": "Animación de",
-          "title": "Todo tipo\nde eventos",
-          "alt": "Invitados bailando en una fiesta con luces de colores"
         }
       }
     },
@@ -447,6 +331,27 @@
         },
         "email": {
           "label": "E-mail"
+        }
+      }
+    },
+    "eventos": {
+      "title": "Animación de eventos",
+      "items": {
+        "cumpleanos": {
+          "title": "Cumpleaños",
+          "alt": "Baile en una celebración sobre neblina baja"
+        },
+        "bautizos": {
+          "title": "Bautizos",
+          "alt": "Bautizo de un bebé"
+        },
+        "quince": {
+          "title": "15 años",
+          "alt": "Quinceañera bajo una lluvia de confeti"
+        },
+        "bodas": {
+          "title": "Bodas",
+          "alt": "Baile de novios con neblina y chispas frías"
         }
       }
     }

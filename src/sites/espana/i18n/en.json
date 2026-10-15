@@ -37,7 +37,9 @@
     "hora-loca": "Hora loca",
     "recibe": "Welcome your guests",
     "efectos": "Special effects",
-    "adicionales": "Extra services"
+    "adicionales": "Extra services",
+    "eventos": "Event entertainment",
+    "galeria": "Gallery"
   },
   "promo": {
     "title": "Welcome characters and show performance",
@@ -60,36 +62,6 @@
       "awardSubtitle": "as the best hora loca in Quito",
       "awardAlt": "Latin American Wedding & MICE Awards Ecuador trophy",
       "teamAlt": "The Mostacho Producciones team celebrating the award"
-    },
-    "servicios": {
-      "title": "Services",
-      "items": {
-        "hora-loca": {
-          "title": "Hora loca",
-          "text": "One hour packed with fun: live show performance, props for your guests, karaoke and epic games, with more than 30 themes available.",
-          "alt": "Party with a hora loca show"
-        },
-        "recibe": {
-          "title": "Welcome\nyour guests",
-          "text": "Give your guests an iconic experience as they arrive, with our unique characters for every occasion.",
-          "alt": "Newlyweds with golden rose characters"
-        },
-        "efectos": {
-          "title": "Special\neffects",
-          "text": "Take your moments to the next level with special effects: pyrotechnics, low fog, confetti and anything you can imagine.",
-          "alt": "Newlyweds firing CO2 bazookas"
-        },
-        "infantiles": {
-          "title": "Event\nentertainment",
-          "text": "Entertainment for every kind of event: birthdays, baptisms, corporate events, quinceañeras and weddings.",
-          "alt": "Guests dancing at a party"
-        },
-        "adicionales": {
-          "title": "Extra\nservices",
-          "text": "Add-ons to give your celebration the extra touch it needs: glitter bar, party shot, mobile disco, cocktail bar and much more.",
-          "alt": "DJ booth with the Mostacho logo"
-        }
-      }
     },
     "hora-loca": {
       "title": "Hora loca",
@@ -187,7 +159,7 @@
           "alt": "Characters with golden rose heads next to LOVE letters"
         },
         "rosas-rojas": {
-          "title": "Red & white\nglam roses",
+          "title": "Red glam\nroses",
           "alt": "Red rose characters welcoming guests"
         },
         "rosas-blancas": {
@@ -207,8 +179,8 @@
           "alt": "Aphrodite characters posing with guests"
         },
         "arlequines": {
-          "title": "Harlequins",
-          "alt": "Golden harlequin welcoming a guest"
+          "title": "Harlequin\nshow",
+          "alt": "Harlequins entertaining the guests"
         },
         "black-and-white": {
           "title": "Black\nand white",
@@ -233,94 +205,6 @@
         "epoca": {
           "title": "Period\ncharacters",
           "alt": "Period characters welcoming guests"
-        }
-      }
-    },
-    "efectos": {
-      "title": "Special effects",
-      "items": {
-        "bazooka": {
-          "title": "Confetti\nbazooka",
-          "alt": "Quinceañera with a colored smoke bazooka"
-        },
-        "neblina": {
-          "title": "Low\nfog",
-          "alt": "Couple dancing on low fog"
-        },
-        "fuegos": {
-          "title": "Fireworks",
-          "alt": "Colored smoke at an outdoor wedding"
-        },
-        "confeti": {
-          "title": "Confetti",
-          "alt": "Quinceañera under a shower of confetti"
-        },
-        "neblina-pirotecnia": {
-          "title": "Low fog and\ncold sparks",
-          "alt": "Couple dancing with low fog and cold sparks"
-        }
-      }
-    },
-    "adicionales": {
-      "title": "Extra services",
-      "items": {
-        "glitter-bar": {
-          "title": "Mobile\nglitter bar",
-          "alt": "Make-up artist applying glitter"
-        },
-        "dj": {
-          "title": "Mobile\nDJ disco",
-          "alt": "DJ mixing music at an event"
-        },
-        "maestros": {
-          "title": "Masters of\nceremonies",
-          "alt": "Smiling master of ceremonies"
-        },
-        "barra-cocteles": {
-          "title": "Cocktail\nbar",
-          "alt": "Bartenders making cocktails outdoors"
-        },
-        "batucada": {
-          "title": "Batucada",
-          "alt": "Batucada drummers"
-        },
-        "cabina-espejada": {
-          "title": "Mirror\nbooth",
-          "alt": "Mirrored photo booth"
-        },
-        "montaje-bailes": {
-          "title": "Wedding and\nquinceañera dances",
-          "alt": "Wedding dance rehearsal"
-        },
-        "musica-en-vivo": {
-          "title": "Live\nmusic",
-          "alt": "Musicians playing live"
-        },
-        "pantallas-carpas": {
-          "title": "Screens,\nfurniture and tents",
-          "alt": "Tent with LED screens and furniture"
-        },
-        "totems-led": {
-          "title": "LED\ntotems",
-          "alt": "LED totems with the Mostacho logo"
-        },
-        "zanqueros": {
-          "title": "Stilt\nwalkers",
-          "alt": "Stilt walker with a top hat"
-        },
-        "party-shot": {
-          "title": "Party\nshot",
-          "alt": "LED robot serving shots"
-        }
-      }
-    },
-    "infantiles": {
-      "title": "Event entertainment",
-      "slides": {
-        "eventos": {
-          "kicker": "Entertainment for",
-          "title": "Every kind\nof event",
-          "alt": "Guests dancing at a party with colorful lights"
         }
       }
     },
@@ -447,6 +331,27 @@
         },
         "email": {
           "label": "E-mail"
+        }
+      }
+    },
+    "eventos": {
+      "title": "Event entertainment",
+      "items": {
+        "cumpleanos": {
+          "title": "Birthdays",
+          "alt": "Dancing at a celebration over low fog"
+        },
+        "bautizos": {
+          "title": "Baptisms",
+          "alt": "Baby baptism"
+        },
+        "quince": {
+          "title": "Quinceañeras",
+          "alt": "Quinceañera under falling confetti"
+        },
+        "bodas": {
+          "title": "Weddings",
+          "alt": "Couple dancing with fog and cold sparks"
         }
       }
     }

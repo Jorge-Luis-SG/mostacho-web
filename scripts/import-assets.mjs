@@ -116,6 +116,14 @@ const images = {
   'promo-texto.png': '../POP/personajes de recibimiento y show performance.png',
   'promo-halloween.png': '../POP/halloween.png',
 
+  // España (capturas/spain): La casa de papel y Robots mirror (fondo + personaje), equipo y Bautizos
+  'hora-loca-casa-de-papel-slider.png': '../spain/imagen Casa de Papel.png',
+  'hora-loca-casa-de-papel-pop.png': '../spain/Casa de papel.png',
+  'hora-loca-robots-mirror-slider.png': '../spain/imagen robot mirror.png',
+  'hora-loca-robots-mirror-pop.png': '../spain/Robot Mirror.png',
+  'espana-equipo.jpg': '../spain/Imagen equipo.jpg.jpeg',
+  'evento-bautizo.jpg': '../spain/bautizo.jpg', // sacada del diseño (Estructura España.xd)
+
   'testimonio-whatsapp-tatiana.png': 'MOSTACHO EXPERIENCE/IMG_1072.PNG',
 };
 
@@ -244,7 +252,7 @@ for (const [dst, f] of Object.entries(frames)) {
 // ---------------------------------------------------------------------------
 fs.mkdirSync(IMG + 'blur/', { recursive: true });
 for (const file of fs.readdirSync(IMG)) {
-  if (!/^(servicio|efecto|adicional)-.*.jpg$/.test(file)) continue;
+  if (!/^(servicio|efecto|adicional|evento)-.*.jpg$/.test(file)) continue;
   const out = IMG + 'blur/' + file;
   if (fresh(out, IMG + file)) continue;
   await sharp(IMG + file).resize(160).blur(7).modulate({ saturation: 1.2 }).jpeg({ quality: 70 }).toFile(out);

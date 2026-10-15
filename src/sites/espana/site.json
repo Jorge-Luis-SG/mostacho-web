@@ -15,11 +15,10 @@
   },
   "nav": [
     "inicio",
-    "servicios",
     "hora-loca",
     "recibe",
-    "efectos",
-    "adicionales"
+    "eventos",
+    "galeria"
   ],
   "headerSocial": [
     "youtube",
@@ -61,71 +60,13 @@
       },
       "background": "about",
       "awardImage": "nosotros-premio.png",
-      "teamImage": "nosotros-equipo.jpg",
+      "teamImage": "espana-equipo.jpg",
       "decor": [
         {
           "image": "bigote-1.png",
           "x": -24,
           "y": -593,
           "w": 1229
-        }
-      ]
-    },
-    {
-      "id": "servicios",
-      "type": "cards",
-      "space": {
-        "top": 80,
-        "bottom": 60
-      },
-      "titleStyle": "plain",
-      "background": "services",
-      "showText": true,
-      "loop": true,
-      "items": [
-        {
-          "id": "hora-loca",
-          "image": "servicio-hora-loca.jpg",
-          "titleSize": 48,
-          "video": "servicio-hora-loca.mp4"
-        },
-        {
-          "id": "recibe",
-          "image": "servicio-recibe.jpg",
-          "titleSize": 40,
-          "video": "servicio-recibe.mp4"
-        },
-        {
-          "id": "efectos",
-          "image": "servicio-efectos.jpg",
-          "titleSize": 40,
-          "video": "servicio-efectos.mp4"
-        },
-        {
-          "id": "adicionales",
-          "image": "servicio-adicionales.jpg",
-          "titleSize": 40,
-          "href": "#adicionales"
-        },
-        {
-          "id": "infantiles",
-          "image": "galeria-6.jpg",
-          "titleSize": 40,
-          "href": "#infantiles"
-        }
-      ],
-      "decor": [
-        {
-          "image": "bigote-2.png",
-          "x": -102,
-          "y": 18,
-          "w": 383
-        },
-        {
-          "image": "bigote-3.png",
-          "x": 1464,
-          "y": 926,
-          "w": 334
         }
       ]
     },
@@ -141,6 +82,20 @@
       "loop": true,
       "slides": [
         {
+          "id": "robots-led",
+          "image": "hora-loca-robots-led.jpg",
+          "pop": {
+            "image": "hora-loca-robots-led-pop.png",
+            "left": 41.2,
+            "width": 63.5,
+            "top": -12.9,
+            "glow": "rgba(166, 70, 255, 0.85)",
+            "glowAt": "89% 45%",
+            "glowSize": "38% 85%"
+          },
+          "accent": "#4B00D5"
+        },
+        {
           "id": "show-mirror",
           "image": "hora-loca-show-mirror.jpg",
           "imagePos": "0% 62%",
@@ -152,6 +107,20 @@
             "shade": 0.35
           },
           "accent": "#000000"
+        },
+        {
+          "id": "funky-animals",
+          "image": "hora-loca-funky-animals.jpg",
+          "pop": {
+            "image": "hora-loca-funky-animals-pop.png",
+            "left": 41,
+            "width": 59.9,
+            "top": -22.3,
+            "tint": "rgba(150, 40, 255, 0.4)"
+          },
+          "accent": "#4b0035",
+          "glow": "rgba(190, 35, 121, 0.9)",
+          "glowAt": "36% 35%"
         },
         {
           "id": "white-wings",
@@ -169,41 +138,31 @@
         },
         {
           "id": "casa-de-papel",
-          "image": "hora-loca-casa-de-papel.jpg",
-          "accent": "#030308"
-        },
-        {
-          "id": "funky-animals",
-          "image": "hora-loca-funky-animals.jpg",
+          "image": "hora-loca-casa-de-papel-slider.png",
+          "imagePos": "0% 40%",
+          "imageMaxWidth": 760,
           "pop": {
-            "image": "hora-loca-funky-animals-pop.png",
-            "left": 41,
-            "width": 59.9,
-            "top": -22.3,
-            "tint": "rgba(150, 40, 255, 0.4)"
+            "image": "hora-loca-casa-de-papel-pop.png",
+            "left": 56,
+            "width": 40,
+            "top": -12
           },
-          "accent": "#4b0035",
-          "glow": "rgba(190, 35, 121, 0.9)",
-          "glowAt": "36% 35%"
-        },
-        {
-          "id": "robots-led",
-          "image": "hora-loca-robots-led.jpg",
-          "pop": {
-            "image": "hora-loca-robots-led-pop.png",
-            "left": 41.2,
-            "width": 63.5,
-            "top": -12.9,
-            "glow": "rgba(166, 70, 255, 0.85)",
-            "glowAt": "89% 45%",
-            "glowSize": "38% 85%"
-          },
-          "accent": "#4B00D5"
+          "accent": "#200000",
+          "bg": "radial-gradient(ellipse 55% 75% at 28% 50%, #B00000 0%, #200000 100%)"
         },
         {
           "id": "robots-mirror",
-          "image": "hora-loca-robots-mirror.jpg",
-          "accent": "#030303"
+          "image": "hora-loca-robots-mirror-slider.png",
+          "imagePos": "0% 40%",
+          "imageMaxWidth": 760,
+          "pop": {
+            "image": "hora-loca-robots-mirror-pop.png",
+            "left": 57,
+            "width": 36,
+            "top": -6
+          },
+          "accent": "#0B0614",
+          "bg": "radial-gradient(ellipse 55% 75% at 28% 50%, #5B2A86 0%, #0B0614 100%)"
         }
       ]
     },
@@ -219,6 +178,21 @@
       "loop": true,
       "popGrow": 20,
       "slides": [
+        {
+          "id": "rosas-doradas",
+          "image": "recibe-rosas-doradas.jpg",
+          "pop": {
+            "image": "recibe-rosas-doradas-pop.png",
+            "left": 48.6,
+            "width": 47.1,
+            "top": -11.1,
+            "tint": "rgba(255, 165, 0, 0.18)",
+            "tintRight": "rgba(255, 200, 0, 0.65)"
+          },
+          "accent": "#0e0e0d",
+          "glow": "rgba(176, 106, 0, 0.85)",
+          "glowAt": "31% 22%"
+        },
         {
           "id": "rosas-rojas",
           "image": "recibe-rosas-rojas.png",
@@ -241,60 +215,52 @@
         },
         {
           "id": "arlequines",
-          "image": "recibe-arlequines.jpg",
+          "image": "hora-loca-arlequines.jpg",
+          "pop": {
+            "image": "hora-loca-arlequines-pop.png",
+            "left": 61.7,
+            "width": 40,
+            "top": -7.2,
+            "tint": "rgba(255, 175, 40, 0.35)"
+          },
           "accent": "#210D00",
           "bg": "radial-gradient(ellipse 55% 75% at 28% 50%, #AA4E00 0%, #210D00 100%)"
-        },
-        {
-          "id": "epoca",
-          "image": "recibe-epoca.jpg",
-          "accent": "#1a1208"
         }
       ]
     },
     {
-      "id": "efectos",
+      "id": "eventos",
       "type": "cards",
       "space": {
-        "top": 140,
-        "bottom": 70
+        "top": 120,
+        "bottom": 80
       },
       "background": "effects",
+      "loop": true,
       "items": [
         {
-          "id": "bazooka",
-          "image": "efecto-bazooka.jpg",
-          "imagePos": "35% 80%",
-          "titleSize": 52,
-          "fx": "smoke"
-        },
-        {
-          "id": "neblina",
+          "id": "cumpleanos",
           "image": "efecto-neblina-baja.jpg",
           "imagePos": "50% 26%",
-          "titleSize": 52,
-          "fx": "fog"
+          "titleSize": 52
         },
         {
-          "id": "fuegos",
-          "image": "efecto-fuegos-artificiales.jpg",
-          "imagePos": "50% 55%",
-          "titleSize": 52,
-          "fx": "fireworks"
+          "id": "bautizos",
+          "image": "evento-bautizo.jpg",
+          "imagePos": "40% 50%",
+          "titleSize": 52
         },
         {
-          "id": "confeti",
+          "id": "quince",
           "image": "efecto-confeti.jpg",
           "imagePos": "50% 50%",
-          "titleSize": 52,
-          "fx": "confetti"
+          "titleSize": 52
         },
         {
-          "id": "neblina-pirotecnia",
+          "id": "bodas",
           "image": "efecto-neblina-pirotecnia.jpg",
           "imagePos": "58% 50%",
-          "titleSize": 38,
-          "fx": "fog-sparks"
+          "titleSize": 52
         }
       ],
       "decor": [
@@ -304,107 +270,6 @@
           "y": 0,
           "w": 995,
           "hover": true
-        }
-      ],
-      "anim": "deal"
-    },
-    {
-      "id": "adicionales",
-      "type": "cards",
-      "space": {
-        "top": 70,
-        "bottom": 80
-      },
-      "background": "extras",
-      "items": [
-        {
-          "id": "glitter-bar",
-          "image": "adicional-glitter-bar.jpg",
-          "titleSize": 52,
-          "video": "adicional-glitter-bar.mp4"
-        },
-        {
-          "id": "dj",
-          "image": "adicional-dj.jpg",
-          "imagePos": "50% 6%",
-          "titleSize": 52
-        },
-        {
-          "id": "maestros",
-          "image": "adicional-maestro-ceremonia.jpg",
-          "imagePos": "50% 6%",
-          "titleSize": 38
-        },
-        {
-          "id": "montaje-bailes",
-          "image": "adicional-montaje-bailes.jpg",
-          "titleSize": 52
-        },
-        {
-          "id": "pantallas-carpas",
-          "image": "adicional-pantallas-carpas.jpg",
-          "titleSize": 38
-        },
-        {
-          "id": "zanqueros",
-          "image": "adicional-zanqueros.jpg",
-          "titleSize": 52
-        },
-        {
-          "id": "totems-led",
-          "image": "adicional-totems-led.jpg",
-          "titleSize": 52
-        },
-        {
-          "id": "batucada",
-          "image": "adicional-batucada.jpg",
-          "titleSize": 52
-        },
-        {
-          "id": "cabina-espejada",
-          "image": "adicional-cabina-espejada.jpg",
-          "titleSize": 52,
-          "video": "adicional-cabina-espejada.mp4"
-        },
-        {
-          "id": "barra-cocteles",
-          "image": "adicional-barra-cocteles.jpg",
-          "titleSize": 52
-        },
-        {
-          "id": "musica-en-vivo",
-          "image": "adicional-musica-en-vivo.jpg",
-          "titleSize": 52,
-          "video": "adicional-musica-en-vivo.mp4"
-        }
-      ],
-      "decor": [
-        {
-          "image": "bigote-5.png",
-          "x": -630,
-          "y": 304,
-          "w": 1381,
-          "hover": true
-        }
-      ]
-    },
-    {
-      "id": "infantiles",
-      "type": "showcase",
-      "space": {
-        "top": 80,
-        "bottom": 0,
-        "inner": 50
-      },
-      "background": "kids",
-      "loop": true,
-      "slides": [
-        {
-          "id": "eventos",
-          "image": "galeria-6.jpg",
-          "accent": "#1b0533",
-          "glow": "rgba(120, 40, 200, 0.8)",
-          "glowAt": "30% 25%"
         }
       ]
     },
