@@ -43,10 +43,10 @@ const popBg = (pop: ShowcasePop) =>
           const s = text.slides[slide.id];
           // Foto en la parte derecha de la diapositiva: 1564 × 777 px a 1920 de pantalla
           const inside = slide.inside && slide.pop;
-          const small = !inside && lowRes(ctx.site, slide.image, [1564, 777]);
+          const small = !inside && !slide.bg && lowRes(ctx.site, slide.image, [1564, 777]);
           return (
             <article
-              class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside']}
+              class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg']}
               style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
@@ -459,6 +459,10 @@ const popBg = (pop: ShowcasePop) =>
   @media (min-width: 701px) {
     .slide { display: grid; grid-template-rows: minmax(0, 4fr) auto minmax(0, 1fr); align-items: start; }
     .slide__content { grid-row: 2; }
+  }
+  /* Diapositiva con fondo propio (bg): en escritorio se ve tal cual, sin el degradado del color de acento encima */
+  @media (min-width: 701px) {
+    .slide--bg .slide__shade { display: none; }
   }
   .slide__content { display: grid; justify-items: start; gap: clamp(2.4rem, calc(2.6 * var(--u)), 5rem); max-width: 80rem; }
   .slide__kicker {

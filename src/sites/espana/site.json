@@ -258,7 +258,8 @@
         },
         {
           "id": "rosas-rojas",
-          "image": "recibe-rosas-rojas.jpg",
+          "image": "recibe-rosas-rojas.png",
+          "imagePos": "50% 12%",
           "pop": {
             "image": "recibe-rosas-rojas-pop.png",
             "left": 58.7,
@@ -270,8 +271,7 @@
             "glowSize": "45% 80%"
           },
           "accent": "#320000",
-          "glow": "rgba(200, 0, 0, 0.9)",
-          "glowAt": "38% 55%"
+          "bg": "radial-gradient(circle at 30% 50%, #EA0000 0%, #320000 100%)"
         },
         {
           "id": "rosas-blancas",
@@ -291,8 +291,8 @@
         },
         {
           "id": "personajes-golden",
-          "image": "recibe-personajes-golden.jpg",
-          "imagePos": "0% 22%",
+          "image": "recibe-personajes-golden.png",
+          "imagePos": "50% 18%",
           "pop": {
             "image": "recibe-personajes-golden-pop.png",
             "left": 62.1,
@@ -305,13 +305,12 @@
             "glowSize": "50% 80%"
           },
           "accent": "#2e0500",
-          "glow": "rgba(150, 80, 0, 0.85)",
-          "glowAt": "40% 60%"
+          "bg": "radial-gradient(circle at 30% 50%, #C37700 0%, #2E0500 100%)"
         },
         {
           "id": "personajes-silver",
-          "image": "recibe-personajes-silver.jpg",
-          "imagePos": "0% 26%",
+          "image": "recibe-personajes-silver.png",
+          "imagePos": "50% 20%",
           "pop": {
             "image": "recibe-personajes-silver-pop.png",
             "left": 59,
@@ -323,13 +322,12 @@
             "glowAt": "6% 15%",
             "glowSize": "45% 75%"
           },
-          "accent": "#2e2e2e",
-          "glow": "rgba(190, 190, 190, 0.8)",
-          "glowAt": "4% 25%"
+          "accent": "#0A0A0A",
+          "bg": "radial-gradient(circle at 30% 50%, #C1C1C1 0%, #0A0A0A 100%)"
         },
         {
           "id": "afrodita",
-          "image": "recibe-afrodita.jpg",
+          "image": "recibe-afrodita.png",
           "imagePos": "0% 0%",
           "pop": {
             "image": "recibe-afrodita-pop.png",

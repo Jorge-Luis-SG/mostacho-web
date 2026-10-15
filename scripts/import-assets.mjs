@@ -76,13 +76,12 @@ const images = {
   'infantil-world-tour-pop.png': '../messi-effect.png',
 
   'recibe-rosas-doradas.jpg': 'RECIBIMIENTO DE INVITADOS/ROSAS GLAM DORADAS.jpg',
-  // Rosas glam rojas: la de "ROSAS GLAM ROJAS.jpg" lleva textos de Instagram encima; se usa la de COMBINADOS con las rosas rojas
-  'recibe-rosas-rojas.jpg': 'RECIBIMIENTO DE INVITADOS/COMBINADOS(2).heif',
+  'recibe-rosas-rojas.png': '../rosas-glam-rojas-slider.png', // con transparencia: se funde con el fondo radial
   // Rosas glam blancas: la única que hay mide 158 × 284 px (se verá borrosa; cambiarla en cuanto llegue una más grande)
   'recibe-rosas-blancas.jpg': 'RECIBIMIENTO DE INVITADOS/ROSAS GLAM BLANCAS.png',
-  'recibe-personajes-golden.jpg': 'RECIBIMIENTO DE INVITADOS/GOLDEN.jpg',
-  'recibe-personajes-silver.jpg': 'RECIBIMIENTO DE INVITADOS/SILVER.heif',
-  'recibe-afrodita.jpg': 'RECIBIMIENTO DE INVITADOS/AFRODITOS(2).jpg',
+  'recibe-personajes-golden.png': '../personajes-golden-slider.png', // con transparencia: se funde con el fondo radial
+  'recibe-personajes-silver.png': '../personajes-silver-slider.png', // con transparencia: se funde con el fondo radial
+  'recibe-afrodita.png': '../afrodita-slider.png', // con transparencia: se funde con el fondo
   'recibe-arlequines.jpg': 'RECIBIMIENTO DE INVITADOS/ARLQUINES.jpg',
   'recibe-black-and-white.jpg': 'RECIBIMIENTO DE INVITADOS/BLACK AND WHITE.jpg',
   'recibe-combinados.jpg': 'RECIBIMIENTO DE INVITADOS/COMBINADOS(1).jpg',
