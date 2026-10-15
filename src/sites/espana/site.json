@@ -157,8 +157,8 @@
           "imageMaxWidth": 760,
           "pop": {
             "image": "hora-loca-robots-mirror-pop.png",
-            "left": 49,
-            "width": 52,
+            "left": 45.1,
+            "width": 59.8,
             "top": -10
           },
           "accent": "#0B0614",
