@@ -78,7 +78,7 @@ const popBg = (pop: ShowcasePop) =>
                     <Img site={ctx.site} src={slide.titleImage} alt={s.title} sizes="40vw" maxWidth={1440} />
                   </h3>
                 ) : (
-                  <h3 class="slide__title" style={slide.titleGrow ? `font-size: calc(var(--size-showcase) + ${slide.titleGrow}px)` : undefined}>{s.title}</h3>
+                  <h3 class="slide__title" style={slide.titleGrow ? `--title-grow:${slide.titleGrow}px` : undefined}>{s.title}</h3>
                 )}
                 {s.cta === ui.contact ? (
                   <ContactButton href={ctx.whatsappFor(s.title)} ctx={ctx} />
@@ -491,7 +491,9 @@ const popBg = (pop: ShowcasePop) =>
     line-height: 0.9;
     margin-bottom: clamp(-2.4rem, calc(-1.25 * var(--u)), -1rem);
   }
-  .slide__title { font-size: var(--size-showcase); line-height: 0.873; }
+  /* 12 px más grande que el tamaño general de títulos (el cliente los quería más grandes); cada diapositiva puede
+     sumar más con titleGrow */
+  .slide__title { font-size: calc(var(--size-showcase) + 12px + var(--title-grow, 0px)); line-height: 0.873; }
   .slide__title-img { width: min(100%, calc(26.04 * var(--u))); }
   .slide__title-img :global(img), .slide__title-img :global(.img-missing) { width: 100%; height: auto; }
   .slide__title-img :global(.img-missing) { aspect-ratio: 497 / 315; }

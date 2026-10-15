@@ -37,7 +37,7 @@ const titleId = `${section.id}-title`;
               <div class="card__body">
                 {/* Copia desenfocada (pregenerada por npm run assets): mismo efecto que backdrop-filter, sin coste al hacer scroll */}
                 <Img site={ctx.site} src={`blur/${item.image}`} alt="" class="card__blur" sizes="160px" maxWidth={160} optional />
-                <h3 style={item.titleSize ? `font-size: calc(${fluid(item.titleSize, 0.55)} - 0.5rem)` : undefined}>{card.title}</h3>
+                <h3 style={item.titleSize ? `font-size: calc(${fluid(item.titleSize, 0.55)} - 0.5rem - var(--title-shrink, 0px))` : undefined}>{card.title}</h3>
                 {section.showText && card.text && <p>{card.text}</p>}
                 {(card.cta ?? ui.contact) === ui.contact ? (
                   <ContactButton href={item.href ?? ctx.whatsappFor(card.title)} ctx={ctx} />
@@ -76,12 +76,13 @@ const titleId = `${section.id}-title`;
      y la parte del texto la muestra desenfocada. */
   .card {
     --body: 0.442; /* fracción del alto de la tarjeta que ocupa el bloque de texto */
+    --h: 679; /* alto de la tarjeta en el diseño (ancho 419) */
     container-type: inline-size;
     position: relative;
     isolation: isolate;
     display: flex;
     flex-direction: column;
-    aspect-ratio: 419 / 679;
+    aspect-ratio: 419 / var(--h);
     border-radius: var(--radius-lg);
     overflow: hidden;
     background: var(--color-card);
@@ -100,7 +101,7 @@ const titleId = `${section.id}-title`;
      El video, al pasar el ratón, sí ocupa toda la tarjeta. */
   .card :global(img.card__img) {
     bottom: auto;
-    height: calc(100cqw * 679 / 419 * (1 - var(--body)) + 3rem);
+    height: calc(100cqw * var(--h) / 419 * (1 - var(--body)) + 3rem);
     object-position: var(--img-pos, 50% 30%);
   }
   .card__spacer { flex: 1 1 0; }
@@ -113,7 +114,7 @@ const titleId = `${section.id}-title`;
     bottom: 0;
     z-index: -2;
     width: 100cqw;
-    height: calc(100cqw * 679 / 419);
+    height: calc(100cqw * var(--h) / 419);
     max-width: none;
     object-fit: cover;
     object-position: center top;
@@ -124,7 +125,7 @@ const titleId = `${section.id}-title`;
     overflow: hidden;
     /* alto mínimo según el diseño (300 / 365 px de 679); crece si el texto es más largo */
     flex: 0 0 auto;
-    min-height: calc(100cqw * 679 / 419 * var(--body));
+    min-height: calc(100cqw * var(--h) / 419 * var(--body));
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -132,9 +133,12 @@ const titleId = `${section.id}-title`;
   }
   .card__body::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--gradient-card); }
   /* Títulos de las tarjetas: 5 px por debajo del tamaño del diseño */
-  h3 { font-size: calc(var(--size-card-title) - 0.5rem); line-height: 0.94; }
+  h3 { font-size: calc(var(--size-card-title) - 0.5rem - var(--title-shrink, 0px)); line-height: 0.94; }
   p { margin-top: clamp(1rem, calc(1.1 * var(--u)), 2.2rem); font-size: var(--size-card-text); line-height: 1.3; text-wrap: pretty; }
-  .card--text { --body: 0.538; }
+  /* Tarjetas con descripción (Servicios): algo más altas y con el bloque de texto un 10 % más bajo, para que la
+     foto se vea más; título y texto 2 px más pequeños */
+  .card--text { --h: 740; --body: calc(0.538 * 679 / 740 * 0.9); --title-shrink: 2px; }
+  .card--text p { font-size: calc(var(--size-card-text) - 2px); }
   .card__body :global(.btn) { margin-top: auto; }
   .card__body > :nth-last-child(2) { margin-bottom: clamp(1.6rem, calc(2 * var(--u)), 3.8rem); }
 </style>
