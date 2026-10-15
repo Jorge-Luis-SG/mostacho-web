@@ -300,7 +300,7 @@ const popBg = (pop: ShowcasePop) =>
   .slide__mpop { display: none; }
   @media (max-width: 700px) {
     .showcase__pops { display: none; }
-    .showcase__slides { --pop-room: calc(var(--slide-h) * 0.2); }
+    .showcase__slides { --pop-room: calc(var(--slide-h) * 0.07); }
     /* overflow-y: hidden: el carrusel solo se desliza en horizontal (el personaje fuera de su sitio no lo hace desplazable en vertical) */
     .showcase__slides :global(.carousel__track) { padding-top: var(--pop-room); margin-top: calc(-1 * var(--pop-room)); overflow-y: hidden; }
     .showcase__slides :global(.carousel__viewport) { display: flow-root; } /* que ese margen no arrastre el slider hacia arriba */
@@ -332,9 +332,9 @@ const popBg = (pop: ShowcasePop) =>
       position: absolute;
       left: auto;
       right: -4%;
-      top: -16cqh;
+      top: -6cqh;
       width: auto;
-      height: 116cqh;
+      height: 106cqh;
       max-width: 66%;
       object-fit: contain;
       object-position: 100% 100%;
