@@ -32,6 +32,17 @@
     "youtube",
     "tiktok"
   ],
+  "promo": {
+    "id": "halloween-2026",
+    "poster": "promo-fondo.png",
+    "video": "promo-fondo.mp4",
+    "videoMobile": "promo-fondo-movil.mp4",
+    "left": "promo-esqueleto.png",
+    "right": "promo-espantapajaros.png",
+    "logo": "promo-logo.png",
+    "text": "promo-texto.png",
+    "highlight": "promo-halloween.png"
+  },
   "sections": [
     {
       "id": "inicio",

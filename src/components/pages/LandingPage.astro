@@ -2,6 +2,7 @@
 import Header from '../layout/Header.astro';
 import Footer from '../layout/Footer.astro';
 import SectionRenderer from '../SectionRenderer.astro';
+import Promo from '../ui/Promo.astro';
 import type { LandingContext } from '../../lib/context';
 import '../../styles/animations.css';
 
@@ -21,6 +22,7 @@ const { ctx } = Astro.props;
   {ctx.config.sections.map((section) => <SectionRenderer section={section} ctx={ctx} />)}
 </main>
 <Footer ctx={ctx} />
+<Promo ctx={ctx} />
 
 <script>
   import '../../scripts/animations';

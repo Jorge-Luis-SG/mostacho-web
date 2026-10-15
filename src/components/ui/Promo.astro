@@ -1,0 +1,182 @@
+---
+/**
+ * Ventana emergente al entrar en la landing (site.json → promo). Se ve una vez por visita (sesión del navegador)
+ * y se cierra con la X, tocando fuera, con Esc o al pulsar Contactar.
+ * Composición del diseño (tarjeta de 1550 × 777 px a 1920): el fondo es un video en bucle; los personajes y el
+ * logo sobresalen de la tarjeta por arriba.
+ */
+import Img from './Img.astro';
+import BgVideo from './BgVideo.astro';
+import Button from './Button.astro';
+import type { LandingContext } from '../../lib/context';
+
+interface Props {
+  ctx: LandingContext;
+}
+const { ctx } = Astro.props;
+const promo = ctx.config.promo;
+const t = (ctx.t.promo ?? {}) as Record<string, string>;
+---
+
+{
+  promo && (
+    <div class="promo" role="dialog" aria-modal="true" aria-label={t.title} data-promo={promo.id} hidden>
+      <div class="promo__backdrop" data-promo-close />
+      <div class="promo__card" tabindex="-1">
+        <div class="promo__frame">
+          <Img site={ctx.site} src={promo.poster} alt="" class="promo__bg" sizes="(max-width: 700px) 94vw, 1550px" maxWidth={1550} />
+          <BgVideo site={ctx.site} src={promo.video} srcSmall={promo.videoMobile} class="promo__bg" />
+        </div>
+        <Img site={ctx.site} src={promo.left} alt="" class="promo__left" sizes="(max-width: 700px) 40vw, 360px" maxWidth={720} />
+        <Img site={ctx.site} src={promo.right} alt="" class="promo__right" sizes="(max-width: 700px) 40vw, 430px" maxWidth={860} />
+        <Img site={ctx.site} src={promo.logo} alt={t.logoAlt ?? ''} class="promo__logo" sizes="(max-width: 700px) 60vw, 570px" maxWidth={1140} />
+        <div class="promo__pill">
+          <Img site={ctx.site} src={promo.text} alt={t.title ?? ''} class="promo__text" sizes="(max-width: 700px) 70vw, 560px" maxWidth={1116} />
+          <Img site={ctx.site} src={promo.highlight} alt={t.highlight ?? ''} class="promo__highlight" sizes="(max-width: 700px) 40vw, 290px" maxWidth={572} />
+        </div>
+        <Button href={ctx.whatsappFor(t.highlight ?? t.title ?? '')} variant="whatsapp" icon="whatsapp" class="promo__cta">{ctx.ui.contact}</Button>
+        <button type="button" class="promo__close" data-promo-close aria-label={t.close ?? 'Cerrar'}>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-promo]').forEach((promo) => {
+    const key = `promo-${promo.dataset.promo}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+    } catch {}
+    let last: Element | null = null;
+    const close = () => {
+      promo.classList.remove('is-open');
+      document.documentElement.classList.remove('promo-open');
+      setTimeout(() => (promo.hidden = true), 400);
+      promo.querySelectorAll('video').forEach((v) => v.pause());
+      try { sessionStorage.setItem(key, '1'); } catch {}
+      (last as HTMLElement | null)?.focus?.();
+      removeEventListener('keydown', onKey);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close();
+    const open = () => {
+      last = document.activeElement;
+      promo.hidden = false;
+      document.documentElement.classList.add('promo-open');
+      requestAnimationFrame(() => requestAnimationFrame(() => promo.classList.add('is-open')));
+      // El foco va a la tarjeta (sin aro visible): Tab lleva a la X y al botón; Esc cierra
+      promo.querySelector<HTMLElement>('.promo__card')?.focus({ preventScroll: true });
+      addEventListener('keydown', onKey);
+    };
+    promo.querySelectorAll('[data-promo-close]').forEach((el) => el.addEventListener('click', close));
+    promo.querySelector('.promo__cta')?.addEventListener('click', close);
+    // Se abre cuando la página ya cargó (no compite con lo que se ve al entrar)
+    const later = () => setTimeout(open, 700);
+    if (document.readyState === 'complete') later();
+    else addEventListener('load', later, { once: true });
+  });
+</script>
+
+<style>
+  .promo {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .promo.is-open { opacity: 1; }
+  :global(html.promo-open) { overflow: hidden; }
+  .promo__backdrop { position: absolute; inset: 0; background: rgb(0 0 0 / 0.72); }
+
+  /* Tarjeta: 1550 × 777 en el diseño. Todo se mide en % de la tarjeta (cqw/cqh) */
+  .promo__card {
+    position: relative;
+    width: min(1550px, 92vw, (100svh - 14rem) * 1550 / 777);
+    aspect-ratio: 1550 / 777;
+    container-type: size;
+    margin-top: 6rem; /* sitio para lo que sobresale por arriba */
+    transform: translateY(3rem) scale(0.96);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    outline: none;
+  }
+  .promo.is-open .promo__card { transform: none; }
+  .promo__frame { position: absolute; inset: 0; border-radius: 13cqw / 26cqh; overflow: hidden; background: #2a0a3a; }
+  .promo__frame :global(.promo__bg) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  .promo__card :global(.promo__left), .promo__card :global(.promo__right), .promo__card :global(.promo__logo) { position: absolute; height: auto; max-width: none; pointer-events: none; }
+  .promo__card :global(.promo__left) { left: 3cqw; bottom: 0; width: 22.6cqw; }
+  .promo__card :global(.promo__right) { right: 0.5cqw; bottom: 0; width: 27.2cqw; }
+  .promo__card :global(.promo__logo) { left: 50%; top: -17cqh; width: 36.6cqw; translate: -50% 0; }
+
+  .promo__pill {
+    position: absolute;
+    left: 50%;
+    top: 49.5cqh;
+    translate: -50% 0;
+    width: 42.8cqw;
+    height: 22cqh;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 1.2cqh;
+    border-radius: 4cqw;
+    background: radial-gradient(ellipse 70% 90% at 30% 50%, #6a2a0a 0%, #1c0806 75%);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow: 0 2cqh 5cqh rgb(0 0 0 / 0.45);
+  }
+  .promo__pill :global(.promo__text) { width: 36cqw; height: auto; }
+  /* La imagen de «Halloween» trae aire transparente arriba: se sube para que quede pegada al texto */
+  .promo__pill :global(.promo__highlight) { width: 18.5cqw; height: auto; margin-top: -3.5cqh; }
+
+  .promo__card :global(.promo__cta) {
+    position: absolute;
+    left: 50%;
+    top: 79.8cqh;
+    translate: -50% 0;
+    min-height: 11.7cqh;
+    padding: 0 2.6cqw 0 1cqw;
+    gap: 1cqw;
+    font-size: max(1.3rem, 1.15cqw);
+  }
+  .promo__card :global(.promo__cta .btn__icon) { width: 7.5cqh; height: 7.5cqh; }
+
+  .promo__close {
+    position: absolute;
+    top: 3cqh;
+    right: 3cqw;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 4.4rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: #fff;
+    background: rgb(0 0 0 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.35);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .promo__close:hover { background: rgb(0 0 0 / 0.8); transform: scale(1.06); }
+
+  /* Móvil: tarjeta vertical; logo arriba, personajes abajo en las esquinas, texto y botón en el centro */
+  @media (max-width: 700px) {
+    .promo__card { width: min(94vw, (100svh - 10rem) * 4 / 5); aspect-ratio: 4 / 5; margin-top: 4rem; }
+    .promo__frame { border-radius: 9cqw; }
+    .promo__card :global(.promo__logo) { top: -9cqh; width: 66cqw; }
+    .promo__card :global(.promo__left) { left: -2cqw; width: 34cqw; }
+    .promo__card :global(.promo__right) { right: -3cqw; width: 40cqw; }
+    .promo__pill { top: 38cqh; width: 84cqw; height: 22cqh; border-radius: 7cqw; gap: 1.5cqh; }
+    .promo__pill :global(.promo__text) { width: 72cqw; }
+    .promo__pill :global(.promo__highlight) { width: 38cqw; margin-top: -2.5cqh; }
+    .promo__card :global(.promo__cta) { top: 64cqh; min-height: 10cqh; padding: 0 6cqw 0 2cqw; gap: 2cqw; font-size: 1.5rem; }
+    .promo__card :global(.promo__cta .btn__icon) { width: 7cqh; height: 7cqh; }
+    .promo__close { top: 2.5cqh; right: 3cqw; width: 4rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .promo__card { transform: none; }
+  }
+</style>

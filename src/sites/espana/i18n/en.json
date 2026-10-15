@@ -39,6 +39,12 @@
     "efectos": "Special effects",
     "adicionales": "Extra services"
   },
+  "promo": {
+    "title": "Welcome characters and show performance",
+    "highlight": "Halloween",
+    "logoAlt": "Mostacho Halloween",
+    "close": "Close"
+  },
   "sections": {
     "inicio": {
       "title": "Let's make\nyour event\nlegendary",

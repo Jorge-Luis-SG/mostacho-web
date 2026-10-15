@@ -108,6 +108,14 @@ const images = {
   'infantil-world-tour.jpg': 'SERVICIOS/MOSTACHO INFANTILES.jpg',
   'infantil-kpop-logo.png': '../k-pop-demon-hunters.png', // logo transparente (está en capturas/, no en assets/)
 
+  // Ventana emergente de Halloween (capturas/POP)
+  'promo-fondo.png': '../POP/Enmascarar grupo 1101.png',
+  'promo-esqueleto.png': '../POP/Imagen 83.png',
+  'promo-espantapajaros.png': '../POP/Imagen 81.png',
+  'promo-logo.png': '../POP/Imagen 82.png',
+  'promo-texto.png': '../POP/personajes de recibimiento y show performance.png',
+  'promo-halloween.png': '../POP/halloween.png',
+
   'testimonio-whatsapp-tatiana.png': 'MOSTACHO EXPERIENCE/IMG_1072.PNG',
 };
 
@@ -161,6 +169,8 @@ const videos = {
   // Portada (elegir país): franjas rojas en bucle
   'principal.mp4': { site: 'portal', src: '../videos/principal.mp4', width: 1920, crf: 28, poster: 'fondo.jpg' },
   'principal-movil.mp4': { site: 'portal', src: '../videos/principal.mp4', width: 720, crf: 30, portrait: true },
+  'promo-fondo.mp4': { src: '../POP/background_hallowen.mp4', width: 1280, crf: 30, maxrate: 1500 },
+  'promo-fondo-movil.mp4': { src: '../POP/background_hallowen.mp4', width: 640, crf: 31, portrait: true, maxrate: 700 },
   'adicional-glitter-bar.mp4': { src: '../glitter-bar-movil.mp4', width: 480, crf: 28 },
   'adicional-cabina-espejada.mp4': { src: 'SERVICIOS ADICIONALES/CABINA ESPEJADA.mp4', width: 720, crf: 26, poster: 'adicional-cabina-espejada.jpg' },
   'adicional-musica-en-vivo.mp4': { src: 'SERVICIOS ADICIONALES/MUSICA EN VIVO(1).mp4', width: 720, crf: 27, poster: 'adicional-musica-en-vivo.jpg' },

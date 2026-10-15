@@ -39,6 +39,12 @@
     "efectos": "Efectos especiales",
     "adicionales": "Servicios adicionales"
   },
+  "promo": {
+    "title": "Personajes de recibimiento y show performance",
+    "highlight": "Halloween",
+    "logoAlt": "Mostacho Halloween",
+    "close": "Cerrar"
+  },
   "sections": {
     "inicio": {
       "title": "Hagamos\ntu evento\nlegendario",

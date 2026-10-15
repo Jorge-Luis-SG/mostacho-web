@@ -188,6 +188,19 @@ export interface LandingConfig {
   headerSocial: Network[];
   footerSocial: Network[];
   sections: Section[];
+  /** Ventana emergente al entrar (img/ y video/). Textos en i18n → promo. */
+  promo?: {
+    /** Cambiarlo hace que se vuelva a mostrar a quien ya la cerró. */
+    id: string;
+    poster: string;
+    video?: string;
+    videoMobile?: string;
+    left: string;
+    right: string;
+    logo: string;
+    text: string;
+    highlight: string;
+  };
 }
 
 export interface PortalConfig {
