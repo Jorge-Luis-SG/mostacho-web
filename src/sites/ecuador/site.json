@@ -307,7 +307,7 @@
           "id": "personajes-golden",
           "image": "recibe-personajes-golden.png",
           "imagePos": "0% 18%",
-          "imageMaxWidth": 800,
+          "imageMaxWidth": 680,
           "pop": {
             "image": "recibe-personajes-golden-pop.png",
             "left": 62.1,
