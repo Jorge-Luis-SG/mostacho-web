@@ -362,8 +362,9 @@ const popBg = (pop: ShowcasePop) =>
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 29.6%;
-    width: 84.9%;
+    right: 0;
+    width: 70.4%;
+    max-width: 850px;
     z-index: -2;
     background: var(--pop-bg);
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
@@ -398,14 +399,16 @@ const popBg = (pop: ShowcasePop) =>
     overflow: hidden;
     --accent: var(--color-showcase-accent);
   }
-  /* La foto no ocupa todo el ancho: como en el diseño, empieza al 29,6 % (detrás del degradado) y se ajusta por alto */
+  /* La foto no ocupa todo el ancho: va pegada a la derecha, con 850 px como mucho, y se ajusta por alto */
   .slide :global(.slide__img) {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 29.6%;
+    left: auto;
+    right: 0;
     z-index: -2;
-    width: 84.9%; /* como en el diseño, la foto sigue un poco más allá del borde derecho (queda recortada) */
+    width: 70.4%;
+    max-width: 850px;
     height: 100%;
     object-fit: cover;
     object-position: var(--img-pos, 0% 50%);
@@ -438,7 +441,7 @@ const popBg = (pop: ShowcasePop) =>
 
   /* En el móvil la diapositiva es vertical: la foto vuelve a ocuparla entera */
   @media (max-width: 700px) {
-    .slide :global(.slide__img) { left: 0; width: 100%; object-position: 70% center; -webkit-mask-image: none; mask-image: none; }
+    .slide :global(.slide__img) { left: 0; width: 100%; max-width: none; object-position: 70% center; -webkit-mask-image: none; mask-image: none; }
     .slide--lowres :global(.slide__img) { left: 50%; width: auto; }
   }
   .slide__shade {
@@ -472,7 +475,7 @@ const popBg = (pop: ShowcasePop) =>
       right: 0;
       width: var(--img-max);
       height: 100%;
-      max-width: none;
+      max-width: 850px;
       object-fit: cover;
       object-position: var(--img-pos, 50% 50%);
       -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
