@@ -31,7 +31,6 @@ const FORCE = process.argv.includes('--force'); // npm run assets -- --force  �
 // Fotos: destino (en src/sites/ecuador/img/) ← origen (en capturas/assets/)
 // ---------------------------------------------------------------------------
 const images = {
-  'nosotros-equipo.jpg': 'QUIENES SOMOS/EQUIPO.jpg',
 
   'servicio-recibe.jpg': 'SERVICIOS/RECIBIMIENTO DE INVITADOS 2.jpg',
   'servicio-efectos.jpg': 'SERVICIOS/EFECTOS ESPECIALES.jpg',
@@ -121,7 +120,7 @@ const images = {
   'hora-loca-casa-de-papel-pop.png': '../spain/Casa de papel.png',
   'hora-loca-robots-mirror-slider.png': '../spain/imagen robot mirror.png',
   'hora-loca-robots-mirror-pop.png': '../spain/Robot Mirror.png',
-  'espana-equipo.jpg': '../spain/Imagen equipo.jpg.jpeg',
+  'equipo.jpg': '../spain/Imagen equipo.jpg.jpeg', // foto del equipo (Nosotros, en los dos países)
   'evento-bautizo.jpg': '../spain/bautizo.jpg', // sacada del diseño (Estructura España.xd)
 
   'testimonio-whatsapp-tatiana.png': 'MOSTACHO EXPERIENCE/IMG_1072.PNG',
