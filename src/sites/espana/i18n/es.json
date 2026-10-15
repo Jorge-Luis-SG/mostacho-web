@@ -74,9 +74,9 @@
           "alt": "Novios disparando bazookas de CO2"
         },
         "infantiles": {
-          "title": "Fiestas\ninfantiles",
-          "text": "Shows coreográficos de los personajes favoritos de los más pequeños, pintucaritas, globoflexia, animación y todo para hacer felices a los más peques.",
-          "alt": "Show infantil con personajes"
+          "title": "Animación\nde eventos",
+          "text": "Animación de todo tipo de eventos: cumpleaños, bautizos, corporativos, 15 años y bodas.",
+          "alt": "Invitados bailando en una fiesta"
         },
         "adicionales": {
           "title": "Servicios\nadicionales",
@@ -181,7 +181,7 @@
           "alt": "Personajes con cabeza de rosas doradas junto a letras LOVE"
         },
         "rosas-rojas": {
-          "title": "Rosas\nglam\nrojas",
+          "title": "Rosas glam\nrojo y blanco",
           "alt": "Personajes de rosas rojas recibiendo invitados"
         },
         "rosas-blancas": {
@@ -223,6 +223,10 @@
         "mimos": {
           "title": "Mimos",
           "alt": "Mimos recibiendo a los invitados"
+        },
+        "epoca": {
+          "title": "Personajes\nde época",
+          "alt": "Personajes de época recibiendo a los invitados"
         }
       }
     },
@@ -305,17 +309,12 @@
       }
     },
     "infantiles": {
-      "title": "Fiestas infantiles",
+      "title": "Animación de eventos",
       "slides": {
-        "kpop": {
-          "kicker": "Show",
-          "title": "KPop Demon Hunters",
-          "alt": "Bailarinas del show KPop Demon Hunters con niños y confeti"
-        },
-        "world-tour": {
-          "kicker": "Mostacho",
-          "title": "World\ntour",
-          "alt": "Personajes animados y botargas en una fiesta infantil"
+        "eventos": {
+          "kicker": "Animación de",
+          "title": "Todo tipo\nde eventos",
+          "alt": "Invitados bailando en una fiesta con luces de colores"
         }
       }
     },

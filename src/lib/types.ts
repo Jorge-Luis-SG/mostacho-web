@@ -100,6 +100,8 @@ export interface ShowcaseSlide {
   imageBox?: { maxWidth: number };
   /** Ancho máximo de la foto en px (por defecto 1000). */
   imageMaxWidth?: number;
+  /** Px que se suman al tamaño del título de esta diapositiva. */
+  titleGrow?: number;
 }
 
 /** Personaje de una diapositiva. Medidas en % de la diapositiva (ancho sin la franja desenfocada de la derecha). */
