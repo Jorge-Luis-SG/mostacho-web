@@ -47,7 +47,7 @@ const popBg = (pop: ShowcasePop) =>
           return (
             <article
               class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg', slide.imageBox && 'slide--box']}
-              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
+              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
               {inside ? (
@@ -364,7 +364,7 @@ const popBg = (pop: ShowcasePop) =>
     bottom: 0;
     right: 0;
     width: 70.4%;
-    max-width: 1000px;
+    max-width: var(--img-maxw, 1000px);
     z-index: -2;
     background: var(--pop-bg);
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
@@ -408,7 +408,7 @@ const popBg = (pop: ShowcasePop) =>
     right: 0;
     z-index: -2;
     width: 70.4%;
-    max-width: 1000px;
+    max-width: var(--img-maxw, 1000px);
     height: 100%;
     object-fit: cover;
     object-position: var(--img-pos, 0% 50%);
@@ -475,7 +475,7 @@ const popBg = (pop: ShowcasePop) =>
       right: 0;
       width: var(--img-max);
       height: 100%;
-      max-width: 1000px;
+      max-width: var(--img-maxw, 1000px);
       object-fit: cover;
       object-position: var(--img-pos, 0% 50%);
       -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
