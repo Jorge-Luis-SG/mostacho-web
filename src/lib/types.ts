@@ -98,6 +98,8 @@ export interface ShowcaseSlide {
   /** Foto en una caja a la derecha (sin ocupar todo el ancho): ancho máximo en % de la diapositiva. Llena la caja
    *  (cover), centrada en altura (o en imagePos). El resto de la diapositiva muestra el fondo (bg). */
   imageBox?: { maxWidth: number };
+  /** Encuadre de la foto en el móvil (por defecto "70% center"). */
+  imagePosMobile?: string;
   /** Ancho máximo de la foto en px (por defecto 1000). */
   imageMaxWidth?: number;
   /** Px que se suman al tamaño del título de esta diapositiva. */

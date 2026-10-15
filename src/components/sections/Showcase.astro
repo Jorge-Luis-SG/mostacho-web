@@ -47,7 +47,7 @@ const popBg = (pop: ShowcasePop) =>
           return (
             <article
               class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg', slide.imageBox && 'slide--box']}
-              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
+              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imagePosMobile && `--img-pos-m:${slide.imagePosMobile}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
               {inside ? (
@@ -441,7 +441,7 @@ const popBg = (pop: ShowcasePop) =>
 
   /* En el móvil la diapositiva es vertical: la foto vuelve a ocuparla entera */
   @media (max-width: 700px) {
-    .slide :global(.slide__img) { left: 0; width: 100%; max-width: none; object-position: 70% center; -webkit-mask-image: none; mask-image: none; }
+    .slide :global(.slide__img) { left: 0; width: 100%; max-width: none; object-position: var(--img-pos-m, 70% center); -webkit-mask-image: none; mask-image: none; }
     .slide--lowres :global(.slide__img) { left: 50%; width: auto; }
   }
   .slide__shade {

@@ -153,7 +153,8 @@
         {
           "id": "robots-mirror",
           "image": "hora-loca-robots-mirror-slider.png",
-          "imagePos": "0% 40%",
+          "imagePos": "0% 6%",
+          "imagePosMobile": "60% 4%",
           "imageMaxWidth": 760,
           "pop": {
             "image": "hora-loca-robots-mirror-pop.png",
