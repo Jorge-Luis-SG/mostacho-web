@@ -38,7 +38,7 @@ const images = {
   'servicio-infantiles.jpg': 'SERVICIOS/MOSTACHO INFANTILES 6.jpg',
   'servicio-adicionales.jpg': 'SERVICIOS/SERVICIO ADICIONAL DJ Y DISCO MOVIL.PNG',
 
-  'hora-loca-robots-led.jpg': 'ROBOTS/SaveClip.App_681488590_18192437227362105_5792064684209979491_n.webp',
+  'hora-loca-robots-led.jpg': '../show-robots-led-slider.png',
   'hora-loca-show-mirror.jpg': 'HORA LOCA/MIRROR(4).jpg',
   'hora-loca-funky-animals.jpg': 'HORA LOCA/FUNKY ANIMALS(2).png',
   'hora-loca-arlequines.jpg': 'HORA LOCA/ARLEQUINES(2).jpg',
