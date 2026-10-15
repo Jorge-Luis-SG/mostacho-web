@@ -364,7 +364,7 @@ const popBg = (pop: ShowcasePop) =>
     bottom: 0;
     right: 0;
     width: 70.4%;
-    max-width: 850px;
+    max-width: 1000px;
     z-index: -2;
     background: var(--pop-bg);
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
@@ -399,7 +399,7 @@ const popBg = (pop: ShowcasePop) =>
     overflow: hidden;
     --accent: var(--color-showcase-accent);
   }
-  /* La foto no ocupa todo el ancho: va pegada a la derecha, con 850 px como mucho, y se ajusta por alto */
+  /* La foto no ocupa todo el ancho: va pegada a la derecha, con 1000 px como mucho, alineada a la izquierda (donde se funde con el degradado), y se ajusta por alto */
   .slide :global(.slide__img) {
     position: absolute;
     top: 0;
@@ -408,7 +408,7 @@ const popBg = (pop: ShowcasePop) =>
     right: 0;
     z-index: -2;
     width: 70.4%;
-    max-width: 850px;
+    max-width: 1000px;
     height: 100%;
     object-fit: cover;
     object-position: var(--img-pos, 0% 50%);
@@ -475,9 +475,9 @@ const popBg = (pop: ShowcasePop) =>
       right: 0;
       width: var(--img-max);
       height: 100%;
-      max-width: 850px;
+      max-width: 1000px;
       object-fit: cover;
-      object-position: var(--img-pos, 50% 50%);
+      object-position: var(--img-pos, 0% 50%);
       -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
       mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
     }

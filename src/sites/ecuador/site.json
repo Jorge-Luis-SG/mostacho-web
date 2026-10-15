@@ -146,7 +146,7 @@
         {
           "id": "show-mirror",
           "image": "hora-loca-show-mirror.jpg",
-          "imagePos": "50% 62%",
+          "imagePos": "0% 62%",
           "pop": {
             "image": "hora-loca-show-mirror-pop.png",
             "left": 50.7,
@@ -201,7 +201,7 @@
         {
           "id": "galacticos",
           "image": "hora-loca-galacticos.jpg",
-          "imagePos": "50% 62%",
+          "imagePos": "0% 62%",
           "pop": {
             "image": "hora-loca-galacticos-pop.png",
             "left": 44,
@@ -258,7 +258,7 @@
         {
           "id": "rosas-rojas",
           "image": "recibe-rosas-rojas.png",
-          "imagePos": "50% 35%",
+          "imagePos": "0% 35%",
           "pop": {
             "image": "recibe-rosas-rojas-pop.png",
             "left": 58.7,
@@ -294,7 +294,7 @@
         {
           "id": "personajes-golden",
           "image": "recibe-personajes-golden.png",
-          "imagePos": "50% 18%",
+          "imagePos": "0% 18%",
           "pop": {
             "image": "recibe-personajes-golden-pop.png",
             "left": 62.1,
@@ -312,7 +312,7 @@
         {
           "id": "personajes-silver",
           "image": "recibe-personajes-silver.png",
-          "imagePos": "50% 20%",
+          "imagePos": "0% 20%",
           "pop": {
             "image": "recibe-personajes-silver-pop.png",
             "left": 59,
