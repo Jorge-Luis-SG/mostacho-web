@@ -157,9 +157,10 @@ gallery.forEach((src, i) => (images[`galeria-${i + 1}.jpg`] = src));
 // maxrate (kbit/s): tope de calidad para que ninguna escena dispare el peso del archivo.
 // ---------------------------------------------------------------------------
 const videos = {
-  'hero.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 1280, crf: 32, fps: 24, maxrate: 1400 },
+  // Fondo del inicio a pantalla completa: a la resolución del original y con calidad alta (se ve grande y se nota)
+  'hero.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 1920, crf: 22, fps: 30, maxrate: 6000 },
   // Versión para móviles y tablets en vertical: recorte central 9:16 y más ligera
-  'hero-movil.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 480, crf: 35, fps: 24, portrait: true, maxrate: 550 },
+  'hero-movil.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 720, crf: 26, fps: 30, portrait: true, maxrate: 1800 },
   // Servicios: la foto de cada tarjeta sigue siendo su miniatura; el video (con sonido) sale al pasar el ratón
   'servicio-hora-loca.mp4': { src: '../videos/HORA LOCA.mp4', width: 640, crf: 28, audio: true, maxrate: 900 },
   'servicio-recibe.mp4': { src: '../videos/RECIBE A LOS INVITADOS.mp4', width: 640, crf: 28, fps: 30, audio: true, maxrate: 900 },
