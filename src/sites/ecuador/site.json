@@ -258,7 +258,7 @@
         {
           "id": "rosas-rojas",
           "image": "recibe-rosas-rojas.png",
-          "imagePos": "50% 12%",
+          "imagePos": "50% 35%",
           "pop": {
             "image": "recibe-rosas-rojas-pop.png",
             "left": 58.7,
@@ -270,11 +270,9 @@
             "glowSize": "45% 80%"
           },
           "accent": "#320000",
-          "bg": "radial-gradient(#EA0000 0%, #320000 100%)",
+          "bg": "radial-gradient(ellipse 55% 75% at 28% 50%, #EA0000 0%, #320000 100%)",
           "imageBox": {
-            "height": 150,
-            "top": -8,
-            "right": 0
+            "maxWidth": 58
           }
         },
         {
@@ -417,7 +415,8 @@
         {
           "id": "glitter-bar",
           "image": "adicional-glitter-bar.jpg",
-          "titleSize": 52
+          "titleSize": 52,
+          "video": "adicional-glitter-bar.mp4"
         },
         {
           "id": "dj",

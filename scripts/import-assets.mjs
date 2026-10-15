@@ -161,6 +161,7 @@ const videos = {
   // Portada (elegir país): franjas rojas en bucle
   'principal.mp4': { site: 'portal', src: '../videos/principal.mp4', width: 1920, crf: 28, poster: 'fondo.jpg' },
   'principal-movil.mp4': { site: 'portal', src: '../videos/principal.mp4', width: 720, crf: 30, portrait: true },
+  'adicional-glitter-bar.mp4': { src: '../glitter-bar-movil.mp4', width: 480, crf: 28 },
   'adicional-cabina-espejada.mp4': { src: 'SERVICIOS ADICIONALES/CABINA ESPEJADA.mp4', width: 720, crf: 26, poster: 'adicional-cabina-espejada.jpg' },
   'adicional-musica-en-vivo.mp4': { src: 'SERVICIOS ADICIONALES/MUSICA EN VIVO(1).mp4', width: 720, crf: 27, poster: 'adicional-musica-en-vivo.jpg' },
 };

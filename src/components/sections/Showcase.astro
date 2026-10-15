@@ -47,7 +47,7 @@ const popBg = (pop: ShowcasePop) =>
           return (
             <article
               class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg', slide.imageBox && 'slide--box']}
-              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imageBox && `--img-h:${slide.imageBox.height}%;--img-top:${slide.imageBox.top ?? 0}%;--img-right:${slide.imageBox.right ?? 5}%`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
+              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
               {inside ? (
@@ -463,16 +463,18 @@ const popBg = (pop: ShowcasePop) =>
   /* Diapositiva con fondo propio (bg): en escritorio se ve tal cual, sin el degradado del color de acento encima */
   @media (min-width: 701px) {
     .slide--bg .slide__shade { display: none; }
-    /* Foto vertical entera a la derecha (imageBox), fundida por su borde izquierdo con el fondo */
+    /* Foto en una caja a la derecha (imageBox): llena su caja (cover), centrada en altura, y se funde por su borde
+       izquierdo con el fondo, que se ve en el resto de la diapositiva */
     .slide--box :global(.slide__img) {
-      top: var(--img-top);
-      bottom: auto;
+      top: 0;
+      bottom: 0;
       left: auto;
-      right: var(--img-right);
-      width: auto;
-      height: var(--img-h);
+      right: 0;
+      width: var(--img-max);
+      height: 100%;
       max-width: none;
-      object-fit: contain;
+      object-fit: cover;
+      object-position: var(--img-pos, 50% 50%);
       -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
       mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
     }

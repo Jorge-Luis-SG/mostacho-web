@@ -1,7 +1,7 @@
 ---
 /** Iconos SVG en línea (heredan el color del texto con currentColor). */
 interface Props {
-  name: 'youtube' | 'facebook' | 'instagram' | 'whatsapp' | 'tiktok' | 'arrow-left' | 'arrow-right' | 'arrow-down' | 'chevron-right' | 'menu' | 'close' | 'star';
+  name: 'youtube' | 'facebook' | 'instagram' | 'whatsapp' | 'tiktok' | 'arrow-left' | 'arrow-right' | 'arrow-down' | 'chevron-right' | 'menu' | 'close' | 'star' | 'sound-on' | 'sound-off';
   size?: number | string;
   class?: string;
 }
@@ -65,6 +65,8 @@ const { name, size = 24, class: className } = Astro.props;
   {name === 'arrow-down' && <path d="M12 4v16m-6-6 6 6 6-6" />}
   {name === 'chevron-right' && <path d="m9 4 8 8-8 8" />}
   {name === 'menu' && <path d="M4 7h16M4 12h16M4 17h16" stroke-width="2" />}
+  {name === 'sound-on' && <path d="M4 9v6h4l5 4V5L8 9H4Zm12.5-.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />}
+  {name === 'sound-off' && <path d="M4 9v6h4l5 4V5L8 9H4Zm12 .5 5 5m0-5-5 5" />}
   {name === 'close' && <path d="M6 6l12 12M18 6 6 18" stroke-width="2" />}
   {name === 'star' && (
     <path

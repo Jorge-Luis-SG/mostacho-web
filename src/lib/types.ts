@@ -95,9 +95,9 @@ export interface ShowcaseSlide {
   imagePos?: string;
   /** Fondo propio de la diapositiva (CSS), p. ej. una luz degradada cuando no hay foto. */
   bg?: string;
-  /** Foto vertical entera (sin recortar a lo ancho): alto en % de la diapositiva, desplazamiento arriba (%) y
-   *  distancia al borde derecho (%). El resto de la diapositiva muestra el fondo (bg). */
-  imageBox?: { height: number; top?: number; right?: number };
+  /** Foto en una caja a la derecha (sin ocupar todo el ancho): ancho máximo en % de la diapositiva. Llena la caja
+   *  (cover), centrada en altura (o en imagePos). El resto de la diapositiva muestra el fondo (bg). */
+  imageBox?: { maxWidth: number };
 }
 
 /** Personaje de una diapositiva. Medidas en % de la diapositiva (ancho sin la franja desenfocada de la derecha). */

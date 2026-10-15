@@ -5,6 +5,8 @@
   },
   "ui": {
     "logoAlt": "Mostacho Producciones",
+    "soundOn": "Turn sound on",
+    "soundOff": "Mute",
     "language": "Language",
     "social": {
       "youtube": "YouTube",
