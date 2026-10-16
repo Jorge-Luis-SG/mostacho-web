@@ -27,7 +27,7 @@ const { ui } = t;
   <LangSwitch links={langLinks(lang, routeOf(site))} label={ui.language} class="portal__lang" />
 
   {/* Música de la portada: suena en bucle (el navegador la deja empezar al primer toque o tecla) y se silencia aquí */}
-  <audio src={`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}audio/portada.mp3`} loop preload="none" data-music></audio>
+  <audio src={`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}audio/portada.mp3`} loop preload="auto" data-music></audio>
   <button type="button" class="portal__sound" data-sound-toggle aria-pressed="false" aria-label={ui.soundOff} data-label-on={ui.soundOn} data-label-off={ui.soundOff}>
     <Icon name="sound-on" size={26} class="portal__sound-on" />
     <Icon name="sound-off" size={26} class="portal__sound-off" />
@@ -68,8 +68,8 @@ const { ui } = t;
   const audio = document.querySelector<HTMLAudioElement>('[data-music]');
   const btn = document.querySelector<HTMLButtonElement>('[data-sound-toggle]');
   if (audio && btn) {
+    // Por defecto suena siempre (no se recuerda el silencio entre visitas)
     let muted = false;
-    try { muted = localStorage.getItem('portal-muted') === '1'; } catch {}
     let fade = 0;
     const ramp = (to: number, ms: number, done?: () => void) => {
       cancelAnimationFrame(fade);
@@ -92,9 +92,9 @@ const { ui } = t;
       btn.setAttribute('aria-pressed', String(muted));
       btn.setAttribute('aria-label', (muted ? btn.dataset.labelOn : btn.dataset.labelOff) ?? '');
     };
+    // La corneta: si la música suena, la silencia; si no suena (silenciada o aún bloqueada por el navegador), la activa
     btn.addEventListener('click', () => {
-      muted = !muted;
-      try { localStorage.setItem('portal-muted', muted ? '1' : '0'); } catch {}
+      muted = !audio.paused;
       show();
       if (muted) ramp(0, 400, () => audio.pause());
       else play();
