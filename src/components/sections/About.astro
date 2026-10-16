@@ -130,7 +130,11 @@ const titleId = `${section.id}-title`;
     /* Bigote más pequeño y más arriba (scale/translate no chocan con la animación, que usa transform) */
     .about__decor { scale: 0.6; translate: -18% 0%; }
     /* Premio y foto del equipo algo más pequeños y centrados (el bigote se escala con ellos) */
-    .about__media { width: min(88%, 560px); margin-inline: auto; margin-top: min(44vw, 22rem); }
+    .about__media { width: min(100%, 620px); margin-inline: auto; margin-top: min(30vw, 16rem); }
     figcaption { text-align: center; }
+    /* Luz roja del fondo centrada (en el móvil la sección es alta y estrecha: un círculo, no una elipse estirada) */
+    :global(section.shell.about) { background: linear-gradient(180deg, #000 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 78%, #000 100%), radial-gradient(circle min(80vw, 46rem) at 50% 55%, #F5333F 0%, #5D0000 50%, #000000 100%) !important; }
+    /* Sin alto mínimo de pantalla completa: no queda un hueco vacío debajo */
+    :global(section.shell.about) { min-height: 0; }
   }
 </style>
