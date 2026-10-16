@@ -147,7 +147,7 @@ const mask =
     .hero { padding-top: 14rem; }
     .hero :global(.hero__social), .hero__scroll { display: none; }
     .hero :global(.hero__lang) { top: 9rem; right: var(--layout-gutter); transform: none; }
-    .hero__tagline { flex-wrap: wrap; padding: 1.2rem; border-radius: var(--radius-lg); }
+    .hero__tagline { flex-wrap: wrap; padding: calc(1.2rem - 4px); border-radius: calc(var(--radius-lg) + 5px); }
     .hero__tagline p { padding-inline: 0.6rem; white-space: normal; }
   }
 </style>
