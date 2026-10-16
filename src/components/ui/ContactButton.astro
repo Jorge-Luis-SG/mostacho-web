@@ -1,8 +1,7 @@
 ---
 /**
- * Botón «Contactar»: al pasar el ratón se rellena de blanco (de izquierda a derecha) y «Contactar» deja paso
- * a «Agendar una fiesta». El botón mide siempre lo que el texto más largo (los dos textos ocupan la misma celda),
- * así nada cambia de tamaño: todo lo mueve la tarjeta gráfica (transform/opacity) y va fluido en cualquier equipo.
+ * Botón «Contactar»: al pasar el ratón se rellena de blanco (de izquierda a derecha), se alarga y «Contactar»
+ * deja paso a «Agendar una fiesta». En reposo mide lo que «Contactar».
  * Si el texto no es «Contactar» (p. ej. un cta propio), solo se rellena de blanco.
  */
 import Button from './Button.astro';
@@ -65,7 +64,12 @@ const hover = Astro.props.hover ?? (label === ctx.ui.contact ? ctx.ui.contactHov
     transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, color 0.3s ease;
     will-change: transform, opacity;
   }
-  .btn-contact__b { color: #111; transform: translateY(140%); opacity: 0; }
+  /* En reposo el botón mide lo que «Contactar»; al pasar el ratón se alarga suavemente hasta el texto largo
+     (el que se va encoge su ancho a 0 y el que entra lo recupera) */
+  .btn-contact__a, .btn-contact__b { max-width: 20em; overflow: hidden; transition-property: transform, opacity, color, max-width; }
+  .btn-contact__b { color: #111; transform: translateY(140%); opacity: 0; max-width: 0; }
+  :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__a:not(.btn-contact__only) { max-width: 0; }
+  :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__b { max-width: 20em; }
   :global(.btn-contact:is(:hover, :focus-visible)) { filter: none; }
   :global(.btn-contact:is(:hover, :focus-visible))::before { transform: scaleX(1); }
   :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__a:not(.btn-contact__only) { transform: translateY(-140%); opacity: 0; }
