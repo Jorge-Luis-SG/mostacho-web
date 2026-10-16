@@ -67,6 +67,8 @@ const titleId = `${section.id}-title`;
   }
   @media (max-width: 1000px) {
     .cards :global(.carousel__track) { grid-auto-columns: calc((100% - var(--carousel-gap)) / 2); }
+    /* Tablets: el carrusel no ocupa toda la pantalla; dos tarjetas de tamaño normal, centradas */
+    .cards { width: min(100%, 680px); }
   }
   @media (max-width: 640px) {
     .cards :global(.carousel__track) { grid-auto-columns: 85%; }
@@ -147,6 +149,10 @@ const titleId = `${section.id}-title`;
     .card--text .card__body { padding-top: 1.4rem; padding-bottom: 1.4rem; }
     .card--text .card__body > :nth-last-child(2) { margin-bottom: 1.2rem; }
     .card--text .card__body :global(.btn) { font-size: calc(var(--size-button) - 2px); min-height: 0; padding-block: 0.9em; }
+  }
+  /* Tablets (2 tarjetas): el bloque de texto ocupa solo lo que necesita */
+  @media (max-width: 1000px) {
+    .card--text { --body: 0.33; }
   }
   .card__body :global(.btn) { margin-top: auto; }
   .card__body > :nth-last-child(2) { margin-bottom: clamp(1.6rem, calc(2 * var(--u)), 3.8rem); }
