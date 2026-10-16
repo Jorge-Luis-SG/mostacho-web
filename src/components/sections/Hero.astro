@@ -126,6 +126,12 @@ const mask =
     .hero__tagline :global(.hero__cta) { font-size: calc(var(--size-button) - 2px); min-height: 0; padding-block: 0.9em; }
     .hero__tagline :global(.hero__cta:not(:hover):not(:focus-visible)) { padding-inline: 1em; }
   }
+  /* 500 px o menos: todo el bloque de texto pegado a la izquierda, al mismo margen que el logo de la cabecera
+     (ver Header.astro: padding-inline = --cta-right × 0,45) */
+  @media (max-width: 500px) {
+    .hero__content { width: auto; margin-inline: calc(var(--cta-right) * 0.45); }
+    .hero__tagline { margin-left: 0; }
+  }
   .hero :global(.hero__social) { position: absolute; right: var(--lang-end, var(--cta-axis)); top: 52%; transform: translateY(-50%); }
 
   .hero__scroll {
