@@ -124,6 +124,7 @@ export interface ShowcasePop {
   /** Móvil: tamaño del personaje (1 = normal) y separación del borde derecho (CSS, p. ej. "2rem"). */
   mobileScale?: number;
   mobileRight?: string;
+  mobileTop?: string;
   /** Capa oscura sobre la foto mientras se ve el personaje (0 a 1). */
   shade?: number;
   /** Color que tiñe la foto mientras se ve el personaje (con transparencia, p. ej. "rgba(150, 40, 255, 0.4)"). */

@@ -91,7 +91,9 @@
             "top": -12.9,
             "glow": "rgba(166, 70, 255, 0.85)",
             "glowAt": "89% 45%",
-            "glowSize": "38% 85%"
+            "glowSize": "38% 85%",
+            "mobileScale": 1.3,
+            "mobileTop": "4cqh"
           },
           "accent": "#4B00D5"
         },

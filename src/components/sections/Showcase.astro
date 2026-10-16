@@ -66,7 +66,7 @@ const popBg = (pop: ShowcasePop) =>
                 /* Personaje en el móvil: dentro de la diapositiva, por detrás del título y el botón (en escritorio va en
                    la capa de encima, ver .showcase__pops) */
                 slide.pop && (
-                  <div class:list={['slide__mpop', slide.inside && 'slide__mpop--still']} aria-hidden="true" style={[slide.pop.mobileScale && `--mpop-k:${slide.pop.mobileScale}`, slide.pop.mobileRight && `--mpop-right:${slide.pop.mobileRight}`].filter(Boolean).join(';') || undefined}>
+                  <div class:list={['slide__mpop', slide.inside && 'slide__mpop--still']} aria-hidden="true" style={[slide.pop.mobileScale && `--mpop-k:${slide.pop.mobileScale}`, slide.pop.mobileRight && `--mpop-right:${slide.pop.mobileRight}`, slide.pop.mobileTop && `--mpop-top:${slide.pop.mobileTop}`].filter(Boolean).join(';') || undefined}>
                     <Img site={ctx.site} src={slide.pop.image} alt="" sizes="(max-width: 1400px) 60vw, 1100px" maxWidth={1600} optional />
                   </div>
                 )
@@ -329,7 +329,10 @@ const popBg = (pop: ShowcasePop) =>
     }
     /* Hora loca y Recibe a tus invitados: personajes un 35 % más grandes y más abajo (lo que pasa del borde de abajo
        se recorta) */
-    :global(:is(#hora-loca, #recibe)) .slide__mpop { --mpop-grow: 1.35; --mpop-top: -8cqh; }
+    :global(:is(#hora-loca, #recibe)) .slide__mpop { --mpop-grow: 1.35; }
+    :global(:is(#hora-loca, #recibe)) .slide__mpop:not([style*='--mpop-top']) { --mpop-top: -8cqh; }
+    /* Logo del título (K-pop): más grande en el móvil */
+    .slide .slide__title-img { width: min(100%, 26rem); }
     :global(#infantiles) .slide__mpop { --mpop-top: -8cqh; }
     .slide__mpop--still, .slide:global(.is-pop) .slide__mpop--still { transform: none; transition: opacity 0.5s ease; }
     .slide__mpop :global(img), .slide__inside :global(img) {
