@@ -92,7 +92,7 @@ const mask =
   .hero__media { position: absolute; inset: 0; z-index: -1; }
   .hero__stache { display: none; }
 
-  .hero :global(.hero__lang) { position: absolute; top: clamp(9rem, calc(11.4 * var(--u)), 22rem); right: var(--cta-axis); transform: translateX(50%); }
+  .hero :global(.hero__lang) { position: absolute; top: clamp(9rem, calc(11.4 * var(--u)), 22rem); right: var(--cta-center, var(--cta-axis)); transform: translateX(50%); }
 
   .hero__content { position: relative; width: min(100% - 2 * var(--layout-gutter), calc(85.42 * var(--u-root))); }
   .hero__title { font-size: calc(var(--size-hero) - 0.4rem); line-height: 0.947; max-width: 12ch; }
@@ -146,11 +146,20 @@ const mask =
 </style>
 
 <script>
-  // Mide dónde termina el selector de idioma y alinea ahí el borde derecho de las redes y la flecha
+  // El selector de idioma se centra bajo el botón Contactar de la cabecera; las redes y la flecha terminan donde
+  // termina el selector (en «ES»)
   document.querySelectorAll<HTMLElement>('.hero').forEach((hero) => {
     const lang = hero.querySelector<HTMLElement>('.hero__lang');
+    const cta = document.querySelector<HTMLElement>('.header__cta');
     if (!lang) return;
-    const fit = () => hero.style.setProperty('--lang-end', `${Math.round(hero.getBoundingClientRect().right - lang.getBoundingClientRect().right)}px`);
+    const fit = () => {
+      const right = hero.getBoundingClientRect().right;
+      if (cta && cta.offsetParent) {
+        const c = cta.getBoundingClientRect();
+        hero.style.setProperty('--cta-center', `${Math.round(right - (c.left + c.width / 2))}px`);
+      }
+      hero.style.setProperty('--lang-end', `${Math.round(right - lang.getBoundingClientRect().right)}px`);
+    };
     fit();
     new ResizeObserver(fit).observe(hero);
     document.fonts?.ready.then(fit);

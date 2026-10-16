@@ -78,6 +78,10 @@ const items = config.nav.map((id) => ({ href: `#${id}`, label: t.nav[id] as stri
   @media (max-width: 1699px) {
     .header { padding-inline: calc(var(--cta-right) * 0.6); }
   }
+  /* 1400 px o menos: un poco menos aún */
+  @media (max-width: 1400px) {
+    .header { padding-inline: calc(var(--cta-right) * 0.45); }
+  }
   .header__bar {
     --logo-w: clamp(6rem, calc(6.6 * var(--u)), 12.6rem);
     display: grid;
