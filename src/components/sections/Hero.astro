@@ -118,11 +118,12 @@ const mask =
     white-space: nowrap;
   }
 
-  .hero :global(.hero__social) { position: absolute; right: var(--cta-axis); top: 52%; transform: translate(50%, -50%); }
+  /* Redes y flecha: su borde derecho alineado con el final del selector de idioma (--lang-end lo pone el script) */
+  .hero :global(.hero__social) { position: absolute; right: var(--lang-end, var(--cta-axis)); top: 52%; transform: translateY(-50%); }
 
   .hero__scroll {
     position: absolute;
-    right: var(--cta-axis);
+    right: var(--lang-end, var(--cta-axis));
     bottom: clamp(6rem, calc(5.68 * var(--u)), 10.9rem);
     display: grid;
     place-items: center;
@@ -133,8 +134,7 @@ const mask =
     border: 1px solid var(--color-pill-border);
     transition: transform 0.2s ease;
   }
-  .hero__scroll { transform: translateX(50%); }
-  .hero__scroll:hover { transform: translate(50%, 4px); }
+  .hero__scroll:hover { transform: translateY(4px); }
 
   @media (max-width: 900px) {
     .hero { padding-top: 14rem; }
@@ -144,4 +144,16 @@ const mask =
     .hero__tagline p { padding-inline: 0.6rem; white-space: normal; }
   }
 </style>
+
+<script>
+  // Mide dónde termina el selector de idioma y alinea ahí el borde derecho de las redes y la flecha
+  document.querySelectorAll<HTMLElement>('.hero').forEach((hero) => {
+    const lang = hero.querySelector<HTMLElement>('.hero__lang');
+    if (!lang) return;
+    const fit = () => hero.style.setProperty('--lang-end', `${Math.round(hero.getBoundingClientRect().right - lang.getBoundingClientRect().right)}px`);
+    fit();
+    new ResizeObserver(fit).observe(hero);
+    document.fonts?.ready.then(fit);
+  });
+</script>
 
