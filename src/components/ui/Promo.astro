@@ -175,19 +175,21 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
   /* Móvil y tabletas en vertical: tarjeta vertical; logo arriba, personajes abajo en las esquinas, texto y botón
      en el centro */
   @media (max-width: 700px), (max-aspect-ratio: 1/1) and (max-width: 1100px) {
-    .promo { --cw: min(86vw, (100svh - 4rem) / 1.1 * 4 / 5 * 0.88); }
-    .promo__card { aspect-ratio: 4 / 5; margin-top: calc(var(--cw) * 5 / 4 * 0.09); }
+    /* Tarjeta vertical más alta: logo arriba, texto y botón en el centro y los personajes abajo, sin taparse */
+    .promo { --cw: min(86vw, (100svh - 4rem) / 1.12 * 3 / 5); }
+    .promo__card { aspect-ratio: 3 / 5; margin-top: calc(var(--cw) * 5 / 3 * 0.09); }
     .promo__frame { border-radius: 9cqw; }
-    .promo__card :global(.promo__logo) { top: -9cqh; width: 66cqw; }
-    .promo__card :global(.promo__left) { left: 0; width: 34cqw; }
-    .promo__card :global(.promo__right) { right: 0; width: 40cqw; }
-    .promo__pill { top: 38cqh; width: 84cqw; height: 22cqh; border-radius: 7cqw; gap: 1.5cqh; }
-    .promo__pill :global(.promo__text) { width: 72cqw; }
-    .promo__pill :global(.promo__highlight) { width: 38cqw; margin-top: -2.5cqh; }
-    .promo__card :global(.promo__cta) { top: 64cqh; min-height: 10cqh; padding: 0 6cqw 0 2cqw; gap: 2cqw; font-size: max(1.5rem, 3.6cqw); }
-    .promo__card :global(.promo__cta .btn__icon) { width: 7cqh; height: 7cqh; }
-    .promo__close { top: 2.5cqh; right: 3cqw; width: 4rem; }
+    .promo__card :global(.promo__logo) { top: -9cqh; width: 64cqw; }
+    .promo__card :global(.promo__left) { left: 2cqw; width: 31cqw; }
+    .promo__card :global(.promo__right) { right: 2cqw; width: 30cqw; }
+    .promo__pill { top: 26cqh; width: 86cqw; height: 16cqh; border-radius: 7cqw; gap: 1cqh; }
+    .promo__pill :global(.promo__text) { width: 74cqw; }
+    .promo__pill :global(.promo__highlight) { width: 40cqw; margin-top: -2cqh; }
+    .promo__card :global(.promo__cta) { top: 44cqh; min-height: 8cqh; padding: 0 6cqw 0 2cqw; gap: 2cqw; font-size: max(1.5rem, 4cqw); }
+    .promo__card :global(.promo__cta .btn__icon) { width: 5.6cqh; height: 5.6cqh; }
+    .promo__close { top: 2cqh; right: 3cqw; width: 4rem; }
   }
+
   @media (prefers-reduced-motion: reduce) {
     .promo__card { transform: none; }
   }
