@@ -177,7 +177,7 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
   @media (max-width: 700px), (max-aspect-ratio: 1/1) and (max-width: 1100px) {
     /* Tarjeta vertical más alta: logo arriba, texto y botón en el centro y los personajes abajo, sin taparse */
     .promo { --cw: min(86vw, (100svh - 4rem) / 1.12 * 3 / 5); }
-    .promo__card { aspect-ratio: 3 / 5; margin-top: calc(var(--cw) * 5 / 3 * 0.09); }
+    .promo__card { aspect-ratio: auto; height: calc(var(--cw) * 5 / 3 - 20px); margin-top: calc(var(--cw) * 5 / 3 * 0.09); }
     .promo__frame { border-radius: 9cqw; }
     .promo__card :global(.promo__logo) { top: -9cqh; width: 64cqw; }
     .promo__card :global(.promo__left) { left: 2cqw; width: 31cqw; }
