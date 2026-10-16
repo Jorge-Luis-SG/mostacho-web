@@ -63,7 +63,7 @@ const items = config.nav.map((id) => ({ href: `#${id}`, label: t.nav[id] as stri
 <style>
   .header :global(.header__cta) {
     width: var(--cta-w);
-    min-height: calc(clamp(4rem, calc(3.6 * var(--u)), 7rem) - 0.4rem);
+    min-height: calc(clamp(4.8rem, calc(4.7 * var(--u)), 9rem) - 0.4rem);
     padding: 0.4em 1em 0.4em 0.6em;
     justify-content: center;
     gap: 0.8em;
@@ -72,7 +72,9 @@ const items = config.nav.map((id) => ({ href: `#${id}`, label: t.nav[id] as stri
     position: absolute;
     inset: 0 0 auto;
     z-index: 20;
-    padding: clamp(1rem, calc(0.94 * var(--u)), 1.8rem) var(--cta-right) 0;
+    /* Menos margen a los lados que el resto de la página: la cabecera se ve más ancha */
+    --header-side: calc(max(0px, (100vw - 1920px) / 2) + clamp(1.6rem, calc(2.5 * var(--vw)), 4.8rem));
+    padding: clamp(1rem, calc(0.94 * var(--u)), 1.8rem) var(--header-side) 0;
   }
   .header__bar {
     --logo-w: clamp(6rem, calc(6.6 * var(--u)), 12.6rem);
@@ -99,10 +101,9 @@ const items = config.nav.map((id) => ({ href: `#${id}`, label: t.nav[id] as stri
     display: flex;
     justify-content: space-between;
     gap: clamp(0.8rem, calc(1.2 * var(--u)), 2.4rem);
-    /* Barra más baja y con menos relleno que el diseño original */
-    min-height: clamp(4rem, calc(3.6 * var(--u)), 7rem);
+    min-height: clamp(4.8rem, calc(4.7 * var(--u)), 9rem);
     align-items: center;
-    padding: 0.3rem clamp(1.2rem, calc(2 * var(--u)), 3.8rem) 0.3rem clamp(1.2rem, calc(2.4 * var(--u)), 4.6rem);
+    padding: 0.5rem clamp(1.6rem, calc(3 * var(--u)), 5.8rem) 0.5rem clamp(1.6rem, calc(3.4 * var(--u)), 6.5rem);
     margin: 0;
   }
   .header__nav a {
