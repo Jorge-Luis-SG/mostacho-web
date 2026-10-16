@@ -350,6 +350,10 @@ const popBg = (pop: ShowcasePop) =>
       translate: none;
     }
   }
+  /* 500 px o menos: títulos de las diapositivas 7 px más pequeños */
+  @media (max-width: 500px) {
+    .slide .slide__title { font-size: calc(var(--size-showcase) + 12px + var(--title-grow, 0px) - 7px); }
+  }
   @media (prefers-reduced-motion: reduce) {
     .showcase__pop, .slide__mpop { transform: none; }
   }

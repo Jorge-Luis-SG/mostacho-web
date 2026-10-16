@@ -220,7 +220,8 @@
             "left": 44,
             "width": 69.2,
             "top": -13.5,
-            "tint": "rgba(170, 60, 255, 0.35)"
+            "tint": "rgba(170, 60, 255, 0.35)",
+            "mobileTop": "-46cqh"
           },
           "accent": "#1b002e",
           "glow": "rgba(90, 0, 155, 0.9)",
