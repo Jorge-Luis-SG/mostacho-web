@@ -1,6 +1,6 @@
 ---
 /**
- * Ventana emergente al entrar en la landing (site.json → promo). Se ve una vez por visita (sesión del navegador)
+ * Ventana emergente al entrar en la landing (site.json → promo). Sale cada vez que se carga la página
  * y se cierra con la X, tocando fuera, con Esc o al pulsar Contactar.
  * Composición del diseño (tarjeta de 1550 × 777 px a 1920): el fondo es un video en bucle; los personajes y el
  * logo sobresalen de la tarjeta por arriba.
@@ -45,17 +45,12 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-promo]').forEach((promo) => {
-    const key = `promo-${promo.dataset.promo}`;
-    try {
-      if (sessionStorage.getItem(key)) return;
-    } catch {}
     let last: Element | null = null;
     const close = () => {
       promo.classList.remove('is-open');
       document.documentElement.classList.remove('promo-open');
       setTimeout(() => (promo.hidden = true), 400);
       promo.querySelectorAll('video').forEach((v) => v.pause());
-      try { sessionStorage.setItem(key, '1'); } catch {}
       (last as HTMLElement | null)?.focus?.();
       removeEventListener('keydown', onKey);
     };
