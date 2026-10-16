@@ -108,7 +108,7 @@ html.anim [data-pin='deal'] .carousel__track {
   html.anim [data-pin='deal'] .carousel__track { grid-auto-columns: min(calc((100% - var(--carousel-gap)) / 2), calc((100svh - 24rem) * 419 / 679)); }
 }
 @media (max-width: 640px) {
-  html.anim [data-pin='deal'] .carousel__track { grid-auto-columns: min(80%, calc((100svh - 22rem) * 419 / 679)); }
+  html.anim [data-pin='deal'] .carousel__track { grid-auto-columns: min(80%, 320px, calc((100svh - 22rem) * 419 / 679)); }
 }
 
 html.anim [data-pin='deal'] .carousel__track { perspective: 1600px; }

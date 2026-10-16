@@ -66,7 +66,7 @@ const popBg = (pop: ShowcasePop) =>
                 /* Personaje en el móvil: dentro de la diapositiva, por detrás del título y el botón (en escritorio va en
                    la capa de encima, ver .showcase__pops) */
                 slide.pop && (
-                  <div class:list={['slide__mpop', slide.inside && 'slide__mpop--still']} aria-hidden="true">
+                  <div class:list={['slide__mpop', slide.inside && 'slide__mpop--still']} aria-hidden="true" style={[slide.pop.mobileScale && `--mpop-k:${slide.pop.mobileScale}`, slide.pop.mobileRight && `--mpop-right:${slide.pop.mobileRight}`].filter(Boolean).join(';') || undefined}>
                     <Img site={ctx.site} src={slide.pop.image} alt="" sizes="(max-width: 1400px) 60vw, 1100px" maxWidth={1600} optional />
                   </div>
                 )
@@ -300,7 +300,7 @@ const popBg = (pop: ShowcasePop) =>
   .slide__mpop { display: none; }
   @media (max-width: 700px) {
     .showcase__pops { display: none; }
-    .showcase__slides { --pop-room: calc(var(--slide-h) * 0.07); }
+    .showcase__slides { --pop-room: calc(var(--slide-h) * 0.14); }
     /* overflow-y: hidden: el carrusel solo se desliza en horizontal (el personaje fuera de su sitio no lo hace desplazable en vertical) */
     .showcase__slides :global(.carousel__track) { padding-top: var(--pop-room); margin-top: calc(-1 * var(--pop-room)); overflow-y: hidden; }
     .showcase__slides :global(.carousel__viewport) { display: flow-root; } /* que ese margen no arrastre el slider hacia arriba */
@@ -327,15 +327,21 @@ const popBg = (pop: ShowcasePop) =>
       transform: none;
       transition: transform 1.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
     }
+    /* Hora loca y Recibe a tus invitados: personajes un 35 % más grandes y más abajo (lo que pasa del borde de abajo
+       se recorta) */
+    :global(:is(#hora-loca, #recibe)) .slide__mpop { --mpop-grow: 1.35; --mpop-top: -8cqh; }
+    :global(#infantiles) .slide__mpop { --mpop-top: -8cqh; }
     .slide__mpop--still, .slide:global(.is-pop) .slide__mpop--still { transform: none; transition: opacity 0.5s ease; }
     .slide__mpop :global(img), .slide__inside :global(img) {
       position: absolute;
       left: auto;
-      right: -4%;
-      top: -6cqh;
+      /* Apoyado en el borde de abajo (no se esconde) y asomando por arriba; cada diapositiva puede agrandarlo
+         (pop.mobileScale) o separarlo del borde derecho (pop.mobileRight) */
+      right: var(--mpop-right, 0px);
+      top: var(--mpop-top, calc(100cqh - 112cqh * var(--mpop-k, 1)));
       width: auto;
-      height: 106cqh;
-      max-width: 66%;
+      height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1));
+      max-width: calc(72% * var(--mpop-k, 1) * var(--mpop-grow, 1));
       object-fit: contain;
       object-position: 100% 100%;
       translate: none;
