@@ -139,6 +139,15 @@ const titleId = `${section.id}-title`;
      foto se vea más; título y texto 2 px más pequeños */
   .card--text { --h: 740; --body: calc(0.538 * 679 / 740 * 0.9); --title-shrink: 2px; }
   .card--text p { font-size: calc(var(--size-card-text) - 2px); }
+  /* 1400 px o menos: textos y botón 2 px más pequeños, bloque oscuro más bajo (menos relleno) y la foto gana
+     unos 20 px de alto */
+  @media (max-width: 1400px) {
+    .card--text { --body: 0.4; --title-shrink: 4px; }
+    .card--text p { font-size: calc(var(--size-card-text) - 4px); margin-top: 0.8rem; }
+    .card--text .card__body { padding-top: 1.4rem; padding-bottom: 1.4rem; }
+    .card--text .card__body > :nth-last-child(2) { margin-bottom: 1.2rem; }
+    .card--text .card__body :global(.btn) { font-size: calc(var(--size-button) - 2px); min-height: 0; padding-block: 0.9em; }
+  }
   .card__body :global(.btn) { margin-top: auto; }
   .card__body > :nth-last-child(2) { margin-bottom: clamp(1.6rem, calc(2 * var(--u)), 3.8rem); }
 </style>
