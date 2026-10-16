@@ -119,6 +119,13 @@ const mask =
   }
 
   /* Redes y flecha: su borde derecho alineado con el final del selector de idioma (--lang-end lo pone el script) */
+  /* 1050 px o menos: textos 2 px más pequeños y menos relleno (alto y ancho) en la píldora y en su botón */
+  @media (max-width: 1050px) {
+    .hero__tagline { padding: 0.2rem 0.2rem 0.2rem 1.2rem; gap: 0.8rem; }
+    .hero__tagline p { font-size: calc(var(--size-tagline) - 0.2rem - 2px); }
+    .hero__tagline :global(.hero__cta) { font-size: calc(var(--size-button) - 2px); min-height: 0; padding-block: 0.9em; }
+    .hero__tagline :global(.hero__cta:not(:hover):not(:focus-visible)) { padding-inline: 1em; }
+  }
   .hero :global(.hero__social) { position: absolute; right: var(--lang-end, var(--cta-axis)); top: 52%; transform: translateY(-50%); }
 
   .hero__scroll {

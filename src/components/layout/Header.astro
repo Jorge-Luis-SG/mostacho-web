@@ -136,8 +136,8 @@ const items = config.nav.map((id) => ({ href: `#${id}`, label: t.nav[id] as stri
 
   @media (max-width: 1200px) {
     .header__bar { grid-template-columns: auto 1fr auto auto; }
-    .header__toggle { display: grid; grid-column: 3; }
-    .header :global(.header__cta) { grid-column: 4; grid-row: 1; width: auto; }
+    .header__toggle { display: grid; grid-column: 4; grid-row: 1; }
+    .header :global(.header__cta) { grid-column: 3; grid-row: 1; width: auto; } /* primero WhatsApp, luego el menú */
     .header__nav {
     /* Efecto cristal del diseño (solo aquí: es un elemento pequeño y se va al hacer scroll) */
     backdrop-filter: blur(22px) saturate(1.3);
