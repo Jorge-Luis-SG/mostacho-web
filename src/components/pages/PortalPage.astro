@@ -257,6 +257,10 @@ const { ui } = t;
   @media (max-width: 540px) {
     .portal__countries { --flag: calc(clamp(10rem, calc(7.8 * var(--u)), 15rem) - 15px); }
     .portal__name { font-size: 2.2rem; }
+    /* Las píldoras van en la fila (no superpuestas): al abrirse una, la otra se aparta y la fila se recentra,
+       así las dos caben siempre en la pantalla */
+    .portal__countries li { width: auto; height: auto; }
+    .portal__country, .portal__countries li:first-child .portal__country { position: relative; left: auto; right: auto; }
     /* Iconos de redes 4 px más grandes */
     .portal :global(.portal__social svg) { width: calc(clamp(2rem, calc(1.61 * var(--u)), 3.1rem) + 4px); height: auto; }
   }
