@@ -98,8 +98,8 @@ const titleId = `${section.id}-title`;
   }
   /* La foto llena solo la parte que se ve, por encima del bloque de texto (y un poco por debajo, que queda tras el
      desenfoque): así no se tapan las caras. Cada tarjeta puede ajustar su encuadre (site.json → imagePos).
-     El video, al pasar el ratón, sí ocupa toda la tarjeta. */
-  .card :global(img.card__img) {
+     El video hace lo mismo, para que se vea entero lo importante. */
+  .card :global(:is(img, video).card__img) {
     bottom: auto;
     height: calc(100cqw * var(--h) / 419 * (1 - var(--body)) + 3rem);
     object-position: var(--img-pos, 50% 30%);
