@@ -38,8 +38,9 @@ const hover = Astro.props.hover ?? (label === ctx.ui.contact ? ctx.ui.contactHov
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    padding-inline: 2em;
-    transition: transform 0.15s ease;
+    /* En reposo, relleno justo para «Contactar»; al pasar el ratón el botón crece con el texto largo */
+    padding-inline: 1.3em;
+    transition: transform 0.15s ease, padding 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
   :global(.btn-contact)::before {
     content: '';
@@ -70,7 +71,7 @@ const hover = Astro.props.hover ?? (label === ctx.ui.contact ? ctx.ui.contactHov
   .btn-contact__b { color: #111; transform: translateY(140%); opacity: 0; max-width: 0; }
   :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__a:not(.btn-contact__only) { max-width: 0; }
   :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__b { max-width: 20em; }
-  :global(.btn-contact:is(:hover, :focus-visible)) { filter: none; }
+  :global(.btn-contact:is(:hover, :focus-visible)) { filter: none; padding-inline: 2em; }
   :global(.btn-contact:is(:hover, :focus-visible))::before { transform: scaleX(1); }
   :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__a:not(.btn-contact__only) { transform: translateY(-140%); opacity: 0; }
   :global(.btn-contact:is(:hover, :focus-visible)) .btn-contact__b { transform: none; opacity: 1; }

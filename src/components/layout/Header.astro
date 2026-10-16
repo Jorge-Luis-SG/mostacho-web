@@ -72,9 +72,11 @@ const items = config.nav.map((id) => ({ href: `#${id}`, label: t.nav[id] as stri
     position: absolute;
     inset: 0 0 auto;
     z-index: 20;
-    /* Menos margen a los lados que el resto de la página: la cabecera se ve más ancha */
-    --header-side: calc(max(0px, (100vw - 1920px) / 2) + clamp(1.6rem, calc(2.5 * var(--vw)), 4.8rem));
-    padding: clamp(1rem, calc(0.94 * var(--u)), 1.8rem) var(--header-side) 0;
+    padding: clamp(1rem, calc(0.94 * var(--u)), 1.8rem) var(--cta-right) 0;
+  }
+  /* Pantallas de menos de 1700 px: un 40 % menos de margen a los lados (la cabecera se ve más ancha) */
+  @media (max-width: 1699px) {
+    .header { padding-inline: calc(var(--cta-right) * 0.6); }
   }
   .header__bar {
     --logo-w: clamp(6rem, calc(6.6 * var(--u)), 12.6rem);
