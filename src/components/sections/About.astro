@@ -121,20 +121,23 @@ const titleId = `${section.id}-title`;
 
   @media (max-width: 900px) {
     .about__grid { grid-template-columns: 1fr; }
-    /* El bigote sube por encima de la foto: se deja sitio para que no quede detrás del párrafo */
-    .about__media { margin-top: max(14rem, 44vw); }
-    figcaption { padding-left: 0; }
+    figcaption { padding-left: 0; text-align: center; }
     /* Título y texto centrados; el texto con 650 px como mucho */
     .about__copy { text-align: center; }
     .about__copy p { max-width: 650px; margin-inline: auto; }
-    /* Bigote más pequeño y más arriba (scale/translate no chocan con la animación, que usa transform) */
-    .about__decor { scale: 0.6; translate: -18% 0%; }
-    /* Premio y foto del equipo algo más pequeños y centrados (el bigote se escala con ellos) */
-    .about__media { width: min(100%, 620px); margin-inline: auto; margin-top: min(30vw, 16rem); }
-    figcaption { text-align: center; }
+    /* Orden: párrafo → foto del equipo sola → trofeo con el bigote detrás → texto del premio */
+    .about__media { width: min(100%, 620px); margin-inline: auto; margin-top: clamp(2.4rem, 6vw, 4rem); display: flex; flex-direction: column; }
+    .about__frame { display: contents; }
+    .about__team-cell { order: 1; }
+    .about__award-cell { order: 2; width: 34cqw; height: 72cqw; margin: 6cqw auto 0; }
+    figcaption { order: 3; }
+    .about__award-cell :global(.about__award) { left: 0; bottom: 0; width: 100%; }
+    /* Bigote detrás del trofeo, centrado (debajo de la foto, que mide 46,4cqw de alto) */
+    .about__decor { left: 6cqw !important; top: calc(46.4cqw + 22cqw) !important; width: 88cqw !important; scale: 1; translate: none; }
     /* Luz roja del fondo centrada (en el móvil la sección es alta y estrecha: un círculo, no una elipse estirada) */
     :global(section.shell.about) { background: linear-gradient(180deg, #000 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 78%, #000 100%), radial-gradient(circle min(80vw, 46rem) at 50% 55%, #F5333F 0%, #5D0000 50%, #000000 100%) !important; }
     /* Sin alto mínimo de pantalla completa: no queda un hueco vacío debajo */
     :global(section.shell.about) { min-height: 0; }
   }
+
 </style>
