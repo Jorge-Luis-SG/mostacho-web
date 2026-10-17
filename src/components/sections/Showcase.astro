@@ -620,7 +620,7 @@ const popBg = (pop: ShowcasePop) =>
   .slide__title-img :global(.img-missing) { aspect-ratio: 497 / 315; }
 
   @media (max-width: 700px) {
-    /* K-pop: logo compacto arriba a la izquierda, personajes a la derecha y botón con espacio propio. */
+    /* K-pop: título y botón agrupados a la izquierda, personajes apoyados abajo a la derecha. */
     :global(#infantiles) .slide[data-slide='kpop'] .slide__content {
       position: absolute;
       inset: 3.2rem var(--carousel-dots-left) 5rem;
@@ -632,12 +632,12 @@ const popBg = (pop: ShowcasePop) =>
     }
     :global(#infantiles) .slide[data-slide='kpop'] .slide__kicker { margin-bottom: 0; font-size: 2.4rem; }
     :global(#infantiles) .slide[data-slide='kpop'] .slide__title-img { width: min(38vw, 16rem); }
-    :global(#infantiles) .slide[data-slide='kpop'] .slide__content > :global(a) { margin-top: auto; }
+    :global(#infantiles) .slide[data-slide='kpop'] .slide__content > :global(a) { margin-top: 0; padding-inline: 1.2em; }
     :global(#infantiles) .slide[data-slide='kpop'] .slide__mpop :global(img) {
       top: auto;
       bottom: 0;
       right: 0;
-      width: min(70%, 42rem);
+      width: min(80.5%, 48.3rem);
       max-width: none;
       height: auto;
     }
