@@ -64,7 +64,7 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
     const next = root.querySelector<HTMLButtonElement>('[data-next]');
     const pageLabel = root.dataset.pageLabel ?? '{n}';
     const loop = root.hasAttribute('data-loop');
-    const items = () => Array.from(track.children) as HTMLElement[];
+    const items = Array.from(track.children) as HTMLElement[];
 
     // Modo "dirigido": cuando una animación con el scroll mueve el carrusel (src/scripts/animations.ts),
     // los puntos y las flechas piden ir a un elemento ('driven:go') y la animación dice cuál está activo ('driven:active').
@@ -75,20 +75,21 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
       root.dispatchEvent(new CustomEvent('driven:go', { bubbles: true, detail: { index } }));
     };
 
-    const metrics = () => {
-      const first = items()[0];
-      if (!first) return { step: track.clientWidth, perPage: 1, pages: 1 };
+    let measured = { step: 1, perPage: 1, pages: 1, end: 0 };
+    const measure = () => {
+      const first = items[0];
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-      const size = first.offsetWidth + gap;
+      const size = first ? first.offsetWidth + gap : Math.max(1, track.clientWidth);
       const perPage = Math.max(1, Math.floor((track.clientWidth + gap + 2) / size));
-      return { step: perPage * size, perPage, pages: Math.ceil(items().length / perPage) };
+      const step = perPage * size;
+      const pages = Math.max(1, Math.ceil(items.length / perPage));
+      // Las medidas cambian al redimensionar, no con cada fotograma del desplazamiento.
+      measured = { step, perPage, pages, end: Math.max(0, Math.min(track.scrollWidth - track.clientWidth, (pages - 1) * step)) };
     };
+    const metrics = () => measured;
 
     // Los fondos desenfocados pueden sobresalir y aumentar scrollWidth: el final es la última página real.
-    const max = () => {
-      const { step, pages } = metrics();
-      return Math.min(track.scrollWidth - track.clientWidth, (pages - 1) * step);
-    };
+    const max = () => measured.end;
 
     // Precarga las imágenes de la página actual y la siguiente para que no aparezcan tarde al avanzar
     let near = false;
@@ -99,7 +100,7 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
       const key = `${page}:${perPage}`;
       if (key === warmed) return;
       warmed = key;
-      items()
+      items
         .slice(page * perPage, (page + 2) * perPage + 1)
         .forEach((el) => el.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => (img.loading = 'eager')));
     };
@@ -184,7 +185,8 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
       frame = requestAnimationFrame(update);
     }, { passive: true });
 
-    new ResizeObserver(renderDots).observe(track);
+    new ResizeObserver(() => { measure(); renderDots(); }).observe(track);
+    measure();
     renderDots();
   }
 

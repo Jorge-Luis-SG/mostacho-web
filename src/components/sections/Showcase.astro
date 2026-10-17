@@ -227,7 +227,8 @@ const popBg = (pop: ShowcasePop) =>
     let selected: HTMLImageElement | null = null;
     let over = false;
     let tok = 0;
-    const current = () => Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / Math.max(1, slides[0]?.offsetWidth ?? 1))));
+    let slideWidth = Math.max(1, slides[0]?.offsetWidth ?? 1);
+    const current = () => Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / slideWidth)));
     // Personaje (en la capa de encima) y su fondo (dentro de la diapositiva) se encienden y apagan juntos
     const toggle = (i: number, on: boolean) => {
       pops[i]?.classList.toggle('is-on', on);
@@ -250,9 +251,12 @@ const popBg = (pop: ShowcasePop) =>
       });
     };
     let near = false;
+    let warmed = -1;
     const warm = () => {
       if (!near && !over) return;
       const i = current();
+      if (warmed === i) return;
+      warmed = i;
       [i, (i + 1) % slides.length, (i - 1 + slides.length) % slides.length].forEach((n) => {
         const img = imgOf(n);
         if (img) prepare(img, n === i ? 'high' : 'low');
@@ -268,6 +272,7 @@ const popBg = (pop: ShowcasePop) =>
       toggle(shown, false);
       shown = -1;
       selected = null;
+      warmed = -1;
       follow();
     };
     // Al cambiar de tamaño puede tocar otra copia o versión responsive del personaje.
@@ -285,6 +290,8 @@ const popBg = (pop: ShowcasePop) =>
     }, { passive: true });
     new ResizeObserver(([entry]) => {
       // Reutilizar la observación de tamaño: el texto puede superar el alto previsto en ventanas bajas.
+      slideWidth = Math.max(1, slides[0]?.offsetWidth ?? 1);
+      warmed = -1;
       zone.style.setProperty('--pop-layout-height', `${entry.contentRect.height}px`);
       follow();
     }).observe(track);

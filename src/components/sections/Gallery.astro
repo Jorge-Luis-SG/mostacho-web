@@ -43,8 +43,8 @@ const titleId = `${section.id}-title`;
 </SectionShell>
 
 <script>
-  // El desplazamiento suave lo hace el navegador: no se escribe scrollLeft en cada fotograma.
-  // Solo se preparan la foto actual y las próximas; cualquier interacción da el control al visitante.
+  // Recorrido original: arranque suave, todas las fotos seguidas, pausa y regreso más rápido.
+  // Las medidas se guardan al redimensionar y solo se preparan las fotos próximas al recorrido.
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
   document.querySelectorAll<HTMLElement>('.gallery').forEach((gallery) => {
@@ -52,92 +52,149 @@ const titleId = `${section.id}-title`;
       if (!track || gallery.closest('[data-anim]')) return;
       const items = Array.from(track.children) as HTMLElement[];
       let positions: number[] = [];
-      let timer = 0;
-      let token = 0;
+      let end = 0;
+      let step = 1;
+      let frame = 0;
+      let generation = 0;
+      let last = 0;
+      let wait = 0;
       let visible = false;
-      let interrupted = false;
-      let hovered = false;
-      let direction = 1;
-      const decoding = new WeakSet<HTMLImageElement>();
+      let pointerHeld = false;
+      let phase: 'idle' | 'loading' | 'out' | 'pause' | 'back' | 'done' | 'manual' = 'idle';
+      let leg: { from: number; to: number; distance: number; direction: number; speed: number; ramp: number; total: number; elapsed: number };
+      let warmed = '';
+      let warming: Promise<void> = Promise.resolve();
+      const decoding = new WeakMap<HTMLImageElement, { src: string; ready: Promise<void> }>();
+      const moving = () => phase === 'out' || phase === 'pause' || phase === 'back';
       const pause = () => {
-        clearTimeout(timer);
-        timer = 0;
-        token++;
+        cancelAnimationFrame(frame);
+        frame = 0;
+        last = 0;
       };
-      const canPlay = () => visible && !interrupted && !hovered && !document.hidden && !reduced.matches && !saveData && items.length > 1;
-      const current = () => {
-        const left = track.scrollLeft;
-        return positions.reduce((best, pos, i) => Math.abs(pos - left) < Math.abs(positions[best] - left) ? i : best, 0);
+      const canPlay = () => visible && !document.hidden && !reduced.matches && !saveData && items.length > 1;
+      const current = () => Math.max(0, Math.min(items.length - 1, Math.round(track.scrollLeft / step)));
+      const prepare = (img: HTMLImageElement) => {
+        img.loading = 'eager';
+        const src = img.currentSrc || img.src;
+        const existing = decoding.get(img);
+        if (existing?.src === src) return existing.ready;
+        const entry = { src, ready: img.decode().catch(() => {}).then(() => { entry.src = img.currentSrc || img.src; }) };
+        decoding.set(img, entry);
+        return entry.ready;
       };
       const warm = (index: number) => {
-        items.slice(Math.max(0, index - 1), index + 2).forEach((item) => {
-          item.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
-            img.loading = 'eager';
-            // Preparar los píxeles antes de la transición, también cuando se navega con el dedo.
-            if (decoding.has(img)) return;
-            decoding.add(img);
-            img.decode().catch(() => {}).finally(() => decoding.delete(img));
-          });
-        });
+        const back = phase === 'back';
+        const key = `${index}:${back}`;
+        if (warmed === key) return warming;
+        warmed = key;
+        const nearby = items.slice(Math.max(0, index - (back ? 3 : 1)), index + (back ? 2 : 4));
+        warming = Promise.all(nearby.flatMap((item) => [...item.querySelectorAll<HTMLImageElement>('img')].map(prepare))).then(() => {});
+        return warming;
       };
-      const schedule = () => {
-        if (!timer && canPlay()) timer = window.setTimeout(advance, 3500);
+      const begin = (to: number, speed: number, ramp = 1) => {
+        const from = track.scrollLeft;
+        const distance = Math.abs(to - from);
+        const acceleration = Math.min(ramp, distance / speed);
+        leg = { from, to, distance, direction: Math.sign(to - from), speed, ramp: acceleration, total: distance / speed + acceleration, elapsed: 0 };
+        phase = to === 0 ? 'back' : 'out';
+        warmed = '';
       };
-      const advance = async () => {
-        timer = 0;
-        if (!canPlay()) return;
-        const my = ++token;
-        const i = current();
-        if (i === items.length - 1) direction = -1;
-        else if (i === 0) direction = 1;
-        const next = i + direction;
-        warm(next);
-        const img = items[next].querySelector<HTMLImageElement>('.gallery__photo');
-        await img?.decode().catch(() => {});
-        if (my !== token || !canPlay()) return;
-        if (!img || (img.complete && img.naturalWidth > 0)) track.scrollTo({ left: positions[next], behavior: 'smooth' });
-        schedule();
+      const resume = () => {
+        if (!frame && canPlay() && moving()) frame = requestAnimationFrame(tick);
+      };
+      const tick = (now: number) => {
+        frame = 0;
+        if (!canPlay() || !moving()) return;
+        // Tras ocultar la pestaña o un fotograma lento no se salta un grupo de fotos.
+        const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
+        last = now;
+        if (phase === 'pause') {
+          wait -= dt;
+          if (wait <= 0) begin(0, 1600, 1.2);
+        } else {
+          const t = leg.elapsed = Math.min(leg.total, leg.elapsed + dt);
+          const { ramp, total, speed, distance } = leg;
+          const at = ramp === 0 ? distance : t < ramp ? 0.5 * speed * t * t / ramp : t > total - ramp ? distance - 0.5 * speed * (total - t) ** 2 / ramp : speed * (t - ramp / 2);
+          const left = t >= total ? leg.to : leg.from + leg.direction * at;
+          void warm(Math.max(0, Math.min(items.length - 1, Math.floor(left / step))));
+          track.scrollLeft = left;
+          if (t >= total) {
+            if (phase === 'out') { phase = 'pause'; wait = 0.7; }
+            else { phase = 'done'; track.style.scrollSnapType = ''; }
+          }
+        }
+        resume();
+      };
+      const play = async () => {
+        if (phase !== 'idle' || !canPlay()) return;
+        if (end < 10) { phase = 'done'; return; }
+        phase = 'loading';
+        const mine = ++generation;
+        warmed = '';
+        await warm(current());
+        if (mine !== generation || phase !== 'loading') return;
+        track.style.scrollSnapType = 'none';
+        begin(end, 800);
+        resume();
       };
       const measure = () => {
         pause();
         const first = items[0]?.offsetLeft ?? 0;
         positions = items.map((item) => item.offsetLeft - first);
-        schedule();
+        step = Math.max(1, (positions[1] ?? track.clientWidth) - (positions[0] ?? 0));
+        end = Math.max(0, Math.min(track.scrollWidth - track.clientWidth, positions.at(-1) ?? 0));
+        warmed = '';
+        if (phase === 'out') begin(end, 800);
+        else if (phase === 'back') begin(0, 1600, 1.2);
+        resume();
+        void play();
       };
       const interrupt = () => {
-        interrupted = true;
+        generation++;
         pause();
-        // El gesto nativo interrumpe el avance. scrollTo aquí fuerza el ajuste a una foto y da un salto.
-        warm(current());
+        phase = 'manual';
+        void warm(current());
+        // No escribir scrollLeft al tocar: conserva el punto exacto para el gesto nativo.
       };
-      ['PointerEvent' in window ? 'pointerdown' : 'touchstart', 'keydown', 'focusin'].forEach((ev) => gallery.addEventListener(ev, interrupt, { passive: true }));
-      // Tras un deslizamiento se preparan los vecinos, sin medir ni decodificar en cada fotograma.
+      const restoreSnap = () => { if (phase === 'manual' && !pointerHeld) track.style.scrollSnapType = ''; };
+      const pointer = 'PointerEvent' in window;
+      gallery.addEventListener(pointer ? 'pointerdown' : 'touchstart', () => { pointerHeld = true; interrupt(); }, { passive: true });
+      [pointer ? 'pointerup' : 'touchend', pointer ? 'pointercancel' : 'touchcancel'].forEach((event) => window.addEventListener(event, () => {
+        if (!pointerHeld) return;
+        pointerHeld = false;
+        restoreSnap();
+      }, { passive: true }));
+      gallery.addEventListener('keydown', interrupt, { passive: true });
+      gallery.addEventListener('keyup', restoreSnap, { passive: true });
+      gallery.addEventListener('focusin', () => { interrupt(); restoreSnap(); }, { passive: true });
       let settled = 0;
       track.addEventListener('scroll', () => {
+        if (moving()) return;
         clearTimeout(settled);
-        settled = window.setTimeout(() => { if (visible) warm(current()); }, 150);
+        settled = window.setTimeout(() => { restoreSnap(); if (visible) void warm(current()); }, 150);
       }, { passive: true });
       track.addEventListener('wheel', (e) => Math.abs(e.deltaX) > Math.abs(e.deltaY) && interrupt(), { passive: true });
-      gallery.addEventListener('pointerenter', (e) => {
-        if (e.pointerType !== 'mouse') return;
-        hovered = true;
-        pause();
-      });
-      gallery.addEventListener('pointerleave', () => { hovered = false; schedule(); });
-      document.addEventListener('visibilitychange', () => { pause(); schedule(); });
-      reduced.addEventListener('change', () => { pause(); schedule(); });
+      const refresh = () => { pause(); resume(); void play(); };
+      document.addEventListener('visibilitychange', refresh);
+      reduced.addEventListener('change', refresh);
       new ResizeObserver(measure).observe(track);
       measure();
       new IntersectionObserver((entries, observer) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;
-        warm(current());
+        void warm(current());
         observer.disconnect();
       }, { rootMargin: '600px 0px' }).observe(gallery);
       new IntersectionObserver(
         ([e]) => {
           visible = e.intersectionRatio >= 0.55;
-          if (e.intersectionRatio < 0.2) interrupted = false;
-          if (visible) { warm(current()); schedule(); }
+          if (e.intersectionRatio < 0.2) {
+            generation++;
+            pause();
+            phase = 'idle';
+            track.style.scrollSnapType = 'none';
+            track.scrollLeft = 0;
+            track.style.scrollSnapType = '';
+          } else if (visible) { resume(); void play(); }
           else pause();
         },
         { threshold: [0, 0.2, 0.55] },
