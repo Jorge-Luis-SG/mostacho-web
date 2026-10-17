@@ -58,6 +58,7 @@ const titleId = `${section.id}-title`;
       let interrupted = false;
       let hovered = false;
       let direction = 1;
+      const decoding = new WeakSet<HTMLImageElement>();
       const pause = () => {
         clearTimeout(timer);
         timer = 0;
@@ -70,7 +71,13 @@ const titleId = `${section.id}-title`;
       };
       const warm = (index: number) => {
         items.slice(Math.max(0, index - 1), index + 2).forEach((item) => {
-          item.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => (img.loading = 'eager'));
+          item.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+            img.loading = 'eager';
+            // Preparar los píxeles antes de la transición, también cuando se navega con el dedo.
+            if (decoding.has(img)) return;
+            decoding.add(img);
+            img.decode().catch(() => {}).finally(() => decoding.delete(img));
+          });
         });
       };
       const schedule = () => {
@@ -100,9 +107,16 @@ const titleId = `${section.id}-title`;
       const interrupt = () => {
         interrupted = true;
         pause();
-        track.scrollTo({ left: track.scrollLeft, behavior: 'auto' });
+        // El gesto nativo interrumpe el avance. scrollTo aquí fuerza el ajuste a una foto y da un salto.
+        warm(current());
       };
-      ['pointerdown', 'touchstart', 'keydown', 'focusin'].forEach((ev) => gallery.addEventListener(ev, interrupt, { passive: true }));
+      ['PointerEvent' in window ? 'pointerdown' : 'touchstart', 'keydown', 'focusin'].forEach((ev) => gallery.addEventListener(ev, interrupt, { passive: true }));
+      // Tras un deslizamiento se preparan los vecinos, sin medir ni decodificar en cada fotograma.
+      let settled = 0;
+      track.addEventListener('scroll', () => {
+        clearTimeout(settled);
+        settled = window.setTimeout(() => { if (visible) warm(current()); }, 150);
+      }, { passive: true });
       track.addEventListener('wheel', (e) => Math.abs(e.deltaX) > Math.abs(e.deltaY) && interrupt(), { passive: true });
       gallery.addEventListener('pointerenter', (e) => {
         if (e.pointerType !== 'mouse') return;
@@ -114,6 +128,11 @@ const titleId = `${section.id}-title`;
       reduced.addEventListener('change', () => { pause(); schedule(); });
       new ResizeObserver(measure).observe(track);
       measure();
+      new IntersectionObserver((entries, observer) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        warm(current());
+        observer.disconnect();
+      }, { rootMargin: '600px 0px' }).observe(gallery);
       new IntersectionObserver(
         ([e]) => {
           visible = e.intersectionRatio >= 0.55;

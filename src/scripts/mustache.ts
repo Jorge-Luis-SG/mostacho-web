@@ -87,8 +87,15 @@ export function mustacheHover(el: HTMLElement, { zone, covered: coveredSel, stay
       mask = null; // sin mapa: cuenta toda la caja del bigote
     }
   };
-  if (img.complete && img.naturalWidth) makeMask();
-  else img.addEventListener('load', makeMask, { once: true });
+  const prepareMask = () => {
+    // drawImage sobre una foto sin decodificar bloquea el hilo principal. Prepararla antes y usar tiempo libre.
+    img.decode().catch(() => {}).then(() => {
+      if ('requestIdleCallback' in window) requestIdleCallback(makeMask, { timeout: 2000 });
+      else setTimeout(makeMask, 0);
+    });
+  };
+  if (img.complete && img.naturalWidth) prepareMask();
+  else img.addEventListener('load', prepareMask, { once: true });
 
   // ¿El punto (x, y) de la pantalla cae sobre el bigote visible, tal como está ahora (quieto, cayendo o abajo)?
   const onMustache = (x: number, y: number) => {

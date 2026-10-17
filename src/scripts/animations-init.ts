@@ -19,7 +19,8 @@ if (document.documentElement.classList.contains('anim') && animated.length) {
   };
   const observer = new IntersectionObserver((entries) => {
     if (entries.some((entry) => entry.isIntersecting)) load();
-  }, { rootMargin: '1000px 0px' });
+  // Anticipar lo que viene por debajo; al volver hacia arriba se activa al entrar en pantalla.
+  }, { rootMargin: '0px 0px 1000px 0px' });
   animated.forEach((section) => observer.observe(section));
 
   const linkedEffect = (hash: string) => {
