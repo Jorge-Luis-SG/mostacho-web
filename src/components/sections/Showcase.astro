@@ -9,7 +9,7 @@ import ContactButton from '../ui/ContactButton.astro';
 import type { ShowcasePop, ShowcaseSection } from '../../lib/types';
 import { fluid } from '../../lib/scale';
 import { lowRes } from '../../lib/images';
-import { popRightInset } from '../../lib/pop-alignment';
+import { popAlignment } from '../../lib/pop-alignment';
 import type { LandingContext } from '../../lib/context';
 
 interface Props {
@@ -22,7 +22,7 @@ const { section, text, ctx } = Astro.props;
 const { ui } = ctx;
 const titleId = `${section.id}-title`;
 const pops = section.slides.some((slide) => slide.pop);
-const popInsets = await Promise.all(section.slides.map((slide) => slide.pop ? popRightInset(ctx.site, slide.pop.image) : 0));
+const popInsets = await Promise.all(section.slides.map((slide) => slide.pop ? popAlignment(ctx.site, slide.pop.image) : undefined));
 // Capas que acompañan al personaje: tinte de color y/o capa oscura sobre la foto, y un resplandor (luz) que puede
 // pasar también sobre el degradado de la izquierda
 const popBg = (pop: ShowcasePop) =>
@@ -50,7 +50,7 @@ const popBg = (pop: ShowcasePop) =>
             <article
               class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg', slide.imageBox && 'slide--box']}
               data-slide={slide.id}
-              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imagePosMobile && `--img-pos-m:${slide.imagePosMobile}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`, popInsets[i] && `--mpop-edge:${popInsets[i]}%`].filter(Boolean).join(';') || undefined}
+              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imagePosMobile && `--img-pos-m:${slide.imagePosMobile}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`, popInsets[i] && `--mpop-edge:${popInsets[i]!.right}%;--mpop-foot:${popInsets[i]!.bottom};--mpop-ratio:${popInsets[i]!.ratio}`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
               <Img site={ctx.site} src={slide.image} alt={inside ? '' : s.alt ?? ''} class="slide__img" sizes="(max-width: 700px) 100vw, 82vw" />
@@ -429,7 +429,10 @@ const popBg = (pop: ShowcasePop) =>
   }
   @media (max-width: 450px) {
     /* El margen transparente desplazado no añade recorrido al final del carrusel. */
-    .slide__mpop { overflow-x: clip; }
+    .slide__mpop {
+      overflow-x: clip;
+      --mpop-prior-top: var(--mpop-top, calc(100cqh - 112cqh * var(--mpop-k, 1)));
+    }
     /* El borde visible del personaje llega a la derecha aunque el PNG tenga margen transparente. */
     .slide .slide__mpop :global(img), .slide .slide__inside :global(img) {
       left: auto;
@@ -437,7 +440,12 @@ const popBg = (pop: ShowcasePop) =>
       translate: var(--mpop-edge, 0%) 0;
     }
     .slide .slide__mpop :global(img) {
-      height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
+      --mpop-height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
+      --mpop-painted-height: min(var(--mpop-height), calc(72cqw * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1) / var(--mpop-ratio, 1)));
+      /* Apoyar el personaje visible abajo. Si ya baja más, conservar ese desplazamiento. */
+      top: auto;
+      bottom: min(calc(100cqh - var(--mpop-prior-top) - var(--mpop-height)), calc(-1 * var(--mpop-foot, 0) * var(--mpop-painted-height)));
+      height: var(--mpop-height);
       max-width: calc(72% * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
     }
     :global(#hora-loca) .slide:is([data-slide='robots-led'], [data-slide='show-mirror'], [data-slide='casa-de-papel'], [data-slide='batucada-led']) .slide__mpop {
@@ -449,8 +457,8 @@ const popBg = (pop: ShowcasePop) =>
       --mpop-shrink: 0.7;
     }
     /* Robots Mirror conserva su tamaño; baja un cuarto de la altura de la diapositiva. */
-    :global(#hora-loca) .slide[data-slide='robots-mirror'] .slide__mpop :global(img) {
-      top: calc(var(--mpop-top, 0cqh) + 25cqh);
+    :global(#hora-loca) .slide[data-slide='robots-mirror'] .slide__mpop {
+      --mpop-prior-top: calc(var(--mpop-top, 0cqh) + 25cqh);
     }
   }
   @media (prefers-reduced-motion: reduce) {
