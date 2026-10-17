@@ -5,7 +5,7 @@
  *
  * - Fotos: convierte HEIC/HEIF a JPG y reduce las enormes a un máximo de 2560 px (sin recortar).
  *   Astro las vuelve a optimizar (AVIF/WebP y varios tamaños) en cada build.
- * - Videos: los pasa a MP4 H.264 listos para la web (sin audio, salvo los que se escuchan al pasar el ratón)
+ * - Videos: los pasa a MP4 H.264 listos para la web, siempre sin audio,
  *   y, si se indica, saca un fotograma como imagen de carga.
  * - Tarjetas: genera la versión desenfocada de cada foto (img/blur/) para el fondo del texto.
  * - Fuentes: convierte Neue Montreal (.otf) a .woff2 en public/fonts/.
