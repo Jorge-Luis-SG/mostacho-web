@@ -9,6 +9,7 @@ import ContactButton from '../ui/ContactButton.astro';
 import type { ShowcasePop, ShowcaseSection } from '../../lib/types';
 import { fluid } from '../../lib/scale';
 import { lowRes } from '../../lib/images';
+import { popRightInset } from '../../lib/pop-alignment';
 import type { LandingContext } from '../../lib/context';
 
 interface Props {
@@ -21,6 +22,7 @@ const { section, text, ctx } = Astro.props;
 const { ui } = ctx;
 const titleId = `${section.id}-title`;
 const pops = section.slides.some((slide) => slide.pop);
+const popInsets = await Promise.all(section.slides.map((slide) => slide.pop ? popRightInset(ctx.site, slide.pop.image) : 0));
 // Capas que acompañan al personaje: tinte de color y/o capa oscura sobre la foto, y un resplandor (luz) que puede
 // pasar también sobre el degradado de la izquierda
 const popBg = (pop: ShowcasePop) =>
@@ -48,7 +50,7 @@ const popBg = (pop: ShowcasePop) =>
             <article
               class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg', slide.imageBox && 'slide--box']}
               data-slide={slide.id}
-              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imagePosMobile && `--img-pos-m:${slide.imagePosMobile}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
+              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imagePosMobile && `--img-pos-m:${slide.imagePosMobile}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`, popInsets[i] && `--mpop-edge:${popInsets[i]}%`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
               <Img site={ctx.site} src={slide.image} alt={inside ? '' : s.alt ?? ''} class="slide__img" sizes="(max-width: 700px) 100vw, 82vw" />
@@ -426,11 +428,11 @@ const popBg = (pop: ShowcasePop) =>
     .slide .slide__title { font-size: calc(var(--size-showcase) + 12px + var(--title-grow, 0px) - 7px); }
   }
   @media (max-width: 450px) {
-    /* Todas las superposiciones se apoyan en el borde derecho, incluidas las capas fijas. */
+    /* El borde visible del personaje llega a la derecha aunque el PNG tenga margen transparente. */
     .slide .slide__mpop :global(img), .slide .slide__inside :global(img) {
       left: auto;
       right: 0;
-      translate: none;
+      translate: var(--mpop-edge, 0%) 0;
     }
     .slide .slide__mpop :global(img) {
       height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
