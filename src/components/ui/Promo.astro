@@ -47,18 +47,29 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
   document.querySelectorAll<HTMLElement>('[data-promo]').forEach((promo) => {
     let last: Element | null = null;
     const close = () => {
+      promo.setAttribute('data-dismissed', '');
       promo.classList.remove('is-open');
       document.documentElement.classList.remove('promo-open');
       setTimeout(() => (promo.hidden = true), 400);
       promo.querySelectorAll('video').forEach((v) => v.pause());
+      document.dispatchEvent(new Event('promo:change'));
       (last as HTMLElement | null)?.focus?.();
       removeEventListener('keydown', onKey);
     };
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close();
+    const prepare = () => {
+      // Adelantar sus imágenes durante la espera de apertura, antes que las fotos lejanas.
+      promo.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+        img.fetchPriority = 'high';
+        img.loading = 'eager';
+      });
+    };
     const open = () => {
       last = document.activeElement;
       promo.hidden = false;
+      promo.removeAttribute('data-dismissed');
       document.documentElement.classList.add('promo-open');
+      document.dispatchEvent(new Event('promo:change'));
       requestAnimationFrame(() => requestAnimationFrame(() => promo.classList.add('is-open')));
       // El foco va a la tarjeta (sin aro visible): Tab lleva a la X y al botón; Esc cierra
       promo.querySelector<HTMLElement>('.promo__card')?.focus({ preventScroll: true });
@@ -66,10 +77,10 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
     };
     promo.querySelectorAll('[data-promo-close]').forEach((el) => el.addEventListener('click', close));
     promo.querySelector('.promo__cta')?.addEventListener('click', close);
-    // Se abre cuando la página ya cargó (no compite con lo que se ve al entrar)
-    const later = () => setTimeout(open, 700);
-    if (document.readyState === 'complete') later();
-    else addEventListener('load', later, { once: true });
+    // El primer contenido ya está listo: no esperar las fotos lejanas para preparar la promoción visible.
+    const later = () => { prepare(); setTimeout(open, 700); };
+    if (document.readyState !== 'loading') later();
+    else addEventListener('DOMContentLoaded', later, { once: true });
   });
 </script>
 

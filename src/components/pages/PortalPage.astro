@@ -27,7 +27,7 @@ const { ui } = t;
   <LangSwitch links={langLinks(lang, routeOf(site))} label={ui.language} class="portal__lang" />
 
   {/* Música de la portada: suena en bucle (el navegador la deja empezar al primer toque o tecla) y se silencia aquí */}
-  <audio src={`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}audio/portada.mp3`} loop preload="auto" data-music></audio>
+  <audio src={`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}audio/portada.mp3`} loop preload="none" data-music></audio>
   <button type="button" class="portal__sound" data-sound-toggle aria-pressed="false" aria-label={ui.soundOff} data-label-on={ui.soundOn} data-label-off={ui.soundOff}>
     <Icon name="sound-on" size={26} class="portal__sound-on" />
     <Icon name="sound-off" size={26} class="portal__sound-off" />

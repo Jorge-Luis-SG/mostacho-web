@@ -262,8 +262,6 @@ const popBg = (pop: ShowcasePop) =>
         warm();
       }, { rootMargin: margin }).observe(zone);
     ahead('100% 0px');
-    if (document.readyState === 'complete') ahead('300% 0px');
-    else addEventListener('load', () => ahead('300% 0px'), { once: true });
 
     if (touch) {
       // Táctil: el personaje entra cuando la mayor parte del carrusel está en pantalla y se va al salir

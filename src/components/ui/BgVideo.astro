@@ -53,6 +53,23 @@ const urlSmall = resolveVideo(site, srcSmall);
     navigator.connection?.saveData === true;
   // Pantallas en vertical o pequeñas: versión ligera (data-src-small) si la hay
   const small = window.matchMedia('(max-width: 900px), (max-aspect-ratio: 1/1)').matches;
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const videos = [...document.querySelectorAll<HTMLVideoElement>('video.bg-video')];
+  const promos = [...document.querySelectorAll<HTMLElement>('[data-promo]')];
+  const visible = new Set<HTMLVideoElement>();
+  const starting = new WeakSet<HTMLVideoElement>();
+  // La foto del inicio permanece visible mientras la promoción está pendiente o abierta.
+  // Su video no compite por la conexión ni reproduce debajo de una ventana que lo tapa.
+  const eligible = (video: HTMLVideoElement) => {
+    if (quiet || document.hidden || (video.hasAttribute('data-desktop-only') && innerWidth < 768)) return false;
+    const promo = video.closest<HTMLElement>('[data-promo]');
+    return promo ? !promo.hidden && !promo.hasAttribute('data-dismissed') : !promos.some((p) => !p.hasAttribute('data-dismissed'));
+  };
+  const wanted = (video: HTMLVideoElement) => eligible(video) && !video.closest('.is-off') && (
+    video.hasAttribute('data-hover')
+      ? finePointer ? hovered === video && !!video.parentElement?.matches(':hover') : active === video
+      : visible.has(video)
+  );
 
   // Si el navegador no deja reproducir solo (ahorro de batería, ajustes de reproducción automática…),
   // se reintenta en cuanto el visitante toca, hace scroll o pulsa una tecla
@@ -61,28 +78,29 @@ const urlSmall = resolveVideo(site, srcSmall);
   ['pointerdown', 'touchstart', 'keydown', 'scroll'].forEach((ev) => window.addEventListener(ev, retry, { passive: true }));
 
   const start = (video: HTMLVideoElement) => {
+    if (!wanted(video) || starting.has(video)) return;
     if (!video.src) video.src = (small && video.dataset.srcSmall) || video.dataset.src!;
-    // Tarjeta apartada en una animación (src/scripts/animations.ts): se carga pero no se reproduce hasta que pase al centro
-    if (video.closest('.is-off')) return;
-    // Video de «pasar el ratón»: solo mientras el cursor siga encima
-    if (video.hasAttribute('data-hover') && !video.parentElement?.matches(':hover')) return;
     // Sin sonido: imprescindible para que el navegador permita reproducirlo solo (los que suenan solo se activan
     // si el navegador ya lo permite; ver soundOn)
     if (!video.hasAttribute('data-sound')) video.muted = true;
+    starting.add(video);
     video
       .play()
       .then(() => {
         blocked.delete(video);
+        if (!wanted(video)) { video.pause(); return; }
         video.classList.add('is-playing');
       })
-      .catch(() => blocked.add(video));
+      .catch(() => { if (wanted(video)) blocked.add(video); })
+      .finally(() => starting.delete(video));
   };
 
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       const video = e.target as HTMLVideoElement;
-      if (e.isIntersecting) start(video);
+      if (e.isIntersecting) { visible.add(video); start(video); }
       else {
+        visible.delete(video);
         blocked.delete(video);
         video.pause();
       }
@@ -91,9 +109,21 @@ const urlSmall = resolveVideo(site, srcSmall);
 
   // Volumen que sube o baja poco a poco (sin golpes de sonido)
   const ramps = new WeakMap<HTMLVideoElement, number>();
-  const fadeVolume = (video: HTMLVideoElement, to: number, ms: number, done?: () => void) => {
+  const fades = new WeakMap<HTMLVideoElement, number>();
+  const cancelFade = (video: HTMLVideoElement) => {
     cancelAnimationFrame(ramps.get(video) ?? 0);
+    clearTimeout(fades.get(video));
+    ramps.delete(video);
+    fades.delete(video);
+  };
+  const fadeVolume = (video: HTMLVideoElement, to: number, ms: number, done?: () => void) => {
+    cancelFade(video);
     const from = video.volume;
+    // Los videos en silencio solo necesitan esperar al fundido CSS, sin ejecutar un RAF por fotograma.
+    if (video.muted || from === to) {
+      if (done) fades.set(video, window.setTimeout(() => { fades.delete(video); done(); }, ms));
+      return;
+    }
     const t0 = performance.now();
     const tick = (now: number) => {
       const k = Math.min(1, (now - t0) / ms);
@@ -120,32 +150,36 @@ const urlSmall = resolveVideo(site, srcSmall);
   ['pointerdown', 'keydown'].forEach((ev) => window.addEventListener(ev, () => hovered && requestAnimationFrame(() => hovered && soundOn(hovered)), { passive: true }));
 
   // Al pasar el ratón por el contenedor (la tarjeta) se reproduce; al salir se funde de vuelta a la foto.
-  // Cuando la tarjeta se acerca a la pantalla solo se pide el comienzo del video; se descarga entero cuando el
-  // ratón entra en el carrusel (antes de llegar a la tarjeta), así empieza al instante sin gastar datos de más.
+  // Cuando la tarjeta se acerca se prepara la cabecera del video después de la carga inicial.
+  // La descarga completa se solicita al entrar en esa tarjeta, sin cargar los otros videos del carrusel.
   // Sin ratón (pantallas táctiles), ver tapVideo.
+  const nearby = new Set<HTMLVideoElement>();
+  const prime = (video: HTMLVideoElement) => {
+    if (document.readyState !== 'complete' || !eligible(video)) return;
+    near.unobserve(video);
+    nearby.delete(video);
+    if (!video.src) {
+      video.preload = 'metadata';
+      video.src = (small && video.dataset.srcSmall) || video.dataset.src!;
+    }
+  };
   const near = new IntersectionObserver((entries) => {
     for (const e of entries) {
-      if (!e.isIntersecting) continue;
       const video = e.target as HTMLVideoElement;
-      near.unobserve(video);
-      video.preload = 'metadata';
-      if (!video.src) video.src = video.dataset.src!;
+      if (!e.isIntersecting) { nearby.delete(video); continue; }
+      nearby.add(video);
+      prime(video);
     }
   }, { rootMargin: '400px' });
-  const warmUp = (area: Element) => area.querySelectorAll<HTMLVideoElement>('video[data-hover]').forEach((v) => {
-    if (!v.src) v.src = v.dataset.src!;
-    v.preload = 'auto';
-  });
   const hoverVideo = (video: HTMLVideoElement) => {
     const zone = video.parentElement;
     if (!zone) return;
     near.observe(video);
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return tapVideo(video, zone);
-    const area = zone.closest('[data-carousel]') ?? zone;
-    area.addEventListener('pointerenter', () => warmUp(area), { once: true });
+    if (!finePointer) return tapVideo(video, zone);
     zone.addEventListener('pointerenter', () => {
       hovered = video;
-      cancelAnimationFrame(ramps.get(video) ?? 0); // si se estaba yendo, se queda
+      cancelFade(video); // si se estaba yendo, se queda
+      video.preload = 'auto';
       start(video);
       soundOn(video);
     });
@@ -184,13 +218,13 @@ const urlSmall = resolveVideo(site, srcSmall);
       active = video;
       if (!video.src) video.src = video.dataset.src!;
       video.preload = 'auto';
-      cancelAnimationFrame(ramps.get(video) ?? 0);
+      cancelFade(video);
       // play() va dentro del toque: así el navegador deja que suene
       const sound = video.hasAttribute('data-sound');
       video.muted = !sound;
       video.volume = 0;
       const shown = () => {
-        if (active !== video) return;
+        if (!wanted(video)) { video.pause(); return; }
         video.classList.add('is-playing');
         if (sound && !video.muted) fadeVolume(video, 1, 2200);
       };
@@ -206,17 +240,33 @@ const urlSmall = resolveVideo(site, srcSmall);
   // para no competir con las fotos y el texto (el del inicio, en cuanto carga la página).
   // Los de las tarjetas responden al ratón o al dedo desde el primer momento (solo su descarga espera a acercarse)
   const init = () => {
+    nearby.forEach(prime);
     document.querySelectorAll<HTMLVideoElement>('video.bg-video:not([data-hover])').forEach((video) => {
-      if (video.hasAttribute('data-desktop-only') && window.innerWidth < 768) return;
-      io.observe(video);
+      if (!video.closest('[data-promo]')) io.observe(video);
     });
   };
+  // El video de la ventana visible sí es prioritario; el fondo de la página espera a la carga inicial.
+  if (!quiet) promos.forEach((promo) => promo.querySelectorAll<HTMLVideoElement>('video.bg-video').forEach((video) => io.observe(video)));
   if (!quiet) document.querySelectorAll<HTMLVideoElement>('video.bg-video[data-hover]').forEach(hoverVideo);
   const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(init, { timeout: 800 }) : setTimeout(init, 200));
   if (!quiet) {
     if (document.readyState === 'complete') whenIdle();
     else window.addEventListener('load', whenIdle, { once: true });
   }
+  const refresh = () => {
+    nearby.forEach(prime);
+    videos.forEach((video) => {
+      if (wanted(video)) start(video);
+      else {
+        blocked.delete(video);
+        if (document.hidden) cancelFade(video);
+        video.pause();
+      }
+    });
+  };
+  document.addEventListener('visibilitychange', refresh);
+  document.addEventListener('promo:change', refresh);
+  matchMedia('(min-width: 768px)').addEventListener('change', refresh);
 </script>
 
 <style>

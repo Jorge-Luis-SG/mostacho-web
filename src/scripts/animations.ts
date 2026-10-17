@@ -85,9 +85,6 @@ if (html.classList.contains('anim')) {
 }
 
 function start() {
-  // Al pasar a móvil (o al revés) se recarga: así la página queda exactamente como debe en cada caso
-  matchMedia('(min-height: 500px) and (prefers-reduced-motion: no-preference)').addEventListener('change', () => location.reload());
-
   // Alto de pantalla estable: el de la pantalla con la barra de direcciones visible (100svh), así en el móvil
   // no cambia nada cuando esa barra aparece o desaparece al hacer scroll
   const probe = make('div', 'anim-probe');
