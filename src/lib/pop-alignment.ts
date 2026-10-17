@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 import { getConfig } from './sites';
@@ -6,7 +6,7 @@ import { getConfig } from './sites';
 // Se calcula al generar el HTML, una sola vez por archivo. No modifica los PNG.
 interface PopAlignment { right: number; top: number; bottom: number; ratio: number }
 const empty: PopAlignment = { right: 0, top: 0, bottom: 0, ratio: 1 };
-const insets = new Map<string, Promise<PopAlignment>>();
+const insets = new Map<string, { version: string; value: Promise<PopAlignment> }>();
 
 /** Márgenes transparentes: derecha en porcentaje de ancho, abajo como fracción del alto. */
 export function popAlignment(site: string, file: string): Promise<PopAlignment> {
@@ -17,12 +17,15 @@ export function popAlignment(site: string, file: string): Promise<PopAlignment> 
     visited.add(owner);
     const path = resolve('src/sites', owner, 'img', file);
     if (existsSync(path)) {
+      // El servidor local sigue abierto al reemplazar assets: no conservar medidas del PNG anterior.
+      const { mtimeMs, size } = statSync(path);
+      const version = `${mtimeMs}:${size}`;
       let inset = insets.get(path);
-      if (!inset) {
-        inset = measure(path);
+      if (!inset || inset.version !== version) {
+        inset = { version, value: measure(path) };
         insets.set(path, inset);
       }
-      return inset;
+      return inset.value;
     }
     owner = getConfig(owner).assetsFrom;
   }
