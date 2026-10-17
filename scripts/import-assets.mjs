@@ -40,7 +40,7 @@ const images = {
   'hora-loca-robots-led.jpg': '../show-robots-led-slider.png',
   'hora-loca-show-mirror.jpg': 'HORA LOCA/MIRROR(4).jpg',
   'hora-loca-funky-animals.jpg': 'HORA LOCA/FUNKY ANIMALS(2).png',
-  'hora-loca-arlequines.jpg': '../assets new/hora loca/arlequines-show.heic',
+  'hora-loca-arlequines.jpg': 'HORA LOCA/ARLEQUINES(2).jpg',
   'hora-loca-monster-glitter.jpg': 'HORA LOCA/GLITTER AND MIRROR.jpg',
   'hora-loca-galacticos.jpg': 'HORA LOCA/GALACTICOS.jpg',
   'hora-loca-white-wings.jpg': 'HORA LOCA/WHITE WINGS(1).jpg',
