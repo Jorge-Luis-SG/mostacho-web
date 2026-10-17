@@ -81,12 +81,18 @@ const images = {
   'recibe-personajes-golden.png': '../personajes-golden-slider.png', // con transparencia: se funde con el fondo radial
   'recibe-personajes-silver.png': '../personajes-silver-slider.png', // con transparencia: se funde con el fondo radial
   'recibe-afrodita.png': '../afrodita-slider.png', // con transparencia: se funde con el fondo
-  'recibe-arlequines.jpg': 'RECIBIMIENTO DE INVITADOS/ARLQUINES.jpg',
-  'recibe-black-and-white.jpg': 'RECIBIMIENTO DE INVITADOS/BLACK AND WHITE.jpg',
-  'recibe-combinados.jpg': 'RECIBIMIENTO DE INVITADOS/COMBINADOS(1).jpg',
+  'recibe-arlequines.jpg': '../assets new/recibe tus invitados/ARLEQUINES.jpg',
+  'recibe-black-and-white.jpg': '../assets new/recibe tus invitados/BLACK AND WHITE.jpg',
+  'recibe-arlequines-pop.png': '../assets new/recibe tus invitados/Arlequines Venecianos.png',
+  'recibe-black-and-white-pop.png': '../assets new/recibe tus invitados/Black and Withe.png',
+  'recibe-epoca.jpg': '../assets new/recibe tus invitados/epoca 6.png',
+  'recibe-epoca-pop.png': '../assets new/recibe tus invitados/Epoca.png',
+  'recibe-isis-pop.png': '../assets new/recibe tus invitados/Isis Girls.png',
+  'recibe-mimos-pop.png': '../assets new/recibe tus invitados/Mimos.png',
+  'recibe-combinados.jpg': '../assets new/recibe tus invitados/COMBINADOS.JPG',
   'recibe-elementos.jpg': 'RECIBIMIENTO DE INVITADOS/ELEMENTOS.jpg',
-  'recibe-isis.jpg': 'RECIBIMIENTO DE INVITADOS/ISIS.jpg',
-  'recibe-mimos.jpg': 'RECIBIMIENTO DE INVITADOS/MIMOS.heif',
+  'recibe-isis.jpg': '../assets new/recibe tus invitados/ISIS.PNG',
+  'recibe-mimos.jpg': '../assets new/recibe tus invitados/MIMOS.jpg',
 
   'efecto-bazooka.jpg': 'EFECTOS ESPECIALES/BAZOOKA CO2(1).jpg', // novios con bazookas (la de BAZOOKA CO2.jpg es la quinceañera)
   'efecto-fuegos-artificiales.jpg': 'EFECTOS ESPECIALES/FUEGOS ARTIFICIALES.jpg',

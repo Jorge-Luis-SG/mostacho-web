@@ -207,8 +207,8 @@
           "alt": "Aphrodite characters posing with guests"
         },
         "arlequines": {
-          "title": "Harlequins",
-          "alt": "Golden harlequin welcoming a guest"
+          "title": "Venetian\nharlequins",
+          "alt": "Harlequins in golden costumes and hats welcoming guests"
         },
         "black-and-white": {
           "title": "Black\nand white",
@@ -216,19 +216,23 @@
         },
         "combinados": {
           "title": "Combined\ncharacters",
-          "alt": "Mimes and golden rose characters"
+          "alt": "Golden rose characters, silver characters and winged dancers welcoming guests"
         },
         "elementos": {
           "title": "Elements",
           "alt": "Nature elements characters"
         },
         "isis": {
-          "title": "Isis",
-          "alt": "Dancer with white wings"
+          "title": "Isis\ngirls",
+          "alt": "Dancer in a mirrored costume with silver wings"
         },
         "mimos": {
           "title": "Mimes",
-          "alt": "Mimes welcoming the guests"
+          "alt": "Mimes in red and black striped costumes welcoming guests"
+        },
+        "epoca": {
+          "title": "Period\ncharacters",
+          "alt": "Couple in period costumes with Venetian masks"
         }
       }
     },

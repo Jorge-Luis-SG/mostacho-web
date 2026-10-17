@@ -207,8 +207,8 @@
           "alt": "Personajes de Afrodita posando con invitados"
         },
         "arlequines": {
-          "title": "Arlequines",
-          "alt": "Arlequín dorado recibiendo a una invitada"
+          "title": "Arlequines\nvenecianos",
+          "alt": "Arlequines con trajes y sombreros dorados recibiendo a los invitados"
         },
         "black-and-white": {
           "title": "Black\nand white",
@@ -216,19 +216,23 @@
         },
         "combinados": {
           "title": "Combinados",
-          "alt": "Mimos y personajes de rosas doradas"
+          "alt": "Rosas doradas, personajes plateados y bailarinas con alas recibiendo a los invitados"
         },
         "elementos": {
           "title": "Elementos",
           "alt": "Personajes de los elementos de la naturaleza"
         },
         "isis": {
-          "title": "Isis",
-          "alt": "Bailarina con alas blancas"
+          "title": "Isis\ngirls",
+          "alt": "Bailarina con traje de espejos y alas plateadas"
         },
         "mimos": {
           "title": "Mimos",
-          "alt": "Mimos recibiendo a los invitados"
+          "alt": "Mimos con trajes de rayas rojas y negras recibiendo a los invitados"
+        },
+        "epoca": {
+          "title": "Personajes\nde época",
+          "alt": "Pareja con vestuario de época y máscaras venecianas"
         }
       }
     },

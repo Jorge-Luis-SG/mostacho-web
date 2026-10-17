@@ -360,6 +360,99 @@
           "accent": "#640000",
           "glow": "rgba(210, 0, 0, 0.95)",
           "glowAt": "5% 20%"
+        },
+        {
+          "id": "arlequines",
+          "image": "recibe-arlequines.jpg",
+          "imagePos": "50% 38%",
+          "imagePosMobile": "50% 38%",
+          "accent": "#210D00",
+          "pop": {
+            "image": "recibe-arlequines-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(255, 175, 40, 0.2)",
+            "glow": "rgba(255, 175, 40, 0.65)",
+            "glowAt": "76% 32%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "black-and-white",
+          "image": "recibe-black-and-white.jpg",
+          "imagePos": "50% 42%",
+          "imagePosMobile": "50% 42%",
+          "accent": "#0A0A0A",
+          "pop": {
+            "image": "recibe-black-and-white-pop.png",
+            "left": 54,
+            "width": 42,
+            "top": -14,
+            "tint": "rgba(255, 255, 255, 0.12)",
+            "glow": "rgba(235, 235, 235, 0.5)",
+            "glowAt": "76% 30%",
+            "glowSize": "32% 70%"
+          }
+        },
+        {
+          "id": "combinados",
+          "image": "recibe-combinados.jpg",
+          "imageMaxWidth": 1280,
+          "imagePos": "50% 45%",
+          "imagePosMobile": "50% 45%",
+          "accent": "#201407"
+        },
+        {
+          "id": "epoca",
+          "image": "recibe-epoca.jpg",
+          "imagePos": "50% 30%",
+          "imagePosMobile": "50% 30%",
+          "accent": "#29180F",
+          "pop": {
+            "image": "recibe-epoca-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(230, 175, 135, 0.18)",
+            "glow": "rgba(255, 215, 190, 0.6)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "isis",
+          "image": "recibe-isis.jpg",
+          "imagePos": "50% 34%",
+          "imagePosMobile": "50% 34%",
+          "accent": "#15191E",
+          "pop": {
+            "image": "recibe-isis-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(210, 225, 255, 0.15)",
+            "glow": "rgba(235, 245, 255, 0.6)",
+            "glowAt": "76% 28%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "mimos",
+          "image": "recibe-mimos.jpg",
+          "imagePos": "50% 45%",
+          "imagePosMobile": "50% 45%",
+          "accent": "#320000",
+          "pop": {
+            "image": "recibe-mimos-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(235, 20, 50, 0.18)",
+            "glow": "rgba(240, 30, 50, 0.65)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
         }
       ]
     },
