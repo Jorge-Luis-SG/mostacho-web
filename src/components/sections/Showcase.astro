@@ -426,12 +426,23 @@ const popBg = (pop: ShowcasePop) =>
     .slide .slide__title { font-size: calc(var(--size-showcase) + 12px + var(--title-grow, 0px) - 7px); }
   }
   @media (max-width: 450px) {
-    /* Reducir solo estos personajes y mantenerlos pegados al borde derecho. */
-    :global(#hora-loca) .slide:is([data-slide='robots-led'], [data-slide='show-mirror'], [data-slide='casa-de-papel'], [data-slide='batucada-led']) .slide__mpop :global(img),
-    :global(#recibe) .slide:is([data-slide='epoca'], [data-slide='arlequines']) .slide__mpop :global(img) {
+    /* Todas las superposiciones se apoyan en el borde derecho, incluidas las capas fijas. */
+    .slide .slide__mpop :global(img), .slide .slide__inside :global(img) {
+      left: auto;
       right: 0;
-      height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1) * 0.75);
-      max-width: calc(72% * var(--mpop-k, 1) * var(--mpop-grow, 1) * 0.75);
+      translate: none;
+    }
+    .slide .slide__mpop :global(img) {
+      height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
+      max-width: calc(72% * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
+    }
+    :global(#hora-loca) .slide:is([data-slide='robots-led'], [data-slide='show-mirror'], [data-slide='casa-de-papel'], [data-slide='batucada-led']) .slide__mpop {
+      --mpop-shrink: 0.75;
+    }
+    :global(#hora-loca) .slide:is([data-slide='alicia'], [data-slide='artistas'], [data-slide='charleston'], [data-slide='futbolista'], [data-slide='la-mascara'], [data-slide='neon'], [data-slide='rabbit-girls']) .slide__mpop,
+    :global(#recibe) .slide:is([data-slide='rosas-doradas'], [data-slide='afrodita'], [data-slide='arlequines'], [data-slide='black-and-white'], [data-slide='epoca']) .slide__mpop,
+    :global(#infantiles) .slide[data-slide='world-tour'] .slide__mpop {
+      --mpop-shrink: 0.7;
     }
     /* Robots Mirror conserva su tamaño; baja un cuarto de la altura de la diapositiva. */
     :global(#hora-loca) .slide[data-slide='robots-mirror'] .slide__mpop :global(img) {
@@ -594,6 +605,30 @@ const popBg = (pop: ShowcasePop) =>
   .slide__title-img { width: min(100%, calc(26.04 * var(--u))); }
   .slide__title-img :global(img), .slide__title-img :global(.img-missing) { width: 100%; height: auto; }
   .slide__title-img :global(.img-missing) { aspect-ratio: 497 / 315; }
+
+  @media (max-width: 700px) {
+    /* K-pop: logo compacto arriba a la izquierda, personajes a la derecha y botón con espacio propio. */
+    :global(#infantiles) .slide[data-slide='kpop'] .slide__content {
+      position: absolute;
+      inset: 3.2rem var(--carousel-dots-left) 5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.2rem;
+      max-width: none;
+    }
+    :global(#infantiles) .slide[data-slide='kpop'] .slide__kicker { margin-bottom: 0; font-size: 2.4rem; }
+    :global(#infantiles) .slide[data-slide='kpop'] .slide__title-img { width: min(38vw, 16rem); }
+    :global(#infantiles) .slide[data-slide='kpop'] .slide__content > :global(a) { margin-top: auto; }
+    :global(#infantiles) .slide[data-slide='kpop'] .slide__mpop :global(img) {
+      top: auto;
+      bottom: 0;
+      right: 0;
+      width: min(70%, 42rem);
+      max-width: none;
+      height: auto;
+    }
+  }
 
   @media (max-width: 700px) {
     .slide { padding-bottom: 8rem; }
