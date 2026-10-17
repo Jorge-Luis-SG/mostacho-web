@@ -792,8 +792,8 @@
           "accent": "#00202e",
           "glow": "rgba(0, 150, 50, 0.9)",
           "glowAt": "30% 10%",
-          "imagePos": "50% 82%",
-          "imagePosMobile": "55% 75%"
+          "imagePos": "50% 65%",
+          "imagePosMobile": "55% 60%"
         }
       ]
     },
