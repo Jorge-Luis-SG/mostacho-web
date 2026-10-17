@@ -240,6 +240,142 @@
           "glow": "rgba(120, 110, 110, 0.5)",
           "glowAt": "40% 40%",
           "titleGrow": 20
+        },
+        {
+          "id": "alicia",
+          "image": "hora-loca-alicia.jpg",
+          "imagePos": "50% 28%",
+          "imagePosMobile": "50% 28%",
+          "accent": "#201027",
+          "pop": {
+            "image": "hora-loca-alicia-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(150, 65, 190, 0.2)",
+            "glow": "rgba(220, 80, 150, 0.6)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "artistas",
+          "image": "hora-loca-artistas.jpg",
+          "imagePos": "50% 45%",
+          "imagePosMobile": "50% 45%",
+          "accent": "#24000A",
+          "pop": {
+            "image": "hora-loca-artistas-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(230, 30, 60, 0.18)",
+            "glow": "rgba(255, 45, 65, 0.65)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "batucada-led",
+          "image": "hora-loca-batucada-led.jpg",
+          "imagePos": "50% 45%",
+          "imagePosMobile": "50% 45%",
+          "accent": "#061A19",
+          "pop": {
+            "image": "hora-loca-batucada-led-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(20, 200, 165, 0.18)",
+            "glow": "rgba(30, 255, 190, 0.6)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "charleston",
+          "image": "hora-loca-charleston.jpg",
+          "imagePos": "50% 40%",
+          "imagePosMobile": "50% 40%",
+          "accent": "#231309",
+          "pop": {
+            "image": "hora-loca-charleston-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(240, 180, 110, 0.16)",
+            "glow": "rgba(255, 195, 135, 0.55)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "futbolista",
+          "image": "hora-loca-futbolista.jpg",
+          "imagePos": "50% 45%",
+          "imagePosMobile": "50% 45%",
+          "accent": "#24090D",
+          "pop": {
+            "image": "hora-loca-futbolista-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(190, 35, 60, 0.18)",
+            "glow": "rgba(225, 55, 70, 0.6)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "la-mascara",
+          "image": "hora-loca-la-mascara.jpg",
+          "imagePos": "50% 35%",
+          "imagePosMobile": "50% 35%",
+          "accent": "#211800",
+          "pop": {
+            "image": "hora-loca-la-mascara-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(240, 185, 0, 0.18)",
+            "glow": "rgba(255, 205, 30, 0.65)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "neon",
+          "image": "hora-loca-neon.jpg",
+          "imagePos": "50% 35%",
+          "imagePosMobile": "50% 35%",
+          "accent": "#031909",
+          "pop": {
+            "image": "hora-loca-neon-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(30, 210, 80, 0.2)",
+            "glow": "rgba(70, 255, 50, 0.65)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "rabbit-girls",
+          "image": "hora-loca-rabbit-girls.jpg",
+          "imagePos": "50% 35%",
+          "imagePosMobile": "50% 35%",
+          "accent": "#2B0026",
+          "pop": {
+            "image": "hora-loca-rabbit-girls-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(225, 30, 175, 0.18)",
+            "glow": "rgba(255, 45, 200, 0.65)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
         }
       ]
     },
