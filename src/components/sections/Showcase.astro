@@ -428,6 +428,8 @@ const popBg = (pop: ShowcasePop) =>
     .slide .slide__title { font-size: calc(var(--size-showcase) + 12px + var(--title-grow, 0px) - 7px); }
   }
   @media (max-width: 450px) {
+    /* El margen transparente desplazado no añade recorrido al final del carrusel. */
+    .slide__mpop { overflow-x: clip; }
     /* El borde visible del personaje llega a la derecha aunque el PNG tenga margen transparente. */
     .slide .slide__mpop :global(img), .slide .slide__inside :global(img) {
       left: auto;
