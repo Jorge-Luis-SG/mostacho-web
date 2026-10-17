@@ -350,27 +350,6 @@ const popBg = (pop: ShowcasePop) =>
       translate: none;
     }
   }
-  /* 450 px o menos: la diapositiva es más alta; el personaje va arriba, centrado, y el texto y el botón debajo,
-     así la letra nunca lo tapa */
-  @media (max-width: 450px) {
-    .showcase__slides { --slide-h: min(158vw, 62rem); --pop-room: 0px; }
-    .slide .slide__title-img { width: min(100%, 16rem); }
-    .showcase__slides .slide { padding-bottom: 6rem; }
-    .slide .slide__mpop :global(img), .slide .slide__inside :global(img) {
-      top: 1cqh !important;
-      height: 50cqh !important;
-      max-width: 96% !important;
-      left: 50% !important;
-      right: auto !important;
-      translate: -50% 0 !important;
-      object-position: 50% 100%;
-    }
-    /* Sombra suave bajo el texto para que se lea sobre la foto */
-    .slide__content { text-shadow: 0 0.2rem 1.6rem rgb(0 0 0 / 0.7); }
-  }
-  @media (max-width: 360px) {
-    .slide .slide__mpop :global(img), .slide .slide__inside :global(img) { height: 44cqh !important; }
-  }
   /* 500 px o menos: títulos de las diapositivas 7 px más pequeños */
   @media (max-width: 500px) {
     .slide .slide__title { font-size: calc(var(--size-showcase) + 12px + var(--title-grow, 0px) - 7px); }
