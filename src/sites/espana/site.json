@@ -171,18 +171,20 @@
         },
         {
           "id": "batucada-led",
-          "image": "hora-loca-batucada-led-espana.png",
-          "imagePos": "0% 6%",
-          "imagePosMobile": "60% 4%",
-          "imageMaxWidth": 760,
+          "image": "hora-loca-batucada-led.jpg",
+          "imagePos": "50% 45%",
+          "imagePosMobile": "50% 45%",
+          "accent": "#061A19",
           "pop": {
-            "image": "hora-loca-batucada-led-espana-pop.png",
-            "left": 40,
-            "width": 67,
-            "top": -7
-          },
-          "accent": "#0B0614",
-          "bg": "radial-gradient(ellipse 55% 75% at 28% 50%, #5B2A86 0%, #0B0614 100%)"
+            "image": "hora-loca-batucada-led-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(20, 200, 165, 0.18)",
+            "glow": "rgba(30, 255, 190, 0.6)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
         }
       ]
     },

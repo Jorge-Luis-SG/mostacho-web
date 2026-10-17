@@ -4,6 +4,7 @@
  *   npm run validate
  *
  * ERRORES (detienen el build):
+ *   - Una diapositiva compartida con assetsFrom usa otro fondo o personaje.
  *   - Falta un archivo (site.json, theme.json, i18n/<idioma>.json).
  *   - Los idiomas de un sitio no tienen exactamente las mismas claves.
  *   - Una sección, tarjeta o diapositiva de site.json no tiene su texto.
@@ -128,6 +129,7 @@ for (const site of sites) {
     if (/^https?:\/\/(www\.)?[a-z]+\.com\/?$/.test(url)) warn(site, `site.json: social.${network} apunta a la portada genérica (${url})`);
   }
 
+  const sharedConfig = config.assetsFrom ? readJson(path.join(sitesDir, config.assetsFrom, 'site.json')) : undefined;
   const ids = new Set();
   for (const s of config.sections ?? []) {
     if (ids.has(s.id)) err(site, `site.json: id de sección repetido "${s.id}"`);
@@ -188,6 +190,12 @@ for (const site of sites) {
       checkImage(site, slide.image);
       checkImage(site, slide.titleImage);
       checkImage(site, slide.pop?.image);
+      // Mismo servicio en la misma sección: comparte fondo y personaje con el sitio de origen.
+      const sharedSlide = sharedConfig?.sections?.find((section) => section.type === 'showcase' && section.id === s.id)
+        ?.slides.find((item) => item.id === slide.id);
+      if (sharedSlide && (slide.image !== sharedSlide.image || slide.pop?.image !== sharedSlide.pop?.image)) {
+        err(site, `${s.id}/${slide.id}: el fondo y la imagen superpuesta deben coincidir con ${config.assetsFrom}`);
+      }
     }
   }
 
