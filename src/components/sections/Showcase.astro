@@ -37,7 +37,7 @@ const popBg = (pop: ShowcasePop) =>
     <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
   </div>
   <div class="showcase__slides" style={[section.space?.inner !== undefined && `margin-top: ${fluid(section.space.inner)}`, section.popGrow && `--pop-grow:${section.popGrow}px`].filter(Boolean).join(';') || undefined}>
-    <Carousel label={text.title} variant="showcase" dots="overlay" arrows="edge" ui={ui.carousel} loop={section.loop}>
+    <Carousel label={text.title} variant="showcase" dots="overlay" arrows={section.id === 'hora-loca' || section.id === 'recibe' ? 'edge-both' : 'edge'} ui={ui.carousel} loop={section.loop}>
       {
         section.slides.map((slide, i) => {
           const s = text.slides[slide.id];

@@ -9,13 +9,14 @@ interface Props {
   label: string;
   variant: 'cards' | 'showcase' | 'gallery' | 'testimonials';
   dots?: 'top' | 'overlay' | 'none';
-  arrows?: 'sides' | 'edge' | 'none';
+  arrows?: 'sides' | 'edge' | 'edge-both' | 'none';
   ui: { prev: string; next: string; page: string };
   /** Sin fin: tras la última página, la flecha vuelve a la primera (y desde la primera, la de atrás va a la última). */
   loop?: boolean;
 }
 
 const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = Astro.props;
+const edge = arrows === 'edge' || arrows === 'edge-both';
 ---
 
 <div
@@ -30,9 +31,9 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
   {dots === 'top' && <div class="carousel__dots carousel__dots--top" data-dots />}
   <div class="carousel__viewport">
     {
-      arrows === 'sides' && (
-        <button type="button" class="carousel__arrow carousel__arrow--prev" data-prev aria-label={ui.prev}>
-          <Icon name="arrow-left" size={28} />
+      (arrows === 'sides' || arrows === 'edge-both') && (
+        <button type="button" class:list={['carousel__arrow', 'carousel__arrow--prev', edge && 'carousel__arrow--edge']} data-prev aria-label={ui.prev}>
+          <Icon name={edge ? 'chevron-left' : 'arrow-left'} size={edge ? 40 : 28} />
         </button>
       )
     }
@@ -43,11 +44,11 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
       arrows !== 'none' && (
         <button
           type="button"
-          class:list={['carousel__arrow', 'carousel__arrow--next', arrows === 'edge' && 'carousel__arrow--edge']}
+          class:list={['carousel__arrow', 'carousel__arrow--next', edge && 'carousel__arrow--edge']}
           data-next
           aria-label={ui.next}
         >
-          <Icon name={arrows === 'edge' ? 'chevron-right' : 'arrow-right'} size={arrows === 'edge' ? 40 : 28} />
+          <Icon name={edge ? 'chevron-right' : 'arrow-right'} size={edge ? 40 : 28} />
         </button>
       )
     }
@@ -229,6 +230,7 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
     background: transparent;
   }
   .carousel__arrow--edge:hover { background: rgb(255 255 255 / 0.08); }
+  .carousel__arrow--prev.carousel__arrow--edge { left: 0; right: auto; }
   /* En el móvil la flecha del borde es solo un botón pequeño: el resto del borde sirve para deslizar con el dedo */
   @media (max-width: 700px) {
     .carousel__arrow--edge { width: 4.4rem; height: 4.4rem; top: 50%; transform: translateY(-50%); }
