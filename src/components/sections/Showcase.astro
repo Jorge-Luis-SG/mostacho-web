@@ -23,6 +23,10 @@ const { ui } = ctx;
 const titleId = `${section.id}-title`;
 const pops = section.slides.some((slide) => slide.pop);
 const popInsets = await Promise.all(section.slides.map((slide) => slide.pop ? popAlignment(ctx.site, slide.pop.image) : undefined));
+const cutoutStyle = (index: number) => {
+  const inset = popInsets[index];
+  return inset ? `--mpop-edge:${inset.right}%;--mpop-foot:${inset.bottom};--mpop-ratio:${inset.ratio}` : undefined;
+};
 // Capas que acompañan al personaje: tinte de color y/o capa oscura sobre la foto, y un resplandor (luz) que puede
 // pasar también sobre el degradado de la izquierda
 const popBg = (pop: ShowcasePop) =>
@@ -50,7 +54,7 @@ const popBg = (pop: ShowcasePop) =>
             <article
               class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg', slide.imageBox && 'slide--box']}
               data-slide={slide.id}
-              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imagePosMobile && `--img-pos-m:${slide.imagePosMobile}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`, popInsets[i] && `--mpop-edge:${popInsets[i]!.right}%;--mpop-foot:${popInsets[i]!.bottom};--mpop-ratio:${popInsets[i]!.ratio}`].filter(Boolean).join(';') || undefined}
+              style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imagePosMobile && `--img-pos-m:${slide.imagePosMobile}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`, cutoutStyle(i)].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
               <Img site={ctx.site} src={slide.image} alt={inside ? '' : s.alt ?? ''} class="slide__img" sizes="(max-width: 700px) 100vw, 82vw" />
@@ -101,7 +105,7 @@ const popBg = (pop: ShowcasePop) =>
           <div class="showcase__strip" data-strip>
             {section.slides.map((slide, i) =>
               slide.pop ? (
-                <div class:list={['showcase__pop', slide.inside && 'showcase__pop--still']} style={`left:${i * 100}%;--pop-cx:${(slide.pop.left ?? 50) + (slide.pop.width ?? 40) / 2};--pop-width:${slide.pop.width ?? 40};--pop-top:${slide.pop.top ?? -12}`}>
+                <div class:list={['showcase__pop', slide.inside && 'showcase__pop--still']} style={`left:${i * 100}%;--pop-cx:${(slide.pop.left ?? 50) + (slide.pop.width ?? 40) / 2};--pop-width:${slide.pop.width ?? 40};--pop-top:${slide.pop.top ?? -12};${cutoutStyle(i) ?? ''}`}>
                   <Img site={ctx.site} src={slide.pop.image} alt="" sizes="(max-width: 1400px) 60vw, 1100px" maxWidth={1600} optional />
                 </div>
               ) : (
@@ -361,7 +365,6 @@ const popBg = (pop: ShowcasePop) =>
     /* Medidas del diseño (diapositiva de 1842 × 853): el tamaño va con el ALTO de la diapositiva (así no se
        agranda en pantallas panorámicas) y el centro, con su ANCHO (como la foto de fondo) */
     left: calc(var(--pop-cx) * 1%);
-    top: calc(var(--pop-top) * 1cqh);
     width: calc(var(--pop-width) * 2.1594cqh + var(--pop-grow, 0px));
     translate: -50% 0;
     max-width: none;
@@ -389,6 +392,7 @@ const popBg = (pop: ShowcasePop) =>
       inset: 0;
       z-index: -1;
       container-type: size;
+      --mpop-prior-top: var(--mpop-top, calc(100cqh - 112cqh * var(--mpop-k, 1)));
       pointer-events: none;
       opacity: 0;
       transform: translate(26%, 20%) rotate(5deg);
@@ -409,15 +413,19 @@ const popBg = (pop: ShowcasePop) =>
     :global(#infantiles) .slide__mpop { --mpop-top: -8cqh; }
     .slide__mpop--still, .slide:global(.is-pop) .slide__mpop--still { transform: none; transition: opacity 0.5s ease; }
     .slide__mpop :global(img), .slide__inside :global(img) {
+      --mpop-height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
+      --mpop-painted-height: min(var(--mpop-height), calc(72cqw * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1) / var(--mpop-ratio, 1)));
       position: absolute;
       left: auto;
       /* Apoyado en el borde de abajo (no se esconde) y asomando por arriba; cada diapositiva puede agrandarlo
          (pop.mobileScale) o separarlo del borde derecho (pop.mobileRight) */
       right: var(--mpop-right, 0px);
-      top: var(--mpop-top, calc(100cqh - 112cqh * var(--mpop-k, 1)));
+      /* Los pies llegan al borde inferior; un desplazamiento previo más bajo se conserva. */
+      top: auto;
+      bottom: min(calc(100cqh - var(--mpop-prior-top) - var(--mpop-height)), calc(-1 * var(--mpop-foot, 0) * var(--mpop-painted-height)));
       width: auto;
-      height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1));
-      max-width: calc(72% * var(--mpop-k, 1) * var(--mpop-grow, 1));
+      height: var(--mpop-height);
+      max-width: calc(72% * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
       object-fit: contain;
       object-position: 100% 100%;
       translate: none;
@@ -429,24 +437,12 @@ const popBg = (pop: ShowcasePop) =>
   }
   @media (max-width: 450px) {
     /* El margen transparente desplazado no añade recorrido al final del carrusel. */
-    .slide__mpop {
-      overflow-x: clip;
-      --mpop-prior-top: var(--mpop-top, calc(100cqh - 112cqh * var(--mpop-k, 1)));
-    }
+    .slide__mpop { overflow-x: clip; }
     /* El borde visible del personaje llega a la derecha aunque el PNG tenga margen transparente. */
     .slide .slide__mpop :global(img), .slide .slide__inside :global(img) {
       left: auto;
       right: 0;
       translate: var(--mpop-edge, 0%) 0;
-    }
-    .slide .slide__mpop :global(img) {
-      --mpop-height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
-      --mpop-painted-height: min(var(--mpop-height), calc(72cqw * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1) / var(--mpop-ratio, 1)));
-      /* Apoyar el personaje visible abajo. Si ya baja más, conservar ese desplazamiento. */
-      top: auto;
-      bottom: min(calc(100cqh - var(--mpop-prior-top) - var(--mpop-height)), calc(-1 * var(--mpop-foot, 0) * var(--mpop-painted-height)));
-      height: var(--mpop-height);
-      max-width: calc(72% * var(--mpop-k, 1) * var(--mpop-grow, 1) * var(--mpop-shrink, 1));
     }
     :global(#hora-loca) .slide:is([data-slide='robots-led'], [data-slide='show-mirror'], [data-slide='casa-de-papel'], [data-slide='batucada-led']) .slide__mpop {
       --mpop-shrink: 0.75;
@@ -471,11 +467,16 @@ const popBg = (pop: ShowcasePop) =>
   .slide__inside :global(img) {
     position: absolute;
     left: calc(var(--pop-cx) * 1%);
-    top: calc(var(--pop-top) * 1cqh);
     width: calc(var(--pop-width) * 2.1594cqh + var(--pop-grow, 0px));
     max-width: none;
     height: auto;
     translate: -50% 0;
+  }
+  /* Capas de escritorio y personajes fijos: apoyar el borde visible, sin subir los que ya bajan más. */
+  .showcase__pop :global(img), .slide__inside :global(img) {
+    --pop-painted-height: calc((var(--pop-width) * 2.1594cqh + var(--pop-grow, 0px)) / var(--mpop-ratio, 1));
+    top: auto;
+    bottom: min(calc(100cqh - var(--pop-top) * 1cqh - var(--pop-painted-height)), calc(-1 * var(--mpop-foot, 0) * var(--pop-painted-height)));
   }
   .showcase__pop--still, .showcase__pop--still.is-on { transform: none; transition: opacity 0.5s ease; }
   .slide__popbg {
