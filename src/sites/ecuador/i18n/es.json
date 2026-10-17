@@ -66,27 +66,27 @@
       "items": {
         "hora-loca": {
           "title": "Hora loca",
-          "text": "1 hora de experiencia llena de diversión: show performance, accesorios para los invitados, karaoke y dinámicas épicas con más de 30 temáticas disponibles.",
+          "text": "Una hora de show, karaoke y diversión con accesorios y más de 30 temáticas.",
           "alt": "Fiesta con show de hora loca"
         },
         "recibe": {
-          "title": "Recibe a los\ninvitados",
-          "text": "Bríndale a tus invitados una experiencia icónica al recibirlos en tus celebraciones con nuestros personajes únicos para cada ocasión.",
+          "title": "Recibe a tus\ninvitados",
+          "text": "Sorprende a tus invitados con personajes únicos para darles la bienvenida.",
           "alt": "Novios junto a personajes de rosas doradas"
         },
         "efectos": {
           "title": "Efectos\nespeciales",
-          "text": "Eleva tus momentos al siguiente nivel con efectos especiales: pirotecnia, neblina baja, confeti y todo lo que puedas imaginar.",
+          "text": "Pirotecnia, neblina baja y confeti para realzar los momentos de tu celebración.",
           "alt": "Novios disparando bazookas de CO2"
         },
         "infantiles": {
           "title": "Fiestas\ninfantiles",
-          "text": "Shows coreográficos de los personajes favoritos de los más pequeños, pintucaritas, globoflexia, animación y todo para hacer felices a los más peques.",
+          "text": "Shows con sus personajes favoritos, pintacaritas, globoflexia y animación.",
           "alt": "Show infantil con personajes"
         },
         "adicionales": {
           "title": "Servicios\nadicionales",
-          "text": "Add ons para que tu celebración tenga el plus que necesitas: glitter bar, party shot, disco móvil, barra de cócteles y ¡mucho más!",
+          "text": "Completa tu evento con glitter bar, party shot, disco móvil y coctelería.",
           "alt": "Cabina de DJ con el logo de Mostacho"
         }
       }
@@ -96,7 +96,7 @@
       "slides": {
         "robots-led": {
           "title": "Show de\nrobots LED",
-          "alt": "Robots con trajes de luces LED en una fiesta"
+          "alt": "Robots LED en la fiesta y casco con luces"
         },
         "show-mirror": {
           "title": "Show\nmirror",
@@ -127,7 +127,7 @@
         },
         "robots-mirror": {
           "title": "Robots\nmirror",
-          "alt": "Robots gigantes con trajes de espejos"
+          "alt": "Robots con trajes de espejos"
         },
         "alicia": {
           "title": "Alicia en el\npaís de las\nmaravillas",
@@ -154,7 +154,7 @@
           "alt": "Bailarinas brasileñas con plumas"
         },
         "futbolista": {
-          "title": "Hora loca\nfutbolista",
+          "title": "Futbolistas",
           "alt": "Invitados con camisetas de fútbol celebrando"
         },
         "casa-de-papel": {
@@ -162,8 +162,8 @@
           "alt": "Personajes de La casa de papel"
         },
         "la-mascara": {
-          "title": "La\nmáscara",
-          "alt": "Personajes de La máscara"
+          "title": "La máscara\ny rumberas",
+          "alt": "Personajes de La Máscara acompañados de rumberas"
         },
         "neon": {
           "title": "Show\nneón",
@@ -188,11 +188,11 @@
         },
         "rosas-rojas": {
           "title": "Rosas\nglam\nrojas",
-          "alt": "Personajes de rosas rojas recibiendo invitados"
+          "alt": "Personajes de rosas rojas recibiendo a los invitados"
         },
         "rosas-blancas": {
           "title": "Rosas\nglam\nblancas",
-          "alt": "Personaje con vestido de rosas blancas"
+          "alt": "Personajes de rosas blancas recibiendo a los invitados"
         },
         "personajes-golden": {
           "title": "Personajes\ngolden",
@@ -215,7 +215,7 @@
           "alt": "Personajes con trajes a rayas blancas y negras"
         },
         "combinados": {
-          "title": "Combinados",
+          "title": "Personaliza\ntu celebración",
           "alt": "Rosas doradas, personajes plateados y bailarinas con alas recibiendo a los invitados"
         },
         "elementos": {
@@ -269,11 +269,11 @@
           "alt": "Maquilladora aplicando brillos"
         },
         "dj": {
-          "title": "DJ disco\nmóvil",
+          "title": "DJ y disco\nmóvil",
           "alt": "DJ mezclando música en un evento"
         },
         "maestros": {
-          "title": "Maestros\nde ceremonia",
+          "title": "Maestro\nde ceremonia",
           "alt": "Maestro de ceremonia sonriendo"
         },
         "barra-cocteles": {

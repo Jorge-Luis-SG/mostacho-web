@@ -187,6 +187,7 @@ for (const site of sites) {
     for (const slide of s.slides ?? []) {
       checkImage(site, slide.image);
       checkImage(site, slide.titleImage);
+      checkImage(site, slide.pop?.image);
     }
   }
 

@@ -68,7 +68,7 @@
       "slides": {
         "robots-led": {
           "title": "LED robot\nshow",
-          "alt": "Robots in LED light suits at a party"
+          "alt": "LED robots at a party with a light-up helmet"
         },
         "show-mirror": {
           "title": "Mirror\nshow",
@@ -98,8 +98,8 @@
           "alt": "Entertainer in a white suit with a microphone"
         },
         "robots-mirror": {
-          "title": "Mirror\nrobots",
-          "alt": "Giant robots in mirror suits"
+          "title": "Robots\nmirror",
+          "alt": "Robots wearing mirrored suits"
         },
         "alicia": {
           "title": "Alice in\nWonderland",
@@ -164,7 +164,7 @@
         },
         "rosas-blancas": {
           "title": "White\nglam\nroses",
-          "alt": "Character in a white rose dress"
+          "alt": "White rose characters welcoming guests"
         },
         "personajes-golden": {
           "title": "Golden\ncharacters",
@@ -179,15 +179,15 @@
           "alt": "Aphrodite characters posing with guests"
         },
         "arlequines": {
-          "title": "Harlequin\nshow",
-          "alt": "Harlequins entertaining the guests"
+          "title": "Venetian\nharlequins",
+          "alt": "Harlequins in golden costumes and hats welcoming guests"
         },
         "black-and-white": {
           "title": "Black\nand white",
           "alt": "Characters in black and white striped suits"
         },
         "combinados": {
-          "title": "Combined\ncharacters",
+          "title": "Personalize\nyour celebration",
           "alt": "Mimes and golden rose characters"
         },
         "elementos": {
@@ -204,7 +204,7 @@
         },
         "epoca": {
           "title": "Period\ncharacters",
-          "alt": "Period characters welcoming guests"
+          "alt": "Couple in period costumes with Venetian masks"
         }
       }
     },

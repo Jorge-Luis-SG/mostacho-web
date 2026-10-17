@@ -68,7 +68,7 @@
       "slides": {
         "robots-led": {
           "title": "Show de\nrobots LED",
-          "alt": "Robots con trajes de luces LED en una fiesta"
+          "alt": "Robots LED en la fiesta y casco con luces"
         },
         "show-mirror": {
           "title": "Show\nmirror",
@@ -99,7 +99,7 @@
         },
         "robots-mirror": {
           "title": "Robots\nmirror",
-          "alt": "Robots gigantes con trajes de espejos"
+          "alt": "Robots con trajes de espejos"
         },
         "alicia": {
           "title": "Alicia en el país\nde las maravillas",
@@ -160,11 +160,11 @@
         },
         "rosas-rojas": {
           "title": "Rosas glam\nrojas",
-          "alt": "Personajes de rosas rojas recibiendo invitados"
+          "alt": "Personajes de rosas rojas recibiendo a los invitados"
         },
         "rosas-blancas": {
           "title": "Rosas\nglam\nblancas",
-          "alt": "Personaje con vestido de rosas blancas"
+          "alt": "Personajes de rosas blancas recibiendo a los invitados"
         },
         "personajes-golden": {
           "title": "Personajes\ngolden",
@@ -179,15 +179,15 @@
           "alt": "Personajes de Afrodita posando con invitados"
         },
         "arlequines": {
-          "title": "Show de\narlequines",
-          "alt": "Arlequines animando a los invitados"
+          "title": "Arlequines\nvenecianos",
+          "alt": "Arlequines con trajes y sombreros dorados recibiendo a los invitados"
         },
         "black-and-white": {
           "title": "Black\nand white",
           "alt": "Personajes con trajes a rayas blancas y negras"
         },
         "combinados": {
-          "title": "Combinados",
+          "title": "Personaliza\ntu celebración",
           "alt": "Mimos y personajes de rosas doradas"
         },
         "elementos": {
@@ -204,7 +204,7 @@
         },
         "epoca": {
           "title": "Personajes\nde época",
-          "alt": "Personajes de época recibiendo a los invitados"
+          "alt": "Pareja con vestuario de época y máscaras venecianas"
         }
       }
     },

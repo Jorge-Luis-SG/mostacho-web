@@ -40,11 +40,11 @@ const images = {
   'hora-loca-robots-led.jpg': '../show-robots-led-slider.png',
   'hora-loca-show-mirror.jpg': 'HORA LOCA/MIRROR(4).jpg',
   'hora-loca-funky-animals.jpg': 'HORA LOCA/FUNKY ANIMALS(2).png',
-  'hora-loca-arlequines.jpg': 'HORA LOCA/ARLEQUINES(2).jpg',
+  'hora-loca-arlequines.jpg': '../assets new/hora loca/arlequines-show.heic',
   'hora-loca-monster-glitter.jpg': 'HORA LOCA/GLITTER AND MIRROR.jpg',
   'hora-loca-galacticos.jpg': 'HORA LOCA/GALACTICOS.jpg',
   'hora-loca-white-wings.jpg': 'HORA LOCA/WHITE WINGS(1).jpg',
-  'hora-loca-robots-mirror.jpg': 'HORA LOCA/MIRROR(2).jpg', // robots con traje de espejo y LED (la de ROBOTS/ mide 720 px)
+  'hora-loca-robots-mirror.jpg': 'ROBOTS/ROBOTS MIRROR.jpg',
   'hora-loca-alicia.jpg': '../assets new/hora loca/ALICIA EN EL PAÍS DE LAS MARAVILLAS.jpg',
   'hora-loca-artistas.jpg': '../assets new/hora loca/ARTISTAS(9).jpg',
   'hora-loca-batucada-led.jpg': '../assets new/hora loca/BATUCADA LED(1).jpg',
@@ -58,10 +58,10 @@ const images = {
   'hora-loca-rabbit-girls.jpg': '../assets new/hora loca/RABBIT GIRLS(2).jpg',
   'hora-loca-rumberas.jpg': 'HORA LOCA/RUMBERAS(2).JPG',
   // Personajes recortados (PNG transparente) que asoman por la derecha al pasar el ratón por la diapositiva
-  'hora-loca-robots-led-pop.png': '../Nueva carpeta/show-robots-led-effect.png',
+  'hora-loca-robots-led-pop.png': '../assets new/show-robot-led-effect-new.png',
   'hora-loca-show-mirror-pop.png': '../Nueva carpeta/show-mirror-effect.png',
   'hora-loca-funky-animals-pop.png': '../Nueva carpeta/funky-animals-effect.png',
-  'hora-loca-arlequines-pop.png': '../Nueva carpeta/show-alequines-effect.png',
+  'hora-loca-arlequines-pop.png': '../assets new/hora loca/arlequines-show-effect.png',
   'hora-loca-monster-glitter-pop.png': '../Nueva carpeta/monster-glitter-effect.png',
   'hora-loca-galacticos-pop.png': '../Nueva carpeta/show-galacticos-effect.png',
   'hora-loca-white-wings-pop.png': '../Nueva carpeta/withe-wings-effects.png',
@@ -82,6 +82,9 @@ const images = {
   'infantil-kpop-pop.png': '../k-pop-effect.png',
   'infantil-world-tour-pop.png': '../messi-effect.png',
 
+  'hora-loca-batucada-led-espana.png': '../spain/imagen robot mirror.png',
+  'hora-loca-batucada-led-espana-pop.png': '../spain/Robot Mirror.png',
+  'recibe-rosas-rojas.jpg': 'RECIBIMIENTO DE INVITADOS/ROSAS GLAM ROJAS.jpg',
   'recibe-rosas-doradas.jpg': 'RECIBIMIENTO DE INVITADOS/ROSAS GLAM DORADAS.jpg',
   'recibe-rosas-rojas.png': '../rosas-glam-rojas-slider.png', // con transparencia: se funde con el fondo radial
   // Rosas glam blancas: la única que hay mide 158 × 284 px (se verá borrosa; cambiarla en cuanto llegue una más grande)
@@ -133,7 +136,7 @@ const images = {
   'hora-loca-casa-de-papel-slider.png': '../spain/imagen Casa de Papel.png',
   'hora-loca-casa-de-papel-pop.png': '../spain/Casa de papel.png',
   'hora-loca-robots-mirror-slider.png': '../spain/imagen robot mirror.png',
-  'hora-loca-robots-mirror-pop.png': '../spain/Robot Mirror.png',
+  'hora-loca-robots-mirror-pop.png': '../Nueva carpeta/show-robots-led-effect.png',
   'equipo.jpg': '../spain/Imagen equipo.jpg.jpeg', // foto del equipo (Nosotros, en los dos países)
   'evento-bautizo.jpg': '../spain/bautizo.jpg', // sacada del diseño (Estructura España.xd)
 
@@ -174,7 +177,7 @@ gallery.forEach((src, i) => (images[`galeria-${i + 1}.jpg`] = src));
 
 // ---------------------------------------------------------------------------
 // Videos: destino (en src/sites/ecuador/video/, o en el sitio indicado con site) ← origen.
-// El póster va a img/ del mismo sitio con el nombre indicado. audio: conserva el sonido (tarjetas que suenan al pasar el ratón).
+// El póster va a img/ del mismo sitio con el nombre indicado. Todos los videos se exportan sin sonido.
 // maxrate (kbit/s): tope de calidad para que ninguna escena dispare el peso del archivo.
 // ---------------------------------------------------------------------------
 const videos = {
@@ -182,18 +185,18 @@ const videos = {
   'hero.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 1920, crf: 22, fps: 30, maxrate: 6000 },
   // Versión para móviles y tablets en vertical: recorte central 9:16 y más ligera
   'hero-movil.mp4': { src: 'VIDEO HERO/IMG_0600.MOV', width: 720, crf: 26, fps: 30, portrait: true, maxrate: 1800 },
-  // Servicios: la foto de cada tarjeta sigue siendo su miniatura; el video (con sonido) sale al pasar el ratón
-  'servicio-hora-loca.mp4': { src: '../videos/HORA LOCA.mp4', width: 640, crf: 28, audio: true, maxrate: 900 },
-  'servicio-recibe.mp4': { src: '../videos/RECIBE A LOS INVITADOS.mp4', width: 640, crf: 28, fps: 30, audio: true, maxrate: 900 },
+  // Servicios: la foto de cada tarjeta sigue siendo su miniatura; el video sale en silencio al pasar el ratón
+  'servicio-hora-loca.mp4': { src: '../videos/HORA LOCA.mp4', width: 640, crf: 28, maxrate: 900 },
+  'servicio-recibe.mp4': { src: '../videos/RECIBE A LOS INVITADOS.mp4', width: 640, crf: 28, fps: 30, maxrate: 900 },
   // «RECIBIMIENTO DE INVITADOS 1» en realidad muestra efectos: confeti, CO2 de colores, neblina y pirotecnia fría
-  'servicio-efectos.mp4': { src: '../videos/RECIBIMIENTO DE INVITADOS 1.mp4', width: 640, crf: 28, portrait: true, audio: true, maxrate: 900 },
-  'servicio-infantiles.mp4': { src: '../videos/INFATILES.mp4', width: 640, crf: 28, portrait: true, audio: true, maxrate: 900 },
+  'servicio-efectos.mp4': { src: '../videos/RECIBIMIENTO DE INVITADOS 1.mp4', width: 640, crf: 28, portrait: true, maxrate: 900 },
+  'servicio-infantiles.mp4': { src: '../videos/INFATILES.mp4', width: 640, crf: 28, portrait: true, maxrate: 900 },
   // Portada (elegir país): franjas rojas en bucle
   'principal.mp4': { site: 'portal', src: '../videos/principal.mp4', width: 1920, crf: 28, poster: 'fondo.jpg' },
   'principal-movil.mp4': { site: 'portal', src: '../videos/principal.mp4', width: 720, crf: 30, portrait: true },
   'promo-fondo.mp4': { src: '../POP/background_hallowen.mp4', width: 1280, crf: 30, maxrate: 1500 },
   'promo-fondo-movil.mp4': { src: '../POP/background_hallowen.mp4', width: 640, crf: 31, portrait: true, maxrate: 700 },
-  'adicional-glitter-bar.mp4': { src: '../glitter-bar-movil.mp4', width: 480, crf: 28 },
+  'adicional-glitter-bar.mp4': { src: 'SERVICIOS ADICIONALES/GLITTER BAR MOVIL.mp4', width: 640, crf: 27, transpose: 2, maxrate: 900, poster: 'adicional-glitter-bar.jpg', posterAt: 2 },
   'adicional-cabina-espejada.mp4': { src: 'SERVICIOS ADICIONALES/CABINA ESPEJADA.mp4', width: 720, crf: 26, poster: 'adicional-cabina-espejada.jpg' },
   'adicional-musica-en-vivo.mp4': { src: 'SERVICIOS ADICIONALES/MUSICA EN VIVO(1).mp4', width: 720, crf: 27, poster: 'adicional-musica-en-vivo.jpg' },
 };
@@ -235,8 +238,8 @@ for (const [dst, v] of Object.entries(videos)) {
   if (!fs.existsSync(src)) { console.warn(`⚠  no existe: ${src}`); continue; }
   fs.mkdirSync(dir + 'video/', { recursive: true });
   if (!fresh(out, src)) {
-    const crop = v.portrait ? 'crop=ih*9/16:ih,' : '';
-    const audio = v.audio ? ['-c:a', 'aac', '-b:a', '96k', '-ac', '2'] : ['-an'];
+    const crop = `${v.transpose ? `transpose=${v.transpose},` : ''}${v.portrait ? 'crop=ih*9/16:ih,' : ''}`;
+    const audio = ['-an'];
     const cap = v.maxrate ? ['-maxrate', `${v.maxrate}k`, '-bufsize', `${v.maxrate * 2}k`] : [];
     execFileSync(ffmpegPath, ['-y', '-loglevel', 'error', '-i', src, ...audio, '-vf', `${crop}scale='min(${v.width},iw)':-2,fps=${v.fps ?? 30}`,
       '-c:v', 'libx264', '-preset', 'slow', '-crf', String(v.crf), ...cap, '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out]);

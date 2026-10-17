@@ -58,7 +58,7 @@ export interface CardItem {
   image: string;
   /** Tamaño del título en px del diseño a 1920 (opcional). */
   titleSize?: number;
-  /** Video opcional: con la imagen como miniatura, se reproduce (con sonido) al pasar el ratón. */
+  /** Video opcional: con la imagen como miniatura, se reproduce en silencio al pasar el ratón. */
   video?: string;
   /** Encuadre de la foto en la parte visible de la tarjeta (CSS object-position), p. ej. "50% 30%". */
   imagePos?: string;

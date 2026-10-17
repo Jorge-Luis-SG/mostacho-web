@@ -12,10 +12,9 @@
     "tiktok": "https://www.tiktok.com/@mostachoproducciones"
   },
   "socialOrder": [
-    "youtube",
+    "tiktok",
     "facebook",
-    "instagram",
-    "tiktok"
+    "instagram"
   ],
   "countries": [
     {

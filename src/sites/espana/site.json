@@ -4,13 +4,13 @@
   "assetsFrom": "ecuador",
   "logo": "logo.png",
   "contact": {
-    "whatsapp": "593999771245",
+    "whatsapp": "34641598517",
     "email": "contacto@mostachoproducciones.com"
   },
   "social": {
     "youtube": "https://www.youtube.com/@mostachoproducciones",
-    "facebook": "https://www.facebook.com/mostachoproducciones",
-    "instagram": "https://www.instagram.com/mostachoproducciones",
+    "facebook": "https://www.facebook.com/profile.php?id=61595374323725",
+    "instagram": "https://www.instagram.com/mostachoproducciones.es/",
     "tiktok": "https://www.tiktok.com/@mostachoproducciones"
   },
   "nav": [
@@ -21,14 +21,13 @@
     "galeria"
   ],
   "headerSocial": [
-    "youtube",
+    "tiktok",
     "facebook",
     "instagram"
   ],
   "footerSocial": [
     "facebook",
     "instagram",
-    "youtube",
     "tiktok"
   ],
   "promo": {
@@ -86,14 +85,14 @@
           "image": "hora-loca-robots-led.jpg",
           "pop": {
             "image": "hora-loca-robots-led-pop.png",
-            "left": 41.2,
-            "width": 63.5,
-            "top": -12.9,
+            "left": 53,
+            "width": 43,
+            "top": -8,
             "glow": "rgba(166, 70, 255, 0.85)",
-            "glowAt": "89% 45%",
+            "glowAt": "76% 45%",
             "glowSize": "38% 85%",
-            "mobileScale": 1.3,
-            "mobileTop": "4cqh"
+            "mobileScale": 0.8,
+            "mobileTop": "-10cqh"
           },
           "accent": "#4B00D5"
         },
@@ -154,12 +153,30 @@
         },
         {
           "id": "robots-mirror",
-          "image": "hora-loca-robots-mirror-slider.png",
+          "image": "hora-loca-robots-mirror.jpg",
+          "imagePos": "50% 35%",
+          "imagePosMobile": "50% 35%",
+          "accent": "#150C25",
+          "pop": {
+            "image": "hora-loca-robots-mirror-pop.png",
+            "left": 41.2,
+            "width": 63.5,
+            "top": -12.9,
+            "glow": "rgba(165, 120, 255, 0.55)",
+            "glowAt": "76% 40%",
+            "glowSize": "38% 85%",
+            "mobileScale": 1.15,
+            "mobileTop": "0cqh"
+          }
+        },
+        {
+          "id": "batucada-led",
+          "image": "hora-loca-batucada-led-espana.png",
           "imagePos": "0% 6%",
           "imagePosMobile": "60% 4%",
           "imageMaxWidth": 760,
           "pop": {
-            "image": "hora-loca-robots-mirror-pop.png",
+            "image": "hora-loca-batucada-led-espana-pop.png",
             "left": 40,
             "width": 67,
             "top": -7
@@ -182,24 +199,9 @@
       "popGrow": 20,
       "slides": [
         {
-          "id": "rosas-doradas",
-          "image": "recibe-rosas-doradas.jpg",
-          "pop": {
-            "image": "recibe-rosas-doradas-pop.png",
-            "left": 48.6,
-            "width": 47.1,
-            "top": -11.1,
-            "tint": "rgba(255, 165, 0, 0.18)",
-            "tintRight": "rgba(255, 200, 0, 0.65)"
-          },
-          "accent": "#0e0e0d",
-          "glow": "rgba(176, 106, 0, 0.85)",
-          "glowAt": "31% 22%"
-        },
-        {
           "id": "rosas-rojas",
-          "image": "recibe-rosas-rojas.png",
-          "imagePos": "0% 35%",
+          "image": "recibe-rosas-rojas.jpg",
+          "imagePos": "50% 35%",
           "pop": {
             "image": "recibe-rosas-rojas-pop.png",
             "left": 58.7,
@@ -211,23 +213,57 @@
             "glowSize": "45% 80%"
           },
           "accent": "#320000",
-          "bg": "radial-gradient(ellipse 55% 75% at 28% 50%, #EA0000 0%, #320000 100%)",
-          "imageBox": {
-            "maxWidth": 58
-          }
+          "imagePosMobile": "50% 35%"
+        },
+        {
+          "id": "rosas-blancas",
+          "image": "recibe-rosas-blancas.jpg",
+          "pop": {
+            "image": "recibe-rosas-blancas-pop.png",
+            "left": 54.8,
+            "width": 31.8,
+            "top": -24.3,
+            "glow": "rgba(255, 255, 255, 0.4)",
+            "glowAt": "72% 0%",
+            "glowSize": "32% 60%"
+          },
+          "accent": "#151515",
+          "imagePos": "50% 38%",
+          "imagePosMobile": "50% 38%"
         },
         {
           "id": "arlequines",
-          "image": "hora-loca-arlequines.jpg",
-          "pop": {
-            "image": "hora-loca-arlequines-pop.png",
-            "left": 61.7,
-            "width": 40,
-            "top": -7.2,
-            "tint": "rgba(255, 175, 40, 0.35)"
-          },
+          "image": "recibe-arlequines.jpg",
+          "imagePos": "50% 38%",
+          "imagePosMobile": "50% 38%",
           "accent": "#210D00",
-          "bg": "radial-gradient(ellipse 55% 75% at 28% 50%, #AA4E00 0%, #210D00 100%)"
+          "pop": {
+            "image": "recibe-arlequines-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(255, 175, 40, 0.2)",
+            "glow": "rgba(255, 175, 40, 0.65)",
+            "glowAt": "76% 32%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
+          "id": "epoca",
+          "image": "recibe-epoca.jpg",
+          "imagePos": "50% 30%",
+          "imagePosMobile": "50% 30%",
+          "accent": "#29180F",
+          "pop": {
+            "image": "recibe-epoca-pop.png",
+            "left": 53,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(230, 175, 135, 0.18)",
+            "glow": "rgba(255, 215, 190, 0.6)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
         }
       ]
     },

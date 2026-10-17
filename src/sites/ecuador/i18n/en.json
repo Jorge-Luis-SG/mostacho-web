@@ -66,27 +66,27 @@
       "items": {
         "hora-loca": {
           "title": "Hora loca",
-          "text": "One hour packed with fun: live show performance, props for your guests, karaoke and epic games, with more than 30 themes available.",
+          "text": "One hour of shows, karaoke and fun with party props and over 30 themes.",
           "alt": "Party with a hora loca show"
         },
         "recibe": {
           "title": "Welcome\nyour guests",
-          "text": "Give your guests an iconic experience as they arrive, with our unique characters for every occasion.",
+          "text": "Give your guests a memorable welcome with unique characters.",
           "alt": "Newlyweds with golden rose characters"
         },
         "efectos": {
           "title": "Special\neffects",
-          "text": "Take your moments to the next level with special effects: pyrotechnics, low fog, confetti and anything you can imagine.",
+          "text": "Fireworks, low fog and confetti to highlight your celebration.",
           "alt": "Newlyweds firing CO2 bazookas"
         },
         "infantiles": {
           "title": "Kids\nparties",
-          "text": "Choreographed shows with the little ones’ favorite characters, face painting, balloon art, entertainment and everything to make the kids happy.",
+          "text": "Favorite characters, dance shows, face painting, balloon art and entertainment.",
           "alt": "Kids show with characters"
         },
         "adicionales": {
           "title": "Extra\nservices",
-          "text": "Add-ons to give your celebration the extra touch it needs: glitter bar, party shot, mobile disco, cocktail bar and much more.",
+          "text": "Complete your event with a glitter bar, party shots, a mobile disco and cocktails.",
           "alt": "DJ booth with the Mostacho logo"
         }
       }
@@ -96,7 +96,7 @@
       "slides": {
         "robots-led": {
           "title": "LED robot\nshow",
-          "alt": "Robots in LED light suits at a party"
+          "alt": "LED robots at a party with a light-up helmet"
         },
         "show-mirror": {
           "title": "Mirror\nshow",
@@ -126,8 +126,8 @@
           "alt": "Entertainer in a white suit with a microphone"
         },
         "robots-mirror": {
-          "title": "Mirror\nrobots",
-          "alt": "Giant robots in mirror suits"
+          "title": "Robots\nmirror",
+          "alt": "Robots wearing mirrored suits"
         },
         "alicia": {
           "title": "Alice in\nWonderland",
@@ -154,7 +154,7 @@
           "alt": "Brazilian dancers with feathers"
         },
         "futbolista": {
-          "title": "Football\nhora loca",
+          "title": "Football\ncharacters",
           "alt": "Guests in football shirts celebrating"
         },
         "casa-de-papel": {
@@ -162,8 +162,8 @@
           "alt": "Money Heist characters"
         },
         "la-mascara": {
-          "title": "The\nmask",
-          "alt": "The Mask characters"
+          "title": "The Mask\nand dancers",
+          "alt": "The Mask characters with party dancers"
         },
         "neon": {
           "title": "Neon\nshow",
@@ -192,7 +192,7 @@
         },
         "rosas-blancas": {
           "title": "White\nglam\nroses",
-          "alt": "Character in a white rose dress"
+          "alt": "White rose characters welcoming guests"
         },
         "personajes-golden": {
           "title": "Golden\ncharacters",
@@ -215,7 +215,7 @@
           "alt": "Characters in black and white striped suits"
         },
         "combinados": {
-          "title": "Combined\ncharacters",
+          "title": "Personalize\nyour celebration",
           "alt": "Golden rose characters, silver characters and winged dancers welcoming guests"
         },
         "elementos": {
@@ -269,11 +269,11 @@
           "alt": "Make-up artist applying glitter"
         },
         "dj": {
-          "title": "Mobile\nDJ disco",
+          "title": "DJ and\nmobile disco",
           "alt": "DJ mixing music at an event"
         },
         "maestros": {
-          "title": "Masters of\nceremonies",
+          "title": "Master of\nceremonies",
           "alt": "Smiling master of ceremonies"
         },
         "barra-cocteles": {
