@@ -63,7 +63,7 @@ const urlSmall = resolveVideo(site, srcSmall);
   const eligible = (video: HTMLVideoElement) => {
     if (quiet || document.hidden || (video.hasAttribute('data-desktop-only') && innerWidth < 768)) return false;
     const promo = video.closest<HTMLElement>('[data-promo]');
-    return promo ? !promo.hidden && !promo.hasAttribute('data-dismissed') : !promos.some((p) => !p.hasAttribute('data-dismissed'));
+    return promo ? !promo.hidden && !promo.hasAttribute('data-dismissed') && promo.dataset.promoState !== 'loading' : !promos.some((p) => !p.hasAttribute('data-dismissed'));
   };
   const wanted = (video: HTMLVideoElement) => eligible(video) && !video.closest('.is-off') && (
     video.hasAttribute('data-hover')

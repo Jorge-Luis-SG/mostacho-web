@@ -8,6 +8,7 @@
 import Img from './Img.astro';
 import BgVideo from './BgVideo.astro';
 import Button from './Button.astro';
+import Icon from './Icon.astro';
 import type { LandingContext } from '../../lib/context';
 
 interface Props {
@@ -20,12 +21,20 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
 
 {
   promo && (
-    <div class="promo" role="dialog" aria-modal="true" aria-label={t.title} data-promo={promo.id} hidden>
+    <div class="promo" role="dialog" aria-modal="true" aria-label={t.title} data-promo={promo.id} data-promo-state="loading" hidden>
       <div class="promo__backdrop" data-promo-close />
-      <div class="promo__card" tabindex="-1">
+      <div class="promo__card" tabindex="-1" aria-busy="true">
         <div class="promo__frame">
           <Img site={ctx.site} src={promo.poster} alt="" class="promo__bg" sizes="(max-width: 700px) 94vw, 1550px" maxWidth={1550} />
           <BgVideo site={ctx.site} src={promo.video} srcSmall={promo.videoMobile} class="promo__bg" />
+        </div>
+        <div class="promo__loader" role="status" aria-live="polite">
+          <div class="promo__spinner"><Icon name="mustache" size={56} /></div>
+          <span>{ctx.lang === 'en' ? 'Loading…' : 'Cargando…'}</span>
+        </div>
+        <div class="promo__fallback" hidden>
+          <strong>{t.highlight}</strong>
+          <p>{t.title}</p>
         </div>
         <Img site={ctx.site} src={promo.left} alt="" class="promo__left" sizes="(max-width: 700px) 40vw, 360px" maxWidth={720} />
         <Img site={ctx.site} src={promo.right} alt="" class="promo__right" sizes="(max-width: 700px) 40vw, 430px" maxWidth={860} />
@@ -46,7 +55,17 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
 <script>
   document.querySelectorAll<HTMLElement>('[data-promo]').forEach((promo) => {
     let last: Element | null = null;
+    let loadingTimeout = 0;
+    const finishLoading = (state: 'ready' | 'fallback') => {
+      clearTimeout(loadingTimeout);
+      promo.dataset.promoState = state;
+      promo.querySelector('.promo__card')?.setAttribute('aria-busy', 'false');
+      promo.querySelector<HTMLElement>('.promo__loader')!.hidden = true;
+      promo.querySelector<HTMLElement>('.promo__fallback')!.hidden = state !== 'fallback';
+      document.dispatchEvent(new Event('promo:change'));
+    };
     const close = () => {
+      clearTimeout(loadingTimeout);
       promo.setAttribute('data-dismissed', '');
       promo.classList.remove('is-open');
       document.documentElement.classList.remove('promo-open');
@@ -57,18 +76,42 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
       removeEventListener('keydown', onKey);
     };
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close();
-    const prepare = () => {
+    const prepare = async () => {
       // Adelantar sus imágenes durante la espera de apertura, antes que las fotos lejanas.
-      promo.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+      const images = [...promo.querySelectorAll<HTMLImageElement>('img')];
+      images.forEach((img) => {
         img.fetchPriority = 'high';
         img.loading = 'eager';
       });
+      const ready = await Promise.all(images.map(async (img) => {
+        const decode = async () => {
+          await img.decode().catch(() => {});
+          return img.complete && img.naturalWidth > 0;
+        };
+        if (await decode()) return true;
+        if (!navigator.onLine) return false;
+        // Un fallo transitorio tiene un solo reintento, también en las versiones responsive.
+        const retry = (src: string) => {
+          const url = new URL(src, document.baseURI);
+          url.searchParams.set('retry', '1');
+          return url.href;
+        };
+        if (img.srcset) img.srcset = img.srcset.split(',').map((candidate) => {
+          const [src, ...size] = candidate.trim().split(/\s+/);
+          return [retry(src), ...size].join(' ');
+        }).join(', ');
+        img.src = retry(img.src);
+        return decode();
+      }));
+      finishLoading(ready.every(Boolean) ? 'ready' : 'fallback');
     };
     const open = () => {
       last = document.activeElement;
       promo.hidden = false;
       promo.removeAttribute('data-dismissed');
       document.documentElement.classList.add('promo-open');
+      // Con una conexión interrumpida queda disponible el mensaje y Contactar, sin un loader infinito.
+      if (promo.dataset.promoState === 'loading') loadingTimeout = window.setTimeout(() => finishLoading('fallback'), 12000);
       document.dispatchEvent(new Event('promo:change'));
       requestAnimationFrame(() => requestAnimationFrame(() => promo.classList.add('is-open')));
       // El foco va a la tarjeta (sin aro visible): Tab lleva a la X y al botón; Esc cierra
@@ -123,6 +166,47 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
   .promo.is-open .promo__card { transform: none; }
   .promo__frame { position: absolute; inset: 0; border-radius: 13cqw / 26cqh; overflow: hidden; background: #2a0a3a; }
   .promo__frame :global(.promo__bg) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* El loader es SVG en línea: se ve incluso si las imágenes todavía no llegaron. */
+  .promo__loader {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.8rem;
+    border-radius: 13cqw / 26cqh;
+    background: #2a0a3a;
+    color: #fff;
+    font-size: 1.3rem;
+  }
+  .promo__spinner {
+    display: grid;
+    place-items: center;
+    width: 6.4rem;
+    height: 6.4rem;
+    color: var(--color-primary);
+    animation: promo-spin 1.1s linear infinite;
+  }
+  @keyframes promo-spin { to { transform: rotate(360deg); } }
+  .promo__loader[hidden], .promo__fallback[hidden] { display: none; }
+  .promo:not([data-promo-state='ready']) :global(:is(.promo__left, .promo__right, .promo__logo)),
+  .promo:not([data-promo-state='ready']) .promo__pill { visibility: hidden; }
+  .promo[data-promo-state='loading'] :global(.promo__cta),
+  .promo[data-promo-state='loading'] .promo__frame :global(:is(img, video)) { visibility: hidden; }
+  .promo__fallback {
+    position: absolute;
+    inset: 16cqh 8cqw 28cqh;
+    z-index: 1;
+    display: grid;
+    align-content: center;
+    gap: 1.2rem;
+    color: #fff;
+    text-align: center;
+  }
+  .promo__fallback strong { font-family: var(--font-heading); font-size: clamp(2.6rem, 6cqw, 6rem); line-height: 1.1; }
+  .promo__fallback p { font-size: clamp(1.4rem, 2cqw, 2.2rem); line-height: 1.3; }
+  .promo[data-promo-state='fallback'] :global(.promo__cta) { top: auto; bottom: 8cqh; }
 
   .promo__card :global(.promo__left), .promo__card :global(.promo__right), .promo__card :global(.promo__logo) { position: absolute; height: auto; max-width: none; pointer-events: none; }
   .promo__card :global(.promo__left) { left: 3cqw; bottom: 0; width: 22.6cqw; }
@@ -185,6 +269,7 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
     .promo { --cw: min(86vw, (100svh - 4rem) / 1.12 * 3 / 5); }
     .promo__card { aspect-ratio: auto; height: calc(var(--cw) * 5 / 3 - 20px); margin-top: calc(var(--cw) * 5 / 3 * 0.09); }
     .promo__frame { border-radius: 9cqw; }
+    .promo__loader { border-radius: 9cqw; }
     .promo__card :global(.promo__logo) { top: -9cqh; width: 64cqw; }
     .promo__card :global(.promo__left) { left: 2cqw; width: 31cqw; }
     .promo__card :global(.promo__right) { right: 2cqw; width: 30cqw; }
@@ -198,5 +283,6 @@ const t = (ctx.t.promo ?? {}) as Record<string, string>;
 
   @media (prefers-reduced-motion: reduce) {
     .promo__card { transform: none; }
+    .promo__spinner { animation: none; }
   }
 </style>

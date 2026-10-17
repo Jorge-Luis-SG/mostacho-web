@@ -1,7 +1,7 @@
 ---
 /** Iconos SVG en línea (heredan el color del texto con currentColor). */
 interface Props {
-  name: 'youtube' | 'facebook' | 'instagram' | 'whatsapp' | 'tiktok' | 'arrow-left' | 'arrow-right' | 'arrow-down' | 'chevron-left' | 'chevron-right' | 'menu' | 'close' | 'star' | 'sound-on' | 'sound-off';
+  name: 'youtube' | 'facebook' | 'instagram' | 'whatsapp' | 'tiktok' | 'arrow-left' | 'arrow-right' | 'arrow-down' | 'chevron-left' | 'chevron-right' | 'menu' | 'close' | 'star' | 'sound-on' | 'sound-off' | 'mustache';
   size?: number | string;
   class?: string;
 }
@@ -69,6 +69,7 @@ const { name, size = 24, class: className } = Astro.props;
   {name === 'sound-on' && <path d="M4 9v6h4l5 4V5L8 9H4Zm12.5-.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />}
   {name === 'sound-off' && <path d="M4 9v6h4l5 4V5L8 9H4Zm12 .5 5 5m0-5-5 5" />}
   {name === 'close' && <path d="M6 6l12 12M18 6 6 18" stroke-width="2" />}
+  {name === 'mustache' && <path fill="currentColor" stroke="none" d="M12 9.6C10.4 6.8 7.2 6.8 5.9 9.6C4.5 12.5 2.1 12.7 1 10.2C.4 13.6 2.4 16 5.8 16C8.2 16 10.5 14.4 12 13C13.5 14.4 15.8 16 18.2 16C21.6 16 23.6 13.6 23 10.2C21.9 12.7 19.5 12.5 18.1 9.6C16.8 6.8 13.6 6.8 12 9.6Z" />}
   {name === 'star' && (
     <path
       fill="currentColor"
