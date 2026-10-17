@@ -27,7 +27,7 @@ const popSizes = largerPops ? '(min-width: 1401px) 81vw, 60vw' : '(max-width: 14
 // Reservar solo el espacio que realmente sobresale, descontando los márgenes transparentes.
 // El cálculo se resuelve al compilar y con CSS: no mide ni mueve el layout al hacer scroll.
 const popRoom = (scale: number) => {
-  const linear = (height: number, fixed: number) => `calc(${height.toFixed(8)} * var(--slide-h) + ${fixed.toFixed(5)}px)`;
+  const linear = (height: number, fixed: number) => `calc(${height.toFixed(8)} * var(--pop-layout-height, var(--slide-h)) + ${fixed.toFixed(5)}px)`;
   const rooms = section.slides.flatMap((slide, index) => {
     const inset = popInsets[index];
     if (!slide.pop || !inset) return [];
@@ -268,7 +268,11 @@ const popBg = (pop: ShowcasePop) =>
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(follow);
     }, { passive: true });
-    new ResizeObserver(follow).observe(track);
+    new ResizeObserver(([entry]) => {
+      // Reutilizar la observación de tamaño: el texto puede superar el alto previsto en ventanas bajas.
+      zone.style.setProperty('--pop-layout-height', `${entry.contentRect.height}px`);
+      follow();
+    }).observe(track);
 
     // Adelanta el personaje actual y sus vecinos, sin poner todos a competir por la conexión.
     const ahead = (margin: string) =>
