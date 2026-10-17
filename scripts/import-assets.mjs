@@ -268,10 +268,12 @@ for (const [dst, f] of Object.entries(frames)) {
 // ---------------------------------------------------------------------------
 fs.mkdirSync(IMG + 'blur/', { recursive: true });
 for (const file of fs.readdirSync(IMG)) {
-  if (!/^(servicio|efecto|adicional|evento)-.*.jpg$/.test(file)) continue;
+  if (!/^(servicio|efecto|adicional|evento|galeria)-.*.jpg$/.test(file)) continue;
   const out = IMG + 'blur/' + file;
   if (fresh(out, IMG + file)) continue;
-  await sharp(IMG + file).resize(160).blur(7).modulate({ saturation: 1.2 }).jpeg({ quality: 70 }).toFile(out);
+  const isGallery = file.startsWith('galeria-');
+  await sharp(IMG + file).resize(isGallery ? 320 : 160).blur(isGallery ? 12 : 7)
+    .modulate(isGallery ? { brightness: 0.45 } : { saturation: 1.2 }).jpeg({ quality: 70 }).toFile(out);
   console.log(`✔ blur/${file}`);
 }
 

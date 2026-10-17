@@ -89,9 +89,13 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
 
     // Precarga las imágenes de la página actual y la siguiente para que no aparezcan tarde al avanzar
     let near = false;
+    let warmed = '';
     const warm = (page: number) => {
       if (!near) return;
       const { perPage } = metrics();
+      const key = `${page}:${perPage}`;
+      if (key === warmed) return;
+      warmed = key;
       items()
         .slice(page * perPage, (page + 2) * perPage + 1)
         .forEach((el) => el.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => (img.loading = 'eager')));
@@ -108,19 +112,25 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
       track.scrollTo({ left: page * step, behavior: 'smooth' });
     };
 
+    let renderedPage = -1;
+    const markPage = (current: number) => {
+      if (current === renderedPage) return;
+      renderedPage = current;
+      dots?.querySelectorAll('button').forEach((dot, i) => dot.setAttribute('aria-current', String(i === current)));
+    };
     const update = () => {
       if (driven) {
-        if (prev) prev.disabled = active <= 0;
-        if (next) next.disabled = active >= driven - 1;
-        dots?.querySelectorAll('button').forEach((dot, i) => dot.setAttribute('aria-current', String(i === active)));
+        if (prev && prev.disabled !== (active <= 0)) prev.disabled = active <= 0;
+        if (next && next.disabled !== (active >= driven - 1)) next.disabled = active >= driven - 1;
+        markPage(active);
         return;
       }
       const { step, pages } = metrics();
       const end = max();
       const current = track.scrollLeft >= end - 2 ? pages - 1 : Math.round(track.scrollLeft / step);
-      if (prev) prev.disabled = !loop && track.scrollLeft <= 2;
-      if (next) next.disabled = !loop && track.scrollLeft >= end - 2;
-      dots?.querySelectorAll('button').forEach((dot, i) => dot.setAttribute('aria-current', String(i === current)));
+      if (prev && prev.disabled !== (!loop && track.scrollLeft <= 2)) prev.disabled = !loop && track.scrollLeft <= 2;
+      if (next && next.disabled !== (!loop && track.scrollLeft >= end - 2)) next.disabled = !loop && track.scrollLeft >= end - 2;
+      markPage(current);
       warm(current);
     };
 
@@ -129,6 +139,7 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
       const pages = driven || metrics().pages;
       dots.style.visibility = pages < 2 ? 'hidden' : '';
       if (dots.childElementCount !== pages) {
+        renderedPage = -1;
         dots.replaceChildren(
           ...Array.from({ length: pages }, (_, i) => {
             const dot = document.createElement('button');

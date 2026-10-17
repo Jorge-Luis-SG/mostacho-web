@@ -5,6 +5,7 @@ import Carousel from '../ui/Carousel.astro';
 import Img from '../ui/Img.astro';
 import type { GallerySection } from '../../lib/types';
 import type { LandingContext } from '../../lib/context';
+import { resolveImage } from '../../lib/images';
 
 interface Props {
   section: GallerySection;
@@ -25,10 +26,14 @@ const titleId = `${section.id}-title`;
       {
         section.items.map((item) => {
           // La foto completa conserva a todos los personajes; una copia desenfocada rellena los laterales.
+          const image = resolveImage(ctx.site, item.image);
+          const ratio = image?.kind === 'raster' ? image.meta.width / image.meta.height : 1.5;
+          // Con contain, una foto vertical ocupa menos ancho que la tarjeta: pide solo los píxeles que se ven.
+          const sizes = `(max-width: 700px) ${(86 * Math.min(1, ratio / (4 / 3))).toFixed(2)}vw, ${(60 * Math.min(1, ratio / 1.5)).toFixed(2)}vw`;
           return (
             <figure class="gallery__item" style={item.pos ? `--pos:${item.pos}` : undefined}>
-              <Img site={ctx.site} src={item.image} alt="" class="gallery__backdrop" sizes="320px" maxWidth={320} />
-              <Img site={ctx.site} src={item.image} alt={text.items[item.id]?.alt ?? ''} class="gallery__photo" sizes="(max-width: 700px) 88vw, 60vw" maxWidth={1920} />
+              <Img site={ctx.site} src={`blur/${item.image}`} alt="" class="gallery__backdrop" sizes="320px" maxWidth={320} optional />
+              <Img site={ctx.site} src={item.image} alt={text.items[item.id]?.alt ?? ''} class="gallery__photo" sizes={sizes} maxWidth={1920} />
             </figure>
           );
         })
@@ -38,71 +43,85 @@ const titleId = `${section.id}-title`;
 </SectionShell>
 
 <script>
-  // Al llegar a la galería, el carrusel recorre solo todas las fotos hasta el final y vuelve al principio.
-  // Se repite cada vez que la sección vuelve a entrar en pantalla; si el visitante toca el carrusel, se detiene.
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
-    document.querySelectorAll<HTMLElement>('.gallery').forEach((gallery) => {
+  // El desplazamiento suave lo hace el navegador: no se escribe scrollLeft en cada fotograma.
+  // Solo se preparan la foto actual y las próximas; cualquier interacción da el control al visitante.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+  document.querySelectorAll<HTMLElement>('.gallery').forEach((gallery) => {
       const track = gallery.querySelector<HTMLElement>('[data-track]');
       if (!track || gallery.closest('[data-anim]')) return;
-      let frame = 0;
-      let played = false;
-      // Lleva el carrusel de donde esté a «to» a velocidad constante («speed» px/s), arrancando y frenando
-      // suavemente en «ramp» s: nunca va más rápido que «speed» (sin el ajuste a cada foto mientras se mueve)
-      const glide = (to: number, speed: number, ramp = 1) =>
-        new Promise<boolean>((done) => {
-          const from = track.scrollLeft;
-          const d = Math.abs(to - from);
-          const dir = Math.sign(to - from);
-          const tr = Math.min(ramp, d / speed); // trayecto corto: no llega a la velocidad máxima
-          const v = tr < ramp ? d / tr : speed;
-          const total = tr + Math.max(0, (d - v * tr) / v) + tr;
-          const at = (t: number) =>
-            t < tr ? (0.5 * v * t * t) / tr : t > total - tr ? d - (0.5 * v * (total - t) ** 2) / tr : (v * tr) / 2 + v * (t - tr);
-          const t0 = performance.now();
-          const tick = (now: number) => {
-            const t = Math.min(total, (now - t0) / 1000);
-            track.scrollLeft = from + dir * at(t);
-            if (t < total) frame = requestAnimationFrame(tick);
-            else done(true);
-          };
-          frame = requestAnimationFrame(tick);
+      const items = Array.from(track.children) as HTMLElement[];
+      let positions: number[] = [];
+      let timer = 0;
+      let token = 0;
+      let visible = false;
+      let interrupted = false;
+      let hovered = false;
+      let direction = 1;
+      const pause = () => {
+        clearTimeout(timer);
+        timer = 0;
+        token++;
+      };
+      const canPlay = () => visible && !interrupted && !hovered && !document.hidden && !reduced.matches && !saveData && items.length > 1;
+      const current = () => {
+        const left = track.scrollLeft;
+        return positions.reduce((best, pos, i) => Math.abs(pos - left) < Math.abs(positions[best] - left) ? i : best, 0);
+      };
+      const warm = (index: number) => {
+        items.slice(Math.max(0, index - 1), index + 2).forEach((item) => {
+          item.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => (img.loading = 'eager'));
         });
-      const stop = () => {
-        cancelAnimationFrame(frame);
-        frame = 0;
-        track.style.scrollSnapType = '';
       };
-      const play = async () => {
-        played = true;
-        // Que las fotos ya estén cargadas cuando pasen
-        track.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => (img.loading = 'eager'));
-        const max = track.scrollWidth - track.clientWidth;
-        if (max < 10) return;
-        track.style.scrollSnapType = 'none';
-        // Ida a 800 px/s como mucho (se ven bien las fotos); pausa; vuelta algo más rápida (1600 px/s como mucho)
-        const going = await glide(max, 800);
-        if (!going || !frame) return;
-        await new Promise((r) => setTimeout(r, 700));
-        if (!frame) return;
-        await glide(0, 1600, 1.2);
-        stop();
+      const schedule = () => {
+        if (!timer && canPlay()) timer = window.setTimeout(advance, 3500);
       };
-      // Si el visitante mueve el carrusel (clic, dedo, teclado o rueda en horizontal), el recorrido se detiene.
-      // La rueda normal (bajar la página con el cursor encima) no lo detiene.
-      ['pointerdown', 'touchstart', 'keydown'].forEach((ev) => track.addEventListener(ev, stop, { passive: true }));
-      track.addEventListener('wheel', (e) => Math.abs(e.deltaX) > Math.abs(e.deltaY) && stop(), { passive: true });
+      const advance = async () => {
+        timer = 0;
+        if (!canPlay()) return;
+        const my = ++token;
+        const i = current();
+        if (i === items.length - 1) direction = -1;
+        else if (i === 0) direction = 1;
+        const next = i + direction;
+        warm(next);
+        const img = items[next].querySelector<HTMLImageElement>('.gallery__photo');
+        await img?.decode().catch(() => {});
+        if (my !== token || !canPlay()) return;
+        if (!img || (img.complete && img.naturalWidth > 0)) track.scrollTo({ left: positions[next], behavior: 'smooth' });
+        schedule();
+      };
+      const measure = () => {
+        pause();
+        const first = items[0]?.offsetLeft ?? 0;
+        positions = items.map((item) => item.offsetLeft - first);
+        schedule();
+      };
+      const interrupt = () => {
+        interrupted = true;
+        pause();
+        track.scrollTo({ left: track.scrollLeft, behavior: 'auto' });
+      };
+      ['pointerdown', 'touchstart', 'keydown', 'focusin'].forEach((ev) => gallery.addEventListener(ev, interrupt, { passive: true }));
+      track.addEventListener('wheel', (e) => Math.abs(e.deltaX) > Math.abs(e.deltaY) && interrupt(), { passive: true });
+      gallery.addEventListener('pointerenter', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        hovered = true;
+        pause();
+      });
+      gallery.addEventListener('pointerleave', () => { hovered = false; schedule(); });
+      document.addEventListener('visibilitychange', () => { pause(); schedule(); });
+      reduced.addEventListener('change', () => { pause(); schedule(); });
+      new ResizeObserver(measure).observe(track);
+      measure();
       new IntersectionObserver(
         ([e]) => {
-          if (e.intersectionRatio >= 0.55 && !played) play();
-          // Si la galería sale de la pantalla (aunque sea a medias), el recorrido se corta y vuelve a la primera foto;
-          // al volver, empieza de nuevo
-          if (e.intersectionRatio < 0.2 && played) {
-            stop();
-            track.scrollLeft = 0;
-            played = false;
-          }
+          visible = e.intersectionRatio >= 0.55;
+          if (e.intersectionRatio < 0.2) interrupted = false;
+          if (visible) { warm(current()); schedule(); }
+          else pause();
         },
-        { threshold: [0, 0.2, 0.6] },
+        { threshold: [0, 0.2, 0.55] },
       ).observe(gallery);
     });
 </script>
@@ -138,6 +157,7 @@ const titleId = `${section.id}-title`;
     aspect-ratio: 3 / 2;
     border-radius: var(--radius-lg);
     background: var(--color-card);
+    contain: layout paint;
   }
   .gallery__item :global(img), .gallery__item :global(.img-missing) {
     width: 100%;
@@ -148,7 +168,6 @@ const titleId = `${section.id}-title`;
     inset: 0;
     z-index: -1;
     object-fit: cover;
-    filter: blur(22px) brightness(0.45);
     transform: scale(1.12);
   }
   .gallery__item :global(.gallery__photo) {
