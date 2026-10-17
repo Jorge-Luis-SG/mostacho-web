@@ -27,8 +27,9 @@ const popSizes = largerPops ? '(min-width: 1401px) 81vw, 60vw' : '(max-width: 14
 const isLedRobot = (index: number) => section.id === 'hora-loca' && section.slides[index].id === 'robots-led';
 const largePopScale = (index: number) => isLedRobot(index) ? 1.3225 : 1.35;
 const desktopPopLift = 0.04;
-// El robot queda dentro del fondo, un 6 % por debajo del borde superior.
+// Referencia inicial del robot, antes de reducir su bottom negativo un 20 %.
 const largePopPeek = (index: number) => isLedRobot(index) ? -0.06 : 0.08;
+const robotBottomFactor = 0.8;
 // Reservar solo el espacio que realmente sobresale, descontando los márgenes transparentes.
 // El cálculo se resuelve al compilar y con CSS: no mide ni mueve el layout al hacer scroll.
 const popRoom = (large = false) => {
@@ -36,10 +37,14 @@ const popRoom = (large = false) => {
   const rooms = section.slides.flatMap((slide, index) => {
     const inset = popInsets[index];
     if (!slide.pop || !inset) return [];
-    if (large && isLedRobot(index)) return [];
     const scale = large ? largePopScale(index) : 1;
     const height = (slide.pop.width ?? 40) * 0.021594 / inset.ratio;
     const fixed = (section.popGrow ?? 0) / inset.ratio;
+    if (large && isLedRobot(index)) {
+      const remaining = (1 - robotBottomFactor) * scale * (1 - inset.top);
+      const offset = 1 - robotBottomFactor * (1 + largePopPeek(index));
+      return [linear(remaining * height - offset, remaining * fixed)];
+    }
     const visible = scale * (1 - inset.top - inset.bottom);
     const fromPrior = -scale * inset.top;
     const priorRoom = linear(fromPrior * height - (slide.pop.top ?? -12) / 100 + (large ? desktopPopLift : 0), fromPrior * fixed);
@@ -69,7 +74,7 @@ const popBg = (pop: ShowcasePop) =>
   <div class="container">
     <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
   </div>
-  <div class="showcase__slides" style={[section.popGrow && `--pop-grow:${section.popGrow}px`, `--desktop-pop-room:${popRoom()}`, largerPops && `--desktop-pop-room-large:${popRoom(true)};--desktop-pop-lift:${desktopPopLift * 100}cqh`].filter(Boolean).join(';')}>
+  <div class="showcase__slides" style={[section.popGrow && `--pop-grow:${section.popGrow}px`, `--desktop-pop-room:${popRoom()}`, largerPops && `--desktop-pop-room-large:${popRoom(true)};--desktop-pop-lift:${desktopPopLift * 100}cqh;--robot-bottom-factor:${robotBottomFactor}`].filter(Boolean).join(';')}>
     <Carousel label={text.title} variant="showcase" dots="overlay" arrows={section.id === 'hora-loca' || section.id === 'recibe' ? 'edge-both' : 'edge'} ui={ui.carousel} loop={section.loop}>
       {
         section.slides.map((slide, i) => {
@@ -518,8 +523,8 @@ const popBg = (pop: ShowcasePop) =>
       --pop-offset-top: min(calc(var(--pop-top) * 1cqh - var(--desktop-pop-lift)), calc(-1 * var(--desktop-pop-peek) - var(--mpop-head, 0) * var(--pop-painted-height)));
     }
     :global(#hora-loca) .showcase__pop[data-pop='robots-led'] :global(img) {
-      top: calc(-1 * var(--desktop-pop-peek) - var(--mpop-head, 0) * var(--pop-painted-height));
-      bottom: auto;
+      top: auto;
+      bottom: calc((100cqh + var(--desktop-pop-peek) - (1 - var(--mpop-head, 0)) * var(--pop-painted-height)) * var(--robot-bottom-factor));
     }
   }
   .showcase__pop--still, .showcase__pop--still.is-on { transform: none; transition: opacity 0.5s ease; }
