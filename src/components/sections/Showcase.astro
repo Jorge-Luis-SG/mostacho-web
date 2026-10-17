@@ -47,6 +47,7 @@ const popBg = (pop: ShowcasePop) =>
           return (
             <article
               class:list={['slide', slide.glow && 'slide--glow', small && 'slide--lowres', inside && 'slide--inside', slide.bg && 'slide--bg', slide.imageBox && 'slide--box']}
+              data-slide={slide.id}
               style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imagePosMobile && `--img-pos-m:${slide.imagePosMobile}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
@@ -423,6 +424,19 @@ const popBg = (pop: ShowcasePop) =>
   /* 500 px o menos: títulos de las diapositivas 7 px más pequeños */
   @media (max-width: 500px) {
     .slide .slide__title { font-size: calc(var(--size-showcase) + 12px + var(--title-grow, 0px) - 7px); }
+  }
+  @media (max-width: 450px) {
+    /* Reducir solo estos personajes y mantenerlos pegados al borde derecho. */
+    :global(#hora-loca) .slide:is([data-slide='robots-led'], [data-slide='show-mirror'], [data-slide='casa-de-papel'], [data-slide='batucada-led']) .slide__mpop :global(img),
+    :global(#recibe) .slide:is([data-slide='epoca'], [data-slide='arlequines']) .slide__mpop :global(img) {
+      right: 0;
+      height: calc(112cqh * var(--mpop-k, 1) * var(--mpop-grow, 1) * 0.75);
+      max-width: calc(72% * var(--mpop-k, 1) * var(--mpop-grow, 1) * 0.75);
+    }
+    /* Robots Mirror conserva su tamaño; baja un cuarto de la altura de la diapositiva. */
+    :global(#hora-loca) .slide[data-slide='robots-mirror'] .slide__mpop :global(img) {
+      top: calc(var(--mpop-top, 0cqh) + 25cqh);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .showcase__pop, .slide__mpop { transform: none; }
