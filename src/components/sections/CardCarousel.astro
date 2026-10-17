@@ -20,7 +20,7 @@ interface Props {
 const { section, text, ctx } = Astro.props;
 const { ui } = ctx;
 const titleId = `${section.id}-title`;
-const uniformTitleSize = section.id === 'adicionales'
+const uniformTitleSize = ['adicionales', 'efectos'].includes(section.id)
   ? fluid(Math.max(...section.items.map((item) => item.titleSize ?? 52)), 0.55)
   : undefined;
 ---
@@ -76,7 +76,7 @@ const uniformTitleSize = section.id === 'adicionales'
   @media (max-width: 640px) {
     .cards :global(.carousel__track) { grid-auto-columns: min(85%, 320px); }
   }
-  /* Adicionales en móvil: reservar el mismo espacio para los títulos de hasta tres líneas. */
+  /* Efectos y adicionales en móvil: reservar el mismo espacio para los títulos de hasta tres líneas. */
   @media (max-width: 700px) {
     .cards--uniform .card { min-width: 0; }
     .cards--uniform h3 { min-height: calc(3 * 0.94 * (var(--uniform-title-size) - 0.5rem)); }
