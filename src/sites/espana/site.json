@@ -154,8 +154,8 @@
         {
           "id": "robots-mirror",
           "image": "hora-loca-robots-mirror.jpg",
-          "imagePos": "50% 35%",
-          "imagePosMobile": "50% 35%",
+          "imagePos": "50% 70%",
+          "imagePosMobile": "50% 70%",
           "accent": "#150C25",
           "pop": {
             "image": "hora-loca-robots-mirror-pop.png",

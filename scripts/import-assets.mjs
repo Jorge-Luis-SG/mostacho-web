@@ -44,7 +44,7 @@ const images = {
   'hora-loca-monster-glitter.jpg': 'HORA LOCA/GLITTER AND MIRROR.jpg',
   'hora-loca-galacticos.jpg': 'HORA LOCA/GALACTICOS.jpg',
   'hora-loca-white-wings.jpg': 'HORA LOCA/WHITE WINGS(1).jpg',
-  'hora-loca-robots-mirror.jpg': 'ROBOTS/ROBOTS MIRROR.jpg',
+  'hora-loca-robots-mirror.jpg': '../assets new/robot_mirror_bg.jpg',
   'hora-loca-alicia.jpg': '../assets new/hora loca/ALICIA EN EL PAÍS DE LAS MARAVILLAS.jpg',
   'hora-loca-artistas.jpg': '../assets new/hora loca/ARTISTAS(9).jpg',
   'hora-loca-batucada-led.jpg': '../assets new/hora loca/BATUCADA LED(1).jpg',
