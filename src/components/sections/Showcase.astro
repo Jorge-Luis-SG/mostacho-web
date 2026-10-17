@@ -25,7 +25,7 @@ const popInsets = await Promise.all(section.slides.map((slide) => slide.pop ? po
 const largerPops = ['hora-loca', 'recibe'].includes(section.id);
 const popSizes = largerPops ? '(min-width: 1401px) 81vw, 60vw' : '(max-width: 1400px) 60vw, 1100px';
 const isLedRobot = (index: number) => section.id === 'hora-loca' && section.slides[index].id === 'robots-led';
-const largePopScale = (index: number) => isLedRobot(index) ? 1 : 1.35;
+const largePopScale = (index: number) => isLedRobot(index) ? 1.15 : 1.35;
 const desktopPopLift = 0.04;
 // El robot queda dentro del fondo, un 6 % por debajo del borde superior.
 const largePopPeek = (index: number) => isLedRobot(index) ? -0.06 : 0.08;
