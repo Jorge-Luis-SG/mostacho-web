@@ -81,6 +81,12 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
       return { step: perPage * size, perPage, pages: Math.ceil(items().length / perPage) };
     };
 
+    // Los fondos desenfocados pueden sobresalir y aumentar scrollWidth: el final es la última página real.
+    const max = () => {
+      const { step, pages } = metrics();
+      return Math.min(track.scrollWidth - track.clientWidth, (pages - 1) * step);
+    };
+
     // Precarga las imágenes de la página actual y la siguiente para que no aparezcan tarde al avanzar
     let near = false;
     const warm = (page: number) => {
@@ -110,10 +116,10 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
         return;
       }
       const { step, pages } = metrics();
-      const max = track.scrollWidth - track.clientWidth;
-      const current = track.scrollLeft >= max - 2 ? pages - 1 : Math.round(track.scrollLeft / step);
+      const end = max();
+      const current = track.scrollLeft >= end - 2 ? pages - 1 : Math.round(track.scrollLeft / step);
       if (prev) prev.disabled = !loop && track.scrollLeft <= 2;
-      if (next) next.disabled = !loop && track.scrollLeft >= max - 2;
+      if (next) next.disabled = !loop && track.scrollLeft >= end - 2;
       dots?.querySelectorAll('button').forEach((dot, i) => dot.setAttribute('aria-current', String(i === current)));
       warm(current);
     };
@@ -138,7 +144,6 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
     };
 
     // Sin fin: en un extremo, la flecha salta al otro
-    const max = () => track.scrollWidth - track.clientWidth;
     const step = (dir: 1 | -1) => {
       if (loop && dir > 0 && track.scrollLeft >= max() - 2) track.scrollTo({ left: 0, behavior: 'smooth' });
       else if (loop && dir < 0 && track.scrollLeft <= 2) track.scrollTo({ left: max(), behavior: 'smooth' });
