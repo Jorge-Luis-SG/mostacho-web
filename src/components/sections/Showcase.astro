@@ -127,11 +127,68 @@ const popBg = (pop: ShowcasePop) =>
     const slides = Array.from(track.children) as HTMLElement[];
     // En el móvil el personaje va dentro de la diapositiva; en el resto, en la capa de encima
     const mobile = matchMedia('(max-width: 700px)');
-    const imgOf = (i: number) => (mobile.matches ? slides[i]?.querySelector('.slide__mpop img') : pops[i]?.querySelector('img')) ?? null;
+    const imgOf = (i: number) => (mobile.matches ? slides[i]?.querySelector<HTMLImageElement>('.slide__mpop img') : pops[i]?.querySelector<HTMLImageElement>('img')) ?? null;
+    const pending = new WeakMap<HTMLImageElement, Promise<boolean>>();
+    const decoded = new WeakMap<HTMLImageElement, string>();
+    const retried = new WeakSet<HTMLImageElement>();
+    // Fuerza la descarga aunque la imagen siga fuera de la vista. Un fallo transitorio tiene un solo reintento;
+    // nunca se activa el desenfoque del fondo hasta que el personaje se pueda pintar.
+    const prepare = (img: HTMLImageElement, priority: 'high' | 'low') => {
+      img.fetchPriority = priority;
+      const existing = pending.get(img);
+      if (existing) return existing;
+      if (img.complete && img.naturalWidth > 0 && decoded.get(img) === img.currentSrc) return Promise.resolve(true);
+      const ready = new Promise<boolean>((resolve) => {
+        let settled = false;
+        const finish = (ok: boolean) => {
+          if (settled) return;
+          settled = true;
+          img.removeEventListener('load', loaded);
+          img.removeEventListener('error', failed);
+          if (ok) decoded.set(img, img.currentSrc);
+          resolve(ok);
+        };
+        const loaded = () => {
+          // Safari puede rechazar decode() aun habiendo cargado la imagen; load + naturalWidth son el respaldo.
+          img.decode().catch(() => {}).then(() => {
+            if (img.complete && img.naturalWidth > 0) finish(true);
+          });
+        };
+        const failed = () => {
+          if (retried.has(img) || !navigator.onLine) return finish(false);
+          retried.add(img);
+          setTimeout(() => {
+            if (settled) return;
+            const retry = (src: string) => {
+              const url = new URL(src, document.baseURI);
+              url.searchParams.set('retry', '1');
+              return url.href;
+            };
+            // Conserva las versiones responsive y evita reutilizar una respuesta fallida de la caché.
+            if (img.srcset) img.srcset = img.srcset.split(',').map((candidate) => {
+              const [src, ...size] = candidate.trim().split(/\s+/);
+              return [retry(src), ...size].join(' ');
+            }).join(', ');
+            img.src = retry(img.src);
+          }, 300);
+        };
+        img.addEventListener('load', loaded);
+        img.addEventListener('error', failed);
+        img.loading = 'eager';
+        if (img.complete) {
+          if (img.naturalWidth > 0) loaded();
+          else failed();
+        }
+      });
+      pending.set(img, ready);
+      ready.then(() => pending.delete(img));
+      return ready;
+    };
     let shown = -1;
+    let selected: HTMLImageElement | null = null;
     let over = false;
     let tok = 0;
-    const current = () => Math.round(track.scrollLeft / Math.max(1, slides[0]?.offsetWidth ?? 1));
+    const current = () => Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / Math.max(1, slides[0]?.offsetWidth ?? 1))));
     // Personaje (en la capa de encima) y su fondo (dentro de la diapositiva) se encienden y apagan juntos
     const toggle = (i: number, on: boolean) => {
       pops[i]?.classList.toggle('is-on', on);
@@ -140,22 +197,48 @@ const popBg = (pop: ShowcasePop) =>
     const show = () => {
       const i = current();
       const next = over && pops[i]?.classList.contains('showcase__pop') ? i : -1;
-      if (next === shown) return;
-      toggle(shown, false);
-      shown = next;
-      if (next < 0) return;
-      // Entra cuando su imagen ya está lista para pintarse: así también la primera vez se ve la animación entera
+      const img = next >= 0 ? imgOf(next) : null;
+      if (next === shown && img === selected) return;
       const my = ++tok;
-      const img = imgOf(next);
-      const go = () => my === tok && shown === next && toggle(next, true);
-      if (!img || (img.complete && img.naturalWidth)) go();
-      else img.decode().then(go, go);
+      toggle(shown, false);
+      if (selected) selected.fetchPriority = 'low';
+      shown = next;
+      selected = img;
+      if (next < 0 || !img) return;
+      // Entra cuando su imagen ya está lista para pintarse: así también la primera vez se ve la animación entera
+      prepare(img, 'high').then((ready) => {
+        if (ready && my === tok && shown === next && img === imgOf(next)) toggle(next, true);
+      });
+    };
+    let near = false;
+    const warm = () => {
+      if (!near && !over) return;
+      const i = current();
+      [i, (i + 1) % slides.length, (i - 1 + slides.length) % slides.length].forEach((n) => {
+        const img = imgOf(n);
+        if (img) prepare(img, n === i ? 'high' : 'low');
+      });
     };
     // La tira de personajes sigue al carrusel (también mientras se desliza entre diapositivas)
     const follow = () => {
       strip.style.transform = `translate3d(${-track.scrollLeft}px, 0, 0)`;
+      warm();
       show();
     };
+    const refresh = () => {
+      toggle(shown, false);
+      shown = -1;
+      selected = null;
+      follow();
+    };
+    // Al cambiar de tamaño puede tocar otra copia o versión responsive del personaje.
+    mobile.addEventListener('change', refresh);
+    addEventListener('online', refresh);
+    zone.querySelectorAll<HTMLImageElement>('.showcase__pop img, .slide__mpop img').forEach((img) => {
+      img.addEventListener('error', () => {
+        if (img === selected) refresh();
+      });
+    });
     let frame = 0;
     track.addEventListener('scroll', () => {
       cancelAnimationFrame(frame);
@@ -163,25 +246,13 @@ const popBg = (pop: ShowcasePop) =>
     }, { passive: true });
     new ResizeObserver(follow).observe(track);
 
-    // Se descargan todos sus personajes antes de llegar (están fuera de la vista y, si no, el navegador los dejaría
-    // para el último momento): a tres pantallas cuando la página ya cargó (no retrasan lo que se ve al entrar), o a
-    // una pantalla en cualquier caso
-    let fetched = false;
-    const fetchAll = () => {
-      if (fetched) return;
-      fetched = true;
-      pops.forEach((_, i) => {
-        const img = imgOf(i);
-        if (!img) return;
-        img.fetchPriority = 'high'; // por delante de los videos, que se descargan a la vez
-        img.loading = 'eager';
-      });
-    };
+    // Adelanta el personaje actual y sus vecinos, sin poner todos a competir por la conexión.
     const ahead = (margin: string) =>
       new IntersectionObserver((entries, io) => {
         if (!entries.some((e) => e.isIntersecting)) return;
         io.disconnect();
-        fetchAll();
+        near = true;
+        warm();
       }, { rootMargin: margin }).observe(zone);
     ahead('100% 0px');
     if (document.readyState === 'complete') ahead('300% 0px');

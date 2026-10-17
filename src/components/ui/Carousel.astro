@@ -93,7 +93,7 @@ const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = As
       if (!near) return;
       const { perPage } = metrics();
       items()
-        .slice(0, (page + 2) * perPage + 1)
+        .slice(page * perPage, (page + 2) * perPage + 1)
         .forEach((el) => el.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => (img.loading = 'eager')));
     };
     new IntersectionObserver((entries, obs) => {
