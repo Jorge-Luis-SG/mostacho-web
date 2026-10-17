@@ -13,9 +13,11 @@ interface Props {
   ui: { prev: string; next: string; page: string };
   /** Sin fin por defecto: tras la última página vuelve a la primera y al retroceder desde la primera, a la última. */
   loop?: boolean;
+  /** Carril independiente para el recorrido automático de la galería. */
+  galleryRail?: boolean;
 }
 
-const { label, variant, dots = 'none', arrows = 'sides', ui, loop = true } = Astro.props;
+const { label, variant, dots = 'none', arrows = 'sides', ui, loop = true, galleryRail = false } = Astro.props;
 const edge = arrows === 'edge' || arrows === 'edge-both';
 ---
 
@@ -37,8 +39,8 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
         </button>
       )
     }
-    <div class="carousel__track" data-track tabindex="0">
-      <slot />
+    <div class:list={['carousel__track', galleryRail && 'carousel__track--rail']} data-track tabindex="0">
+      {galleryRail ? <div class="carousel__rail" data-gallery-rail><slot /></div> : <slot />}
     </div>
     {
       arrows !== 'none' && (
@@ -64,7 +66,8 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
     const next = root.querySelector<HTMLButtonElement>('[data-next]');
     const pageLabel = root.dataset.pageLabel ?? '{n}';
     const loop = root.hasAttribute('data-loop');
-    const items = Array.from(track.children) as HTMLElement[];
+    const rail = track.querySelector<HTMLElement>('[data-gallery-rail]');
+    const items = Array.from((rail ?? track).children) as HTMLElement[];
 
     // Modo "dirigido": cuando una animación con el scroll mueve el carrusel (src/scripts/animations.ts),
     // los puntos y las flechas piden ir a un elemento ('driven:go') y la animación dice cuál está activo ('driven:active').
@@ -143,7 +146,7 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
     };
 
     const renderDots = () => {
-      if (!dots) return;
+      if (!dots) { update(); return; }
       const pages = driven || metrics().pages;
       dots.style.visibility = pages < 2 ? 'hidden' : '';
       if (dots.childElementCount !== pages) {
@@ -181,6 +184,8 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
 
     let frame = 0;
     track.addEventListener('scroll', () => {
+      // La galería prepara sus propias fotos; sin puntos y con bucle no hay estado que actualizar al moverla.
+      if (rail && !dots && loop) return;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(update);
     }, { passive: true });
@@ -208,6 +213,7 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
   }
   .carousel__track::-webkit-scrollbar { display: none; }
   .carousel__track > :global(*) { scroll-snap-align: start; }
+  .carousel__rail > :global(*) { scroll-snap-align: start; }
 
   /* ---- Flechas ---- */
   .carousel__arrow {
