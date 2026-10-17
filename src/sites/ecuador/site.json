@@ -331,13 +331,6 @@
           }
         },
         {
-          "id": "folklore",
-          "image": "hora-loca-folklore.jpg",
-          "imagePos": "50% 55%",
-          "imagePosMobile": "50% 50%",
-          "accent": "#3B101B"
-        },
-        {
           "id": "futbolista",
           "image": "hora-loca-futbolista.jpg",
           "imagePos": "50% 45%",
