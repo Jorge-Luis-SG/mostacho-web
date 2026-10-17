@@ -11,11 +11,11 @@ interface Props {
   dots?: 'top' | 'overlay' | 'none';
   arrows?: 'sides' | 'edge' | 'edge-both' | 'none';
   ui: { prev: string; next: string; page: string };
-  /** Sin fin: tras la última página, la flecha vuelve a la primera (y desde la primera, la de atrás va a la última). */
+  /** Sin fin por defecto: tras la última página vuelve a la primera y al retroceder desde la primera, a la última. */
   loop?: boolean;
 }
 
-const { label, variant, dots = 'none', arrows = 'sides', ui, loop = false } = Astro.props;
+const { label, variant, dots = 'none', arrows = 'sides', ui, loop = true } = Astro.props;
 const edge = arrows === 'edge' || arrows === 'edge-both';
 ---
 
@@ -70,8 +70,10 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
     // los puntos y las flechas piden ir a un elemento ('driven:go') y la animación dice cuál está activo ('driven:active').
     let driven = Number(root.dataset.driven) || 0;
     let active = 0;
-    const go = (i: number) =>
-      root.dispatchEvent(new CustomEvent('driven:go', { bubbles: true, detail: { index: Math.max(0, Math.min(driven - 1, i)) } }));
+    const go = (i: number) => {
+      const index = loop ? ((i % driven) + driven) % driven : Math.max(0, Math.min(driven - 1, i));
+      root.dispatchEvent(new CustomEvent('driven:go', { bubbles: true, detail: { index } }));
+    };
 
     const metrics = () => {
       const first = items()[0];
@@ -121,16 +123,20 @@ const edge = arrows === 'edge' || arrows === 'edge-both';
     };
     const update = () => {
       if (driven) {
-        if (prev && prev.disabled !== (active <= 0)) prev.disabled = active <= 0;
-        if (next && next.disabled !== (active >= driven - 1)) next.disabled = active >= driven - 1;
+        const atStart = driven < 2 || (!loop && active <= 0);
+        const atEnd = driven < 2 || (!loop && active >= driven - 1);
+        if (prev && prev.disabled !== atStart) prev.disabled = atStart;
+        if (next && next.disabled !== atEnd) next.disabled = atEnd;
         markPage(active);
         return;
       }
       const { step, pages } = metrics();
       const end = max();
       const current = track.scrollLeft >= end - 2 ? pages - 1 : Math.round(track.scrollLeft / step);
-      if (prev && prev.disabled !== (!loop && track.scrollLeft <= 2)) prev.disabled = !loop && track.scrollLeft <= 2;
-      if (next && next.disabled !== (!loop && track.scrollLeft >= end - 2)) next.disabled = !loop && track.scrollLeft >= end - 2;
+      const atStart = pages < 2 || (!loop && track.scrollLeft <= 2);
+      const atEnd = pages < 2 || (!loop && track.scrollLeft >= end - 2);
+      if (prev && prev.disabled !== atStart) prev.disabled = atStart;
+      if (next && next.disabled !== atEnd) next.disabled = atEnd;
       markPage(current);
       warm(current);
     };
