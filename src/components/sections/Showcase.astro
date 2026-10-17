@@ -50,12 +50,11 @@ const popBg = (pop: ShowcasePop) =>
               style={[slide.accent && `--accent:${slide.accent}`, slide.bg && `background:${slide.bg}`, slide.imagePos && `--img-pos:${slide.imagePos}`, slide.imagePosMobile && `--img-pos-m:${slide.imagePosMobile}`, slide.imageBox && `--img-max:${slide.imageBox.maxWidth}%`, slide.imageMaxWidth && `--img-maxw:${slide.imageMaxWidth}px`, slide.glow && `--glow:${slide.glow}`, slide.glowAt && `--glow-at:${slide.glowAt}`, small && `--fit-h:${small.height}px`].filter(Boolean).join(';') || undefined}
             >
               {small && <Img site={ctx.site} src={slide.image} alt="" class="slide__backdrop" sizes="480px" maxWidth={480} />}
-              {inside ? (
+              <Img site={ctx.site} src={slide.image} alt={inside ? '' : s.alt ?? ''} class="slide__img" sizes="(max-width: 700px) 100vw, 82vw" />
+              {inside && (
                 <div class="slide__inside" style={`--pop-cx:${(slide.pop!.left ?? 50) + (slide.pop!.width ?? 40) / 2};--pop-width:${slide.pop!.width ?? 40};--pop-top:${slide.pop!.top ?? -12}`}>
                   <Img site={ctx.site} src={slide.pop!.image} alt={s.alt ?? ''} sizes="(max-width: 700px) 60vw, 520px" maxWidth={1040} />
                 </div>
-              ) : (
-                <Img site={ctx.site} src={slide.image} alt={s.alt ?? ''} class="slide__img" sizes="(max-width: 700px) 100vw, 82vw" />
               )}
               {slide.pop && popBg(slide.pop) && <div class="slide__popbg" aria-hidden="true" style={`--pop-bg:${popBg(slide.pop)}`} />}
               <div class="slide__shade" aria-hidden="true" />

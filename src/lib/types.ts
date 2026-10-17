@@ -89,7 +89,7 @@ export interface ShowcaseSlide {
   titleImage?: string;
   /** Personaje recortado (PNG transparente) que entra por la derecha al pasar el ratón y sobresale por arriba. */
   pop?: ShowcasePop;
-  /** Sin foto de fondo: en reposo se ve el mismo personaje dentro de la diapositiva (al pasar el ratón sale por arriba). */
+  /** En reposo se ve el personaje dentro de la diapositiva, sobre su foto de fondo (al pasar el ratón sale por arriba). */
   inside?: boolean;
   /** Encuadre vertical de la foto (CSS object-position, p. ej. "0% 0%" = pegada arriba, para que se vean las caras). */
   imagePos?: string;

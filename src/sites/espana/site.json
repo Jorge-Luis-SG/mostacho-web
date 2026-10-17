@@ -229,7 +229,8 @@
           },
           "accent": "#151515",
           "imagePos": "50% 38%",
-          "imagePosMobile": "50% 38%"
+          "imagePosMobile": "50% 38%",
+          "inside": true
         },
         {
           "id": "arlequines",
