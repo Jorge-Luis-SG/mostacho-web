@@ -20,11 +20,14 @@ interface Props {
 const { section, text, ctx } = Astro.props;
 const { ui } = ctx;
 const titleId = `${section.id}-title`;
+const uniformTitleSize = section.id === 'adicionales'
+  ? fluid(Math.max(...section.items.map((item) => item.titleSize ?? 52)), 0.55)
+  : undefined;
 ---
 
 <SectionShell id={section.id} site={ctx.site} space={section.space} background={section.background} decor={section.decor} labelledby={titleId} anim={section.anim} count={section.items.length}>
   <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
-  <div class="cards">
+  <div class:list={['cards', uniformTitleSize && 'cards--uniform']} style={uniformTitleSize ? `--uniform-title-size:${uniformTitleSize}` : undefined}>
     <Carousel label={text.title} variant="cards" dots="top" ui={ui.carousel} loop={section.loop}>
       {
         section.items.map((item) => {
@@ -72,6 +75,11 @@ const titleId = `${section.id}-title`;
   }
   @media (max-width: 640px) {
     .cards :global(.carousel__track) { grid-auto-columns: min(85%, 320px); }
+  }
+  /* Adicionales en móvil: reservar el mismo espacio para los títulos de hasta tres líneas. */
+  @media (max-width: 700px) {
+    .cards--uniform .card { min-width: 0; }
+    .cards--uniform h3 { min-height: calc(3 * 0.94 * (var(--uniform-title-size) - 0.5rem)); }
   }
 
   /* Tarjeta de alto fijo (419×679 en el diseño): la foto ocupa todo el fondo
