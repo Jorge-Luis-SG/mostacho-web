@@ -350,8 +350,8 @@
         {
           "id": "la-mascara",
           "image": "hora-loca-la-mascara.jpg",
-          "imagePos": "50% 35%",
-          "imagePosMobile": "50% 35%",
+          "imagePos": "50% 55%",
+          "imagePosMobile": "50% 55%",
           "accent": "#211800",
           "pop": {
             "image": "hora-loca-la-mascara-pop.png",
