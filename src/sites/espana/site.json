@@ -168,23 +168,6 @@
             "mobileScale": 1.15,
             "mobileTop": "0cqh"
           }
-        },
-        {
-          "id": "batucada-led",
-          "image": "hora-loca-batucada-led.jpg",
-          "imagePos": "50% 45%",
-          "imagePosMobile": "50% 45%",
-          "accent": "#061A19",
-          "pop": {
-            "image": "hora-loca-batucada-led-pop.png",
-            "left": 53,
-            "width": 43,
-            "top": -14,
-            "tint": "rgba(20, 200, 165, 0.18)",
-            "glow": "rgba(30, 255, 190, 0.6)",
-            "glowAt": "76% 30%",
-            "glowSize": "35% 75%"
-          }
         }
       ]
     },
