@@ -4,7 +4,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   // Cambia por el dominio real cuando lo tengas (se usa para URLs absolutas y SEO).
   // SITE_URL y BASE_PATH permiten publicar en una subcarpeta (p. ej. GitHub Pages: /mostacho-web).
-  site: process.env.SITE_URL || 'https://example.com',
+  site: process.env.SITE_URL || 'https://www.mostachoproducciones.com',
   base: process.env.BASE_PATH || '/',
   trailingSlash: 'ignore',
   devToolbar: { enabled: false },
