@@ -144,8 +144,8 @@
           "image": "hora-loca-robots-led.jpg",
           "pop": {
             "image": "hora-loca-robots-led-pop.png",
-            "left": 53,
-            "width": 43,
+            "left": 50,
+            "width": 49,
             "top": -8,
             "glow": "rgba(166, 70, 255, 0.85)",
             "glowAt": "76% 45%",
