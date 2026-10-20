@@ -331,6 +331,23 @@
           }
         },
         {
+          "id": "folklore",
+          "image": "hora-loca-folklore.jpg",
+          "imagePos": "50% 55%",
+          "imagePosMobile": "50% 50%",
+          "accent": "#3B101B",
+          "pop": {
+            "image": "hora-loca-folklore-pop.png",
+            "left": 51,
+            "width": 43,
+            "top": -14,
+            "tint": "rgba(150, 70, 30, 0.16)",
+            "glow": "rgba(235, 170, 70, 0.45)",
+            "glowAt": "76% 30%",
+            "glowSize": "35% 75%"
+          }
+        },
+        {
           "id": "futbolista",
           "image": "hora-loca-futbolista.jpg",
           "imagePos": "50% 45%",
