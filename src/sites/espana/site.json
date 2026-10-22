@@ -91,7 +91,7 @@
             "glow": "rgba(166, 70, 255, 0.85)",
             "glowAt": "76% 45%",
             "glowSize": "38% 85%",
-            "mobileScale": 0.8,
+            "mobileScale": 1.05,
             "mobileTop": "-10cqh"
           },
           "accent": "#4B00D5"
@@ -140,7 +140,8 @@
         {
           "id": "casa-de-papel",
           "image": "hora-loca-casa-de-papel-slider.png",
-          "imagePos": "0% 40%",
+          "imagePos": "0% 65%",
+          "imagePosMobile": "70% 65%",
           "imageMaxWidth": 760,
           "pop": {
             "image": "hora-loca-casa-de-papel-pop.png",

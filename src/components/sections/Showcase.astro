@@ -23,6 +23,7 @@ const titleId = `${section.id}-title`;
 const pops = section.slides.some((slide) => slide.pop);
 const popInsets = await Promise.all(section.slides.map((slide) => slide.pop ? popAlignment(ctx.site, slide.pop.image) : undefined));
 const largerPops = ['hora-loca', 'recibe'].includes(section.id);
+const compactPops = ctx.site === 'espana' && section.id === 'hora-loca';
 const popSizes = largerPops ? '(min-width: 1401px) 81vw, 60vw' : '(max-width: 1400px) 60vw, 1100px';
 const isLedRobot = (index: number) => section.id === 'hora-loca' && section.slides[index].id === 'robots-led';
 const largePopScale = (index: number) => isLedRobot(index) ? 1.3225 : 1.35;
@@ -53,7 +54,8 @@ const popRoom = (large = false) => {
     // El anclaje inferior conserva los personajes que ya bajaban más del borde.
     return [`min(${raisedRoom}, ${linear(visible * height - 1, visible * fixed)})`];
   });
-  return rooms.length ? `max(0px, ${rooms.join(', ')})` : '0px';
+  const room = rooms.length ? `max(0px, ${rooms.join(', ')})` : '0px';
+  return compactPops ? `min(${room}, ${linear(0.08, 0)})` : room;
 };
 const cutoutStyle = (index: number) => {
   const inset = popInsets[index];
@@ -74,7 +76,7 @@ const popBg = (pop: ShowcasePop) =>
   <div class="container">
     <SectionTitle id={titleId} text={text.title} variant={section.titleStyle ?? 'pill'} size={section.titleSize} />
   </div>
-  <div class="showcase__slides" style={[section.popGrow && `--pop-grow:${section.popGrow}px`, `--desktop-pop-room:${popRoom()}`, largerPops && `--desktop-pop-room-large:${popRoom(true)};--desktop-pop-lift:${desktopPopLift * 100}cqh;--robot-bottom-factor:${robotBottomFactor}`].filter(Boolean).join(';')}>
+  <div class:list={['showcase__slides', compactPops && 'showcase__slides--compact']} style={[section.popGrow && `--pop-grow:${section.popGrow}px`, `--desktop-pop-room:${popRoom()}`, largerPops && `--desktop-pop-room-large:${popRoom(true)};--desktop-pop-lift:${desktopPopLift * 100}cqh;--robot-bottom-factor:${robotBottomFactor}`].filter(Boolean).join(';')}>
     <Carousel label={text.title} variant="showcase" dots="overlay" arrows={section.id === 'hora-loca' || section.id === 'recibe' ? 'edge-both' : 'edge'} ui={ui.carousel} loop={section.loop}>
       {
         section.slides.map((slide, i) => {
@@ -420,6 +422,7 @@ const popBg = (pop: ShowcasePop) =>
   @media (max-width: 700px) {
     .showcase__pops { display: none; }
     .showcase__slides { --pop-room: calc(var(--slide-h) * 0.14); --pop-title-room: var(--pop-room); }
+    .showcase__slides--compact { --pop-room: calc(var(--slide-h) * 0.1); }
     /* overflow-y: hidden: el carrusel solo se desliza en horizontal (el personaje fuera de su sitio no lo hace desplazable en vertical) */
     .showcase__slides :global(.carousel__track) { padding-top: var(--pop-room); margin-top: calc(-1 * var(--pop-room)); overflow-y: hidden; }
     .showcase__slides :global(.carousel__viewport) { display: flow-root; } /* que ese margen no arrastre el slider hacia arriba */
@@ -487,7 +490,7 @@ const popBg = (pop: ShowcasePop) =>
       right: 0;
       translate: var(--mpop-edge, 0%) 0;
     }
-    :global(#hora-loca) .slide:is([data-slide='robots-led'], [data-slide='show-mirror'], [data-slide='casa-de-papel'], [data-slide='batucada-led']) .slide__mpop {
+    :global(#hora-loca) .slide:is([data-slide='show-mirror'], [data-slide='casa-de-papel'], [data-slide='batucada-led']) .slide__mpop {
       --mpop-shrink: 0.75;
     }
     :global(#hora-loca) .slide:is([data-slide='alicia'], [data-slide='artistas'], [data-slide='charleston'], [data-slide='folklore'], [data-slide='futbolista'], [data-slide='la-mascara'], [data-slide='neon'], [data-slide='rabbit-girls']) .slide__mpop,
@@ -519,7 +522,8 @@ const popBg = (pop: ShowcasePop) =>
   .showcase__pop :global(img), .slide__inside :global(img) {
     --pop-painted-height: calc((var(--pop-width) * 2.1594cqh + var(--pop-grow, 0px)) * var(--pop-scale, 1) / var(--mpop-ratio, 1));
     top: auto;
-    bottom: min(calc(100cqh - var(--pop-offset-top, calc(var(--pop-top) * 1cqh)) - var(--pop-painted-height)), calc(-1 * var(--mpop-foot, 0) * var(--pop-painted-height)));
+    --pop-bottom: min(calc(100cqh - var(--pop-offset-top, calc(var(--pop-top) * 1cqh)) - var(--pop-painted-height)), calc(-1 * var(--mpop-foot, 0) * var(--pop-painted-height)));
+    bottom: var(--pop-bottom);
   }
   @media (min-width: 1401px) {
     :global(:is(#hora-loca, #recibe)) .showcase__slides {
@@ -531,7 +535,13 @@ const popBg = (pop: ShowcasePop) =>
     }
     :global(#hora-loca) .showcase__pop[data-pop='robots-led'] :global(img) {
       top: auto;
-      bottom: calc((100cqh + var(--desktop-pop-peek) - (1 - var(--mpop-head, 0)) * var(--pop-painted-height)) * var(--robot-bottom-factor));
+      --pop-bottom: calc((100cqh + var(--desktop-pop-peek) - (1 - var(--mpop-head, 0)) * var(--pop-painted-height)) * var(--robot-bottom-factor));
+    }
+  }
+  @media (min-width: 701px) {
+    /* Acercar el slider al título sin recortar las cabezas: limitar el saliente a un 8 % de su alto. */
+    .showcase__slides--compact .showcase__pop :global(img) {
+      bottom: min(var(--pop-bottom), calc(108cqh - (1 - var(--mpop-head, 0)) * var(--pop-painted-height)));
     }
   }
   .showcase__pop--still, .showcase__pop--still.is-on { transform: none; transition: opacity 0.5s ease; }
